@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Votre Panier Mage Optique & Services. Validez votre commande de montures de haute lunetterie et planifiez votre livraison ou retrait.">
+    <title>Votre Panier d'Excellence | Mage Optique & Services</title>
+    
+    <!-- Google Fonts & Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet">
+    
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="css/style.css?v=3">
+    
+    <style>
+        .cart-page-container {
+            padding: 40px 0 96px 0;
+        }
+        
+        .cart-grid {
+            display: grid;
+            grid-template-columns: 7fr 5fr;
+            gap: 48px;
+            align-items: start;
+        }
+        
+        @media (max-width: 1024px) {
+            .cart-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+        
+        .luxury-card {
+            background-color: var(--color-paper-white);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--border-radius-lg);
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            transition: var(--transition-smooth);
+        }
+        
+        .cart-item-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--color-border-subtle);
+        }
+        
+        .cart-item-row:first-child {
+            padding-top: 0;
+        }
+        
+        .cart-item-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .cart-item-img-container {
+            width: 100px;
+            height: 70px;
+            background-color: var(--color-surface-container);
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .cart-item-img {
+            max-height: 80%;
+            max-width: 90%;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+        }
+        
+        .cart-item-details {
+            flex-grow: 1;
+        }
+        
+        .cart-item-title {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--color-deep-charcoal);
+            margin-bottom: 4px;
+        }
+        
+        .cart-item-specs {
+            font-size: 0.75rem;
+            color: var(--color-soft-slate);
+        }
+        
+        .cart-item-price {
+            font-weight: 700;
+            color: var(--color-muted-gold);
+            font-size: 1rem;
+            margin-top: 4px;
+        }
+        
+        .qty-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--color-surface-container);
+            padding: 6px 12px;
+            border-radius: var(--border-radius-full);
+            border: 1px solid var(--color-border-subtle);
+        }
+        
+        .qty-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--color-deep-charcoal);
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-fast);
+        }
+        
+        .qty-btn:hover {
+            color: var(--color-muted-gold);
+        }
+        
+        .delete-btn {
+            color: var(--color-soft-slate);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            padding: 8px;
+        }
+        
+        .delete-btn:hover {
+            color: var(--color-error);
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            font-size: 0.95rem;
+            border-bottom: 1px solid var(--color-border-subtle);
+        }
+        
+        .summary-row.total {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.25rem;
+            padding-top: 20px;
+            color: var(--color-deep-charcoal);
+        }
+        
+        /* Success Screen CSS */
+        .success-ticket {
+            max-width: 550px;
+            margin: 40px auto;
+            background-color: #121212;
+            color: #fff;
+            border: 2px solid var(--color-muted-gold);
+            border-radius: var(--border-radius-lg);
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            position: relative;
+        }
+        
+        .ticket-divider {
+            border-top: 1px dashed rgba(197, 160, 89, 0.3);
+            margin: 24px 0;
+        }
+        
+        .success-badge {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--border-radius-full);
+            background-color: rgba(197, 160, 89, 0.1);
+            color: var(--color-muted-gold);
+            margin: 0 auto 24px auto;
+        }
+
+        /* Custom Cart Deletion Modal Overlay */
+        .cart-delete-confirm-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            z-index: 100000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition-smooth);
+            padding: 20px;
+        }
+
+        .cart-delete-confirm-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .cart-delete-confirm-card {
+            background-color: var(--color-paper-white);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--border-radius-lg);
+            width: 100%;
+            max-width: 460px;
+            padding: 32px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.1);
+            transform: scale(0.95);
+            transition: var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            text-align: center;
+        }
+
+        .cart-delete-confirm-overlay.show .cart-delete-confirm-card {
+            transform: scale(1);
+        }
+
+        @media (max-width: 576px) {
+            .cart-item-row {
+                flex-wrap: wrap;
+                gap: 16px;
+                position: relative;
+                padding-bottom: 20px;
+            }
+            .cart-item-details {
+                width: calc(100% - 120px);
+            }
+            .qty-selector {
+                margin-left: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Unified Header / TopAppBar -->
+    <header class="top-header glass-effect">
+        <div class="container nav-bar">
+            <a href="index.html" class="nav-logo" id="logo-link">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique &amp; Services Logo" class="logo-img">
+                <span class="logo-text font-serif">Mage Optique &amp; Services</span>
+            </a>
+            
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Accueil</a>
+                <a href="boutique.html" class="nav-link">Boutique</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="a-propos.html" class="nav-link">À Propos</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </nav>
+            
+            <div class="nav-actions">
+                <a href="boutique.html" class="material-symbols-outlined icon-btn" id="search-nav-btn">search</a>
+                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre liste de favoris est vide.')" id="fav-nav-btn">favorite</span>
+                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre panier Mage Optique &amp; Services est vide.')" id="cart-nav-btn">shopping_bag</span>
+                <a href="connexion.html" class="material-symbols-outlined icon-btn" id="login-nav-btn">person</a>
+                <span class="mobile-nav-toggle material-symbols-outlined" id="menu-toggle-btn">menu</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Menu -->
+    <div class="mobile-menu-overlay" id="drawer-overlay"></div>
+    <div class="mobile-menu" id="drawer-menu">
+        <div class="mobile-menu-header">
+            <span class="font-serif text-headline-md">Mage Optique &amp; Services</span>
+            <span class="material-symbols-outlined icon-btn close-menu" id="close-menu-btn">close</span>
+        </div>
+        <nav class="mobile-nav-links">
+            <a href="index.html" class="mobile-nav-link">Accueil</a>
+            <a href="boutique.html" class="mobile-nav-link">Boutique</a>
+            <a href="services.html" class="mobile-nav-link">Services</a>
+            <a href="a-propos.html" class="mobile-nav-link">À Propos</a>
+            <a href="contact.html" class="mobile-nav-link">Contact</a>
+            <a href="connexion.html" class="mobile-nav-link">Connexion</a>
+        </nav>
+    </div>
+
+    <!-- Main Container -->
+    <main style="padding-top: 80px;">
+
+        <!-- Header intro -->
+        <section class="section-padding container animate-fade-in" style="padding-bottom: 24px;">
+            <div style="text-align: center; max-width: 600px; margin: 0 auto;">
+                <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">Votre Sélection</span>
+                <h1 class="text-display-lg" id="cart-page-title">Panier d'Excellence</h1>
+                <p class="text-body-md" style="margin-top: 12px;" id="cart-page-subtitle">Finalisez l'achat de vos montures d'exception en toute sécurité.</p>
+            </div>
+        </section>
+
+        <!-- Cart Content Section -->
+        <section class="container cart-page-container">
+            <!-- Empty state (Hidden by default) -->
+            <div id="cart-empty-state" style="display: none; text-align: center; padding: 80px 0;">
+                <span class="material-symbols-outlined" style="font-size: 80px; color: var(--color-soft-slate); opacity: 0.3; display: block; margin-bottom: 24px;">shopping_bag</span>
+                <h2 class="font-serif text-headline-lg" style="margin-bottom: 16px;">Votre panier est actuellement vide</h2>
+                <p class="text-body-md" style="color: var(--color-soft-slate); max-width: 480px; margin: 0 auto 40px auto;">Parcourez notre collection exclusive de montures de haute lunetterie pour trouver la paire qui sublimera votre regard.</p>
+                <a href="boutique.html" class="btn btn-primary" style="padding: 16px 36px;">Visiter la Boutique</a>
+            </div>
+
+            <!-- Active Cart Grid -->
+            <div id="cart-active-state" class="cart-grid">
+                
+                <!-- Left Column: Checkout Area Container -->
+                <div class="luxury-card" id="checkout-area-container">
+                    <!-- Injected dynamically via JS depending on customer login state -->
+                </div>
+
+                <!-- Right Column: Cart Summary -->
+                <div class="luxury-card" style="border-color: var(--color-muted-gold); background-color: #faf9f6;">
+                    <h3 class="font-serif text-headline-md" style="margin-bottom: 24px; border-bottom: 2px solid var(--color-deep-charcoal); padding-bottom: 8px;">Récapitulatif</h3>
+                    
+                    <!-- Dynamic cart items container -->
+                    <div id="cart-summary-items" style="max-height: 380px; overflow-y: auto; margin-bottom: 24px; padding-right: 8px;">
+                        <!-- Injected via JS -->
+                    </div>
+                    
+                    <!-- Calculations breakdown -->
+                    <div style="border-top: 1px solid var(--color-border-subtle); padding-top: 20px;">
+                        <div class="summary-row">
+                            <span style="color: var(--color-soft-slate);">Sous-total</span>
+                            <span id="summary-subtotal" style="font-weight: 600;">0 FCFA</span>
+                        </div>
+                        <div class="summary-row">
+                            <span style="color: var(--color-soft-slate);">Frais de livraison</span>
+                            <span id="summary-shipping" style="font-weight: 600;">2 000 FCFA</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Montant Total</span>
+                            <span id="summary-total" style="color: var(--color-muted-gold);">0 FCFA</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Success State: Ticket Screen (Hidden by default) -->
+            <div id="cart-success-state" style="display: none;">
+                <div class="success-ticket" id="order-ticket-container">
+                    <div class="success-badge flex-center">
+                        <span class="material-symbols-outlined" style="font-size: 36px;">verified</span>
+                    </div>
+                    
+                    <h2 class="font-serif text-headline-lg" style="color: var(--color-muted-gold); margin-bottom: 8px;">Commande Validée d'Excellence</h2>
+                    <p class="text-body-md" style="color: rgba(255,255,255,0.7); font-size: 0.95rem; margin-bottom: 32px;">Votre reçu de commande Mage Optique &amp; Services :</p>
+                    
+                    <!-- Reçu details -->
+                    <div id="success-ticket-details" style="text-align: left; font-size: 0.9rem; line-height: 1.8;">
+                        <!-- Injected via JS -->
+                    </div>
+                    
+                    <div class="ticket-divider"></div>
+                    
+                    <div style="font-size: 0.85rem; font-style: italic; color: var(--color-muted-gold); line-height: 1.6; margin-top: 16px;">
+                        Votre commande est prise en charge. Notre conseiller de Dakar va vous appeler par téléphone d'ici 30 minutes pour confirmer l'expédition.
+                    </div>
+                </div>
+
+                <!-- Receipt Actions Buttons -->
+                <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 32px;">
+                    <button class="btn btn-secondary" onclick="sendWhatsAppOrder()" style="padding: 14px 28px; display: flex; align-items: center; gap: 8px; background-color: #128c7e; color: #fff; border: none; border-radius: var(--border-radius-full);">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">chat</span>
+                        Confirmer sur WhatsApp
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadOrderAsText()" style="padding: 14px 28px; display: flex; align-items: center; gap: 8px;">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">description</span>
+                        Reçu (Texte)
+                    </button>
+                    <button class="btn btn-gold" onclick="downloadOrderAsPNG()" style="padding: 14px 28px; display: flex; align-items: center; gap: 8px;">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">image</span>
+                        Reçu (Image)
+                    </button>
+                    <a href="boutique.html" class="btn btn-primary" style="padding: 14px 36px; border-radius: var(--border-radius-full);">Continuer mes Achats</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Deletion Confirmation Modal -->
+    <div class="cart-delete-confirm-overlay" id="cart-delete-confirm-modal" onclick="closeCartDeleteConfirmModal(event)">
+        <div class="cart-delete-confirm-card" onclick="event.stopPropagation()">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+                <span class="material-symbols-outlined" style="font-size: 56px; color: var(--color-error); background-color: rgba(186,26,26,0.08); padding: 16px; border-radius: 50%;">warning</span>
+                <h3 class="font-serif text-headline-md" style="margin: 0; color: var(--color-deep-charcoal);">Retirer du panier</h3>
+                <p id="cart-delete-confirm-message" style="color: var(--color-soft-slate); font-size: 0.95rem; line-height: 1.5; margin: 0;"></p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px;">
+                <button class="btn btn-secondary" onclick="closeCartDeleteConfirmModal()" style="padding: 14px; border: 1px solid var(--color-border-subtle); border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; color: var(--color-soft-slate); background: transparent;">Annuler</button>
+                <button class="btn btn-primary" id="cart-delete-confirm-btn-action" style="padding: 14px; border: none; border-radius: var(--border-radius-md); background-color: var(--color-error); color: #fff; font-weight: 600; cursor: pointer;">Retirer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unified Footer -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div>
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique &amp; Services Logo" style="height: 64px; margin-bottom: 24px; width: auto; object-fit: contain;">
+                <p class="text-body-md" style="margin-bottom: 24px;">Expertise Optique d'Excellence et collections haut de gamme à votre service depuis 5 ans.</p>
+                <div class="footer-socials">
+                    <span class="material-symbols-outlined social-icon" id="soc-instagram">public</span>
+                    <span class="material-symbols-outlined social-icon" id="soc-share">share</span>
+                </div>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Navigation</h5>
+                <ul class="footer-links">
+                    <li><a href="index.html" class="footer-link">Accueil</a></li>
+                    <li><a href="boutique.html" class="footer-link">Boutique</a></li>
+                    <li><a href="services.html" class="footer-link">Nos Services</a></li>
+                    <li><a href="a-propos.html" class="footer-link">À Propos</a></li>
+                    <li><a href="contact.html" class="footer-link">Rendez-vous</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Contact &amp; Accès</h5>
+                <ul class="footer-links text-body-md">
+                    <li style="display: flex; gap: 12px; align-items: flex-start;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; margin-top: 4px; color: var(--color-muted-gold);">location_on</span>
+                        <span>Ouest Foire, Dakar, Sénégal</span>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: center;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-muted-gold);">call</span>
+                        <span>+221 78 681 15 26</span>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: center;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-muted-gold);">mail</span>
+                        <span>contact@mageoptique.fr</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Newsletter</h5>
+                <p class="text-body-md" style="margin-bottom: 20px;">Abonnez-vous pour recevoir les dernières collections de créateurs et des conseils de santé visuelle.</p>
+                <form onsubmit="event.preventDefault(); alert('Merci pour votre inscription à la newsletter Mage Optique &amp; Services !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
+                    <input type="email" placeholder="Votre adresse e-mail" style="flex-grow: 1; padding: 4px 0; color: var(--color-deep-charcoal); font-size: 0.95rem;" required id="news-email-input">
+                    <button type="submit" class="material-symbols-outlined" style="color: var(--color-muted-gold); cursor: pointer;" id="news-submit-btn">arrow_forward</button>
+                </form>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--color-border-subtle); margin-top: 64px; padding-top: 24px; text-align: center;">
+            <p class="text-caption">© 2026 Mage Optique &amp; Services. Expertise Optique d'Excellence. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- Core Scripting -->
+    <script src="js/db.js?v=3"></script>
+    <script src="js/main.js?v=7"></script>
+    
+    <script>
+        // Track the current success order object for download
+        let lastCreatedOrder = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCartPageContent();
+        });
+
+        function handleDeliveryChange() {
+            const mode = document.getElementById('delivery-mode').value;
+            const addressGroup = document.getElementById('delivery-address-group');
+            const addressInput = document.getElementById('client-address');
+            const shippingCost = document.getElementById('summary-shipping');
+            
+            if (mode === 'salon') {
+                addressGroup.style.display = 'none';
+                addressInput.removeAttribute('required');
+                shippingCost.textContent = '0 FCFA';
+            } else {
+                addressGroup.style.display = 'block';
+                addressInput.setAttribute('required', 'true');
+                shippingCost.textContent = '2 000 FCFA';
+            }
+            recalculateCartTotals();
+        }
+
+        function recalculateCartTotals() {
+            const cart = getCart();
+            const mode = document.getElementById('delivery-mode') ? document.getElementById('delivery-mode').value : 'delivery';
+            
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.quantity;
+            });
+            
+            let shipping = (mode === 'salon' || subtotal === 0) ? 0 : 2000;
+            let total = subtotal + shipping;
+            
+            const subtotalEl = document.getElementById('summary-subtotal');
+            const totalEl = document.getElementById('summary-total');
+            const shippingEl = document.getElementById('summary-shipping');
+            
+            if (subtotalEl) subtotalEl.textContent = formatFCFA(subtotal);
+            if (shippingEl) shippingEl.textContent = formatFCFA(shipping);
+            if (totalEl) totalEl.textContent = formatFCFA(total);
+            
+            return { subtotal, shipping, total };
+        }
+
+        function formatFCFA(val) {
+            return new Intl.NumberFormat('fr-FR').format(val) + " FCFA";
+        }
+
+        function renderCartPageContent() {
+            const cart = getCart();
+            
+            const emptyState = document.getElementById('cart-empty-state');
+            const activeState = document.getElementById('cart-active-state');
+            
+            if (cart.length === 0) {
+                emptyState.style.display = 'block';
+                activeState.style.display = 'none';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            activeState.style.display = 'grid';
+            
+            // Render checkout form directly
+            const clientName = localStorage.getItem('mage_optique_client_name') || '';
+            const email = localStorage.getItem('mage_optique_client_email') || '';
+            const phone = localStorage.getItem('mage_optique_client_phone') || '';
+            const address = localStorage.getItem('mage_optique_client_address') || '';
+            const checkoutContainer = document.getElementById('checkout-area-container');
+            
+            if (checkoutContainer) {
+                checkoutContainer.innerHTML = `
+                    <h3 class="font-serif text-headline-md" style="margin-bottom: 8px;">Informations de Commande</h3>
+                    <p class="text-body-md" style="color: var(--color-soft-slate); font-size: 0.9rem; margin-bottom: 32px;">Complétez vos coordonnées pour planifier la livraison instantanée de vos lunettes.</p>
+                    
+                    <form id="checkout-form" onsubmit="event.preventDefault(); handleCheckoutSubmit();">
+                        <div class="form-group">
+                            <label class="form-label" for="client-name">Nom complet</label>
+                            <input type="text" id="client-name" class="form-input" placeholder="ex. Abdoulaye Diop" value="${clientName}" required style="border-radius: var(--border-radius-md); border: 1px solid var(--color-border-subtle); padding: 12px;">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="client-email">Adresse e-mail</label>
+                            <input type="email" id="client-email" class="form-input" value="${email}" placeholder="ex. client@exemple.com" required style="border-radius: var(--border-radius-md); border: 1px solid var(--color-border-subtle); padding: 12px;">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="client-phone">Numéro de téléphone</label>
+                            <input type="tel" id="client-phone" class="form-input" value="${phone}" placeholder="ex. +221 77 555 12 34" required style="border-radius: var(--border-radius-md); border: 1px solid var(--color-border-subtle); padding: 12px;">
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label class="form-label" for="delivery-mode">Mode de retrait</label>
+                                <select id="delivery-mode" class="form-input" style="border-radius: var(--border-radius-md); border: 1px solid var(--color-border-subtle); padding: 12px; background-color: var(--color-background);" onchange="handleDeliveryChange()">
+                                    <option value="delivery">Livraison à domicile (Dakar)</option>
+                                    <option value="salon">Retrait gratuit au Salon</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="payment-mode">Mode de paiement</label>
+                                <select id="payment-mode" class="form-input" style="border-radius: var(--border-radius-md); border: 1px solid var(--color-border-subtle); padding: 12px; background-color: var(--color-background);">
+                                    <option value="Commander via WhatsApp">Commander via WhatsApp (Validation directe)</option>
+                                    <option value="Paiement à la livraison">Paiement à la livraison</option>
+                                    <option value="Wave">Wave</option>
+                                    <option value="Orange Money">Orange Money</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="delivery-address-group">
+                            <label class="form-label" for="client-address">Adresse complète de livraison</label>
+                            <textarea id="client-address" class="form-input" rows="3" placeholder="ex. Rue 4 Ouest Foire, en face de la gendarmerie, Dakar" required style="border-radius: var(--border-radius-md); border: 1px solid var(--color-border-subtle); padding: 12px; resize: none;">${address}</textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-gold" style="width: 100%; border: none; padding: 18px 0; font-size: 0.9rem; font-weight: bold; margin-top: 24px; display: flex; align-items: center; justify-content: center; gap: 8px;" id="order-submit-btn">
+                            <span class="material-symbols-outlined" style="font-size: 20px;">credit_card</span>
+                            Confirmer &amp; Valider la Commande
+                        </button>
+                    </form>
+                `;
+            }
+            
+            // Render cart items listing in summary card
+            const container = document.getElementById('cart-summary-items');
+            if (container) {
+                container.innerHTML = '';
+                cart.forEach(item => {
+                    const row = document.createElement('div');
+                    row.className = 'cart-item-row';
+                    row.innerHTML = `
+                        <div class="cart-item-img-container">
+                            <img src="${item.image}" alt="${item.title}" class="cart-item-img">
+                        </div>
+                        <div class="cart-item-details">
+                            <div class="cart-item-title">${item.title}</div>
+                            <div class="cart-item-price">${formatFCFA(item.price)}</div>
+                        </div>
+                        <div class="qty-selector">
+                            <button class="qty-btn" onclick="modifyQty('${item.id}', -1)">-</button>
+                            <span style="font-weight:600; font-size:0.95rem;">${item.quantity}</span>
+                            <button class="qty-btn" onclick="modifyQty('${item.id}', 1)">+</button>
+                        </div>
+                        <span class="material-symbols-outlined delete-btn" onclick="removeItem('${item.id}')">delete</span>
+                    `;
+                    container.appendChild(row);
+                });
+            }
+            recalculateCartTotals();
+        }
+
+
+
+        function modifyQty(id, delta) {
+            updateCartQuantity(id, delta);
+            renderCartPageContent();
+            // Re-render core layout headers
+            if (typeof renderCart === 'function') renderCart();
+        }
+
+        // Deletion modal custom state inside the client cart
+        let cartDeleteConfirmCallback = null;
+
+        function showCartDeleteConfirmModal(message, confirmCallback) {
+            document.getElementById('cart-delete-confirm-message').textContent = message;
+            cartDeleteConfirmCallback = confirmCallback;
+            const modal = document.getElementById('cart-delete-confirm-modal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function closeCartDeleteConfirmModal(e) {
+            const modal = document.getElementById('cart-delete-confirm-modal');
+            if (e ? e.target === modal : true) {
+                modal.classList.remove('show');
+                setTimeout(() => modal.style.display = 'none', 300);
+                cartDeleteConfirmCallback = null;
+            }
+        }
+
+        document.getElementById('cart-delete-confirm-btn-action').onclick = function() {
+            if (cartDeleteConfirmCallback) {
+                cartDeleteConfirmCallback();
+            }
+            closeCartDeleteConfirmModal();
+        };
+
+        function removeItem(id) {
+            showCartDeleteConfirmModal("Voulez-vous retirer cette monture de votre panier ?", function() {
+                removeFromCart(id);
+                renderCartPageContent();
+                if (typeof renderCart === 'function') renderCart();
+            });
+        }
+
+        async function handleCheckoutSubmit() {
+            const cart = getCart();
+            if (cart.length === 0) return;
+            
+            const name = document.getElementById('client-name').value.trim();
+            const email = document.getElementById('client-email').value.trim().toLowerCase();
+            const phone = document.getElementById('client-phone').value.trim();
+            const mode = document.getElementById('delivery-mode').value;
+            const address = mode === 'salon' ? 'Retrait en salon' : document.getElementById('client-address').value.trim();
+            const payment = document.getElementById('payment-mode').value;
+            
+            // Save coordinates to localStorage for frictionless future purchases
+            localStorage.setItem('mage_optique_client_name', name);
+            localStorage.setItem('mage_optique_client_email', email);
+            localStorage.setItem('mage_optique_client_phone', phone);
+            if (mode !== 'salon') {
+                localStorage.setItem('mage_optique_client_address', address);
+            }
+            
+            const totals = recalculateCartTotals();
+            
+            const orderData = {
+                name,
+                email,
+                phone,
+                address,
+                payment,
+                items: cart,
+                subtotal: totals.subtotal,
+                shipping: totals.shipping,
+                total: totals.total
+            };
+            
+            // Add order to local database
+            if (typeof addOrder === 'function') {
+                lastCreatedOrder = await addOrder(orderData);
+            } else {
+                lastCreatedOrder = {
+                    ...orderData,
+                    id: 'order-' + Date.now(),
+                    date: new Date().toISOString().split('T')[0]
+                };
+            }
+            
+            // Clear cart from local storage
+            localStorage.setItem('mage_optique_services_cart', JSON.stringify([]));
+            if (typeof updateHeaderBadges === 'function') updateHeaderBadges();
+            if (typeof renderCart === 'function') renderCart();
+            
+            // Show Success screen
+            document.getElementById('cart-active-state').style.display = 'none';
+            document.getElementById('cart-page-title').textContent = "Merci pour votre Commande";
+            document.getElementById('cart-page-subtitle').textContent = "Votre commande d'excellence a bien été enregistrée.";
+            
+            const detailsContainer = document.getElementById('success-ticket-details');
+            
+            let itemsListHtml = '';
+            cart.forEach(item => {
+                itemsListHtml += `
+                    <div style="display:flex; justify-content:space-between; font-size:0.85rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:6px 0;">
+                        <span>${item.title} <strong style="color:var(--color-muted-gold);">x${item.quantity}</strong></span>
+                        <span>${formatFCFA(item.price * item.quantity)}</span>
+                    </div>
+                `;
+            });
+            
+            detailsContainer.innerHTML = `
+                <div style="font-family:monospace; font-size:0.85rem; color:var(--color-muted-gold); text-align:center; font-weight:bold; margin-bottom:16px;">
+                    NUMÉRO DE COMMANDE : ${lastCreatedOrder.id.toUpperCase()}
+                </div>
+                <div style="margin-bottom: 12px; font-family:'Playfair Display'; font-size:1.15rem; color:#fff;">
+                    Client : ${lastCreatedOrder.name}
+                </div>
+                <div style="margin-bottom: 16px; opacity:0.8; font-size:0.85rem;">
+                    <p><strong>Téléphone :</strong> ${lastCreatedOrder.phone}</p>
+                    <p><strong>E-mail :</strong> ${lastCreatedOrder.email}</p>
+                    <p><strong>Mode de Retrait :</strong> ${mode === 'salon' ? 'Retrait au salon' : 'Livraison à domicile'}</p>
+                    ${mode !== 'salon' ? `<p><strong>Adresse de livraison :</strong> ${lastCreatedOrder.address}</p>` : ''}
+                    <p><strong>Paiement choisi :</strong> ${lastCreatedOrder.payment}</p>
+                    <p><strong>Date d'achat :</strong> ${lastCreatedOrder.date}</p>
+                </div>
+                
+                <div class="ticket-divider"></div>
+                <div style="margin-bottom:12px; font-weight:bold; color:var(--color-muted-gold); font-size:0.8rem; text-transform:uppercase;">Articles Commandés</div>
+                ${itemsListHtml}
+                
+                <div class="ticket-divider"></div>
+                <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.1rem; color:#fff;">
+                    <span>TOTAL PAYÉ :</span>
+                    <span style="color:var(--color-muted-gold);">${formatFCFA(lastCreatedOrder.total)}</span>
+                </div>
+            `;
+            
+            document.getElementById('cart-success-state').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Auto trigger WhatsApp redirect if selected
+            if (payment === 'Commander via WhatsApp') {
+                sendWhatsAppOrder();
+            }
+        }
+
+        function sendWhatsAppOrder() {
+            if (!lastCreatedOrder) return;
+            
+            let waItemsText = '';
+            lastCreatedOrder.items.forEach((item, idx) => {
+                waItemsText += `${idx + 1}. ${item.title} (x${item.quantity}) - ${formatFCFA(item.price * item.quantity)}\n`;
+            });
+            
+            const isSalon = lastCreatedOrder.address === 'Retrait en salon';
+            const mode = isSalon ? 'Retrait en salon Mage' : 'Livraison à domicile (Dakar)';
+            
+            const waMessage = 
+`📦 MAGE OPTIQUE & SERVICES — NOUVELLE COMMANDE
+
+NUMÉRO DE COMMANDE : ${lastCreatedOrder.id.toUpperCase()}
+Date : ${lastCreatedOrder.date}
+
+👤 CLIENT :
+- Nom : ${lastCreatedOrder.name}
+- Téléphone : ${lastCreatedOrder.phone}
+- E-mail : ${lastCreatedOrder.email}
+
+📍 EXPÉDITION / RETRAIT :
+- Mode : ${mode}
+${!isSalon ? `- Adresse : ${lastCreatedOrder.address}\n` : ''}
+💰 RÈGLEMENT :
+- Mode choisi : Commander via WhatsApp (Validation directe)
+- Sous-total : ${formatFCFA(lastCreatedOrder.subtotal)}
+- Frais de livraison : ${formatFCFA(lastCreatedOrder.shipping)}
+--------------------------------------------------
+🛒 ARTICLES COMMANDÉS :
+${waItemsText}--------------------------------------------------
+💵 MONTANT TOTAL À PAYER : ${formatFCFA(lastCreatedOrder.total)}
+
+* Je souhaite confirmer ma commande et finaliser mon paiement (Wave / Orange Money). Merci de me recontacter pour la livraison.`;
+
+            const waUrl = `https://api.whatsapp.com/send?phone=221786811526&text=${encodeURIComponent(waMessage)}`;
+            window.open(waUrl, '_blank');
+        }
+
+        // Action download order ticket as Text
+        function downloadOrderAsText() {
+            if (!lastCreatedOrder) return;
+            
+            let itemsText = '';
+            lastCreatedOrder.items.forEach(item => {
+                itemsText += `- ${item.title} (x${item.quantity}) : ${formatFCFA(item.price * item.quantity)}\n`;
+            });
+            
+            const textContent = 
+`==================================================
+              MAGE OPTIQUE & SERVICES             
+               REÇU DE COMMANDE CLIENT            
+==================================================
+
+📦 ID COMMANDE : ${lastCreatedOrder.id.toUpperCase()}
+📅 DATE        : ${lastCreatedOrder.date}
+👤 CLIENT      : ${lastCreatedOrder.name}
+📞 TÉLÉPHONE  : ${lastCreatedOrder.phone}
+✉️ E-MAIL      : ${lastCreatedOrder.email}
+
+📍 RETRAIT / LIVRAISON :
+${lastCreatedOrder.address}
+
+💰 MODE DE PAIEMENT :
+${lastCreatedOrder.payment}
+
+--------------------------------------------------
+🛒 ARTICLES COMMANDÉS :
+${itemsText}
+--------------------------------------------------
+💰 RÈGLEMENT FINANCIER :
+- Sous-total : ${formatFCFA(lastCreatedOrder.subtotal)}
+- Frais de livraison : ${formatFCFA(lastCreatedOrder.shipping)}
+==================================================
+MONTANT TOTAL PAYÉ : ${formatFCFA(lastCreatedOrder.total)}
+==================================================
+
+* Notre équipe de Dakar vous contactera par téléphone pour finaliser l'expédition.
+* Merci pour votre confiance en Mage Optique & Services d'Excellence.
+==================================================`;
+
+            const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Recu-Mage-Optique-${lastCreatedOrder.id.toUpperCase()}.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Action download order ticket as PNG image with a premium double gold border canvas
+        function downloadOrderAsPNG() {
+            if (!lastCreatedOrder) return;
+            
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = 520;
+            tempCanvas.height = 700;
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            // Background
+            const grad = tempCtx.createLinearGradient(0, 0, 0, tempCanvas.height);
+            grad.addColorStop(0, '#121212');
+            grad.addColorStop(1, '#252525');
+            tempCtx.fillStyle = grad;
+            tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            
+            // Double gold border
+            tempCtx.strokeStyle = '#C5A059';
+            tempCtx.lineWidth = 2;
+            tempCtx.strokeRect(20, 20, tempCanvas.width - 40, tempCanvas.height - 40);
+            tempCtx.strokeRect(26, 26, tempCanvas.width - 52, tempCanvas.height - 52);
+            
+            // Header
+            tempCtx.fillStyle = '#C5A059';
+            tempCtx.font = 'bold 20px serif';
+            tempCtx.textAlign = 'center';
+            tempCtx.fillText('MAGE OPTIQUE & SERVICES', tempCanvas.width / 2, 70);
+            
+            tempCtx.fillStyle = '#ffffff';
+            tempCtx.font = '9px sans-serif';
+            tempCtx.fillText('REÇU DE COMMANDE CLIENT D\'EXCELLENCE', tempCanvas.width / 2, 95);
+            
+            // Divider
+            tempCtx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+            tempCtx.lineWidth = 1;
+            tempCtx.beginPath();
+            tempCtx.moveTo(40, 120);
+            tempCtx.lineTo(tempCanvas.width - 40, 120);
+            tempCtx.stroke();
+            
+            // Order ID
+            tempCtx.fillStyle = '#C5A059';
+            tempCtx.font = 'bold 12px monospace';
+            tempCtx.fillText(`ID COMMANDE : ${lastCreatedOrder.id.toUpperCase()}`, tempCanvas.width / 2, 145);
+            
+            // Client details
+            tempCtx.textAlign = 'left';
+            tempCtx.fillStyle = '#ffffff';
+            tempCtx.font = '13px sans-serif';
+            let y = 190;
+            tempCtx.fillText(`CLIENT :       ${lastCreatedOrder.name.toUpperCase()}`, 50, y);
+            tempCtx.fillText(`TÉLÉPHONE :    ${lastCreatedOrder.phone}`, 50, y + 25);
+            tempCtx.fillText(`E-MAIL :       ${lastCreatedOrder.email}`, 50, y + 50);
+            tempCtx.fillText(`PAIEMENT :     ${lastCreatedOrder.payment.toUpperCase()}`, 50, y + 75);
+            
+            const isSalon = lastCreatedOrder.address === 'Retrait en salon';
+            tempCtx.fillText(`RETRAIT :      ${isSalon ? 'Retrait en salon Mage' : 'Livraison à domicile'}`, 50, y + 100);
+            if (!isSalon) {
+                // Handle text wrapping for address
+                tempCtx.fillText('ADRESSE :', 50, y + 125);
+                tempCtx.font = 'italic 11px sans-serif';
+                tempCtx.fillStyle = 'rgba(255,255,255,0.7)';
+                const words = lastCreatedOrder.address.split(' ');
+                let line = '';
+                let addrY = y + 125;
+                let wordCount = 0;
+                
+                for (let n = 0; n < words.length; n++) {
+                    let testLine = line + words[n] + ' ';
+                    let metrics = tempCtx.measureText(testLine);
+                    let testWidth = metrics.width;
+                    if (testWidth > 320 && n > 0) {
+                        tempCtx.fillText(line, 140, addrY);
+                        line = words[n] + ' ';
+                        addrY += 18;
+                        wordCount++;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                tempCtx.fillText(line, 140, addrY);
+                y = addrY - 125 + y; // adjust y position based on address rows
+            }
+            
+            // Divider
+            tempCtx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+            tempCtx.beginPath();
+            tempCtx.moveTo(40, y + 140);
+            tempCtx.lineTo(tempCanvas.width - 40, y + 140);
+            tempCtx.stroke();
+            
+            // Items header
+            tempCtx.textAlign = 'center';
+            tempCtx.fillStyle = '#C5A059';
+            tempCtx.font = 'bold 11px sans-serif';
+            tempCtx.fillText('ARTICLES COMMANDÉS', tempCanvas.width / 2, y + 165);
+            
+            // Items list
+            tempCtx.font = '12px sans-serif';
+            let itemY = y + 195;
+            lastCreatedOrder.items.forEach(item => {
+                tempCtx.textAlign = 'left';
+                tempCtx.fillStyle = '#ffffff';
+                tempCtx.fillText(`${item.title} (x${item.quantity})`, 50, itemY);
+                
+                tempCtx.textAlign = 'right';
+                tempCtx.fillStyle = '#C5A059';
+                tempCtx.fillText(formatFCFA(item.price * item.quantity), tempCanvas.width - 50, itemY);
+                
+                itemY += 24;
+            });
+            
+            // Divider
+            tempCtx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+            tempCtx.beginPath();
+            tempCtx.moveTo(40, itemY + 10);
+            tempCtx.lineTo(tempCanvas.width - 40, itemY + 10);
+            tempCtx.stroke();
+            
+            // Total
+            tempCtx.textAlign = 'left';
+            tempCtx.fillStyle = '#ffffff';
+            tempCtx.font = 'bold 15px sans-serif';
+            tempCtx.fillText('MONTANT TOTAL PAYÉ :', 50, itemY + 45);
+            
+            tempCtx.textAlign = 'right';
+            tempCtx.fillStyle = '#C5A059';
+            tempCtx.font = 'bold 18px sans-serif';
+            tempCtx.fillText(formatFCFA(lastCreatedOrder.total), tempCanvas.width - 50, itemY + 45);
+            
+            // Footer
+            tempCtx.textAlign = 'center';
+            tempCtx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            tempCtx.font = '8px sans-serif';
+            tempCtx.fillText('MERCI POUR VOTRE ACHAT D\'EXCELLENCE CHEZ MAGE OPTIQUE', tempCanvas.width / 2, tempCanvas.height - 50);
+            
+            tempCtx.fillStyle = '#C5A059';
+            tempCtx.font = 'italic 10px serif';
+            tempCtx.fillText('Dakar, Sénégal — +221 78 681 15 26 — contact@mageoptique.fr', tempCanvas.width / 2, tempCanvas.height - 35);
+            
+            // Download trigger
+            try {
+                const url = tempCanvas.toDataURL('image/png');
+                const downloadLink = document.createElement('a');
+                downloadLink.download = `Recu-Mage-Optique-${lastCreatedOrder.id.toUpperCase()}.png`;
+                downloadLink.href = url;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            } catch (err) {
+                console.error("Canvas export failed:", err);
+                downloadOrderAsText();
+            }
+        }
+    </script>
+</body>
+</html>

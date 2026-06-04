@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Essai virtuel de lunettes de soleil et de vue en direct. Découvrez la monture artisanale Mage Optique &amp; Services avec notre module d'essai caméra intelligent.">
+    <title>Essai Virtuel &amp; Détails Produit | Mage Optique &amp; Services | Signature</title>
+    
+    <!-- Google Fonts & Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet">
+    
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="css/style.css?v=3">
+    
+    <style>
+        .product-detail-img-container {
+            background-color: var(--color-surface-container);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--border-radius-lg);
+            height: 480px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            transition: var(--transition-smooth);
+        }
+        .product-detail-img-container:hover {
+            box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+            border-color: rgba(197, 160, 89, 0.3);
+        }
+        .product-detail-img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .product-detail-img-container:hover .product-detail-img {
+            transform: scale(1.06);
+        }
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--color-border-subtle);
+            font-size: 0.95rem;
+        }
+        .spec-item span:first-child {
+            flex-shrink: 0;
+        }
+        .spec-item span:last-child {
+            text-align: right;
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+            color: var(--color-soft-slate);
+        }
+        @media (max-width: 768px) {
+            .product-detail-img-container {
+                height: 320px;
+            }
+        }
+        @media (max-width: 480px) {
+            .product-detail-img-container {
+                height: 240px;
+                padding: 20px;
+            }
+        }
+        @media (max-width: 576px) {
+            /* Layout Actions - Clean alignment & Shorter length */
+            .detail-actions-container {
+                display: grid !important;
+                grid-template-columns: 220px 48px !important;
+                gap: 12px !important;
+                justify-content: start !important;
+            }
+            .detail-actions-container > a {
+                grid-column: span 2 !important;
+                width: 280px !important;
+                margin: 0 !important;
+            }
+            .detail-actions-container > button,
+            .detail-actions-container > a {
+                padding: 12px 0 !important;
+                font-size: 0.8rem !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+            #product-detail-fav-btn {
+                width: 48px !important;
+                height: 48px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Unified Header / TopAppBar -->
+    <header class="top-header glass-effect">
+        <div class="container nav-bar">
+            <a href="index.html" class="nav-logo" id="logo-link">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique &amp; Services Logo" class="logo-img">
+                <span class="logo-text font-serif">Mage Optique &amp; Services</span>
+            </a>
+            
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Accueil</a>
+                <a href="boutique.html" class="nav-link">Boutique</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="a-propos.html" class="nav-link">À Propos</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </nav>
+            
+            <div class="nav-actions">
+                <a href="boutique.html" class="material-symbols-outlined icon-btn" id="search-nav-btn">search</a>
+                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre liste de favoris est vide.')" id="fav-nav-btn">favorite</span>
+                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre panier Mage Optique &amp; Services est vide.')" id="cart-nav-btn">shopping_bag</span>
+                <a href="connexion.html" class="material-symbols-outlined icon-btn" id="login-nav-btn">person</a>
+                <span class="mobile-nav-toggle material-symbols-outlined" id="menu-toggle-btn">menu</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Menu -->
+    <div class="mobile-menu-overlay" id="drawer-overlay"></div>
+    <div class="mobile-menu" id="drawer-menu">
+        <div class="mobile-menu-header">
+            <span class="font-serif text-headline-md">Mage Optique &amp; Services</span>
+            <span class="material-symbols-outlined icon-btn close-menu" id="close-menu-btn">close</span>
+        </div>
+        <nav class="mobile-nav-links">
+            <a href="index.html" class="mobile-nav-link">Accueil</a>
+            <a href="boutique.html" class="mobile-nav-link">Boutique</a>
+            <a href="services.html" class="mobile-nav-link">Services</a>
+            <a href="a-propos.html" class="mobile-nav-link">À Propos</a>
+            <a href="contact.html" class="mobile-nav-link">Contact</a>
+            <a href="connexion.html" class="mobile-nav-link">Connexion</a>
+        </nav>
+    </div>
+
+    <!-- Main Container -->
+    <main style="padding-top: 80px;">
+
+        <section class="section-padding container animate-fade-in">
+            <div class="grid-cols-12" style="gap: 48px; align-items: center;">
+                <!-- Product Media panel left -->
+                <div class="col-span-6">
+                    <div class="product-detail-img-container">
+                        <img id="product-detail-img" src="" alt="" class="product-detail-img">
+                    </div>
+                </div>
+
+                <!-- Product Specifications right -->
+                <div class="col-span-6" style="display: flex; flex-direction: column;">
+                    <span class="text-label-md" id="product-detail-category" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block; text-transform: uppercase;"></span>
+                    <h1 class="text-display-lg" id="product-detail-title" style="font-size: 2.5rem; margin-bottom: 8px; font-family: var(--font-serif);"></h1>
+                    <div>
+                        <span class="text-label-md" id="product-detail-tag" style="background-color: var(--color-gold-tint); color: var(--color-muted-gold); padding: 4px 12px; border-radius: var(--border-radius-sm); align-self: flex-start; font-size: 0.7rem; margin-bottom: 24px; display: inline-block;"></span>
+                    </div>
+                    
+                    <div style="font-size: 1.75rem; font-weight: 700; color: var(--color-deep-charcoal); margin-bottom: 24px;" id="product-detail-price"></div>
+                    
+                    <p class="text-body-md" style="margin-bottom: 32px; line-height: 1.6;" id="product-detail-desc"></p>
+
+                    <div style="display: flex; gap: 16px; margin-bottom: 40px; align-items: center;" class="detail-actions-container">
+                        <button class="btn btn-primary" id="product-detail-add-btn" style="flex-grow: 1; padding: 18px 0;">Ajouter au Panier</button>
+                        <button class="btn btn-secondary" id="product-detail-fav-btn" style="width: 56px; height: 56px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: var(--border-radius-md); border: 1px solid var(--color-border-subtle);">
+                            <span class="material-symbols-outlined" style="font-size: 24px; display: inline-block; vertical-align: middle;">favorite</span>
+                        </button>
+                        <a href="contact.html" class="btn btn-secondary" style="flex-grow: 1; padding: 18px 0; display: flex; align-items: center; justify-content: center; text-decoration: none;">Prendre RDV en Salon</a>
+                    </div>
+
+                    <!-- Technical Specs -->
+                    <div>
+                        <h4 class="text-label-md" style="border-bottom: 2px solid var(--color-deep-charcoal); padding-bottom: 8px; margin-bottom: 8px; color: var(--color-deep-charcoal);">Fiche Technique</h4>
+                        <div id="product-detail-specs-list">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Virtual Try-On Section -->
+        <section class="section-padding container animate-fade-in" style="padding-top: 0; padding-bottom: 48px;">
+            <div style="margin-bottom: 32px; text-align: left;">
+                <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block; text-transform: uppercase;">Ajustement Virtuel en Direct</span>
+                <h2 class="font-serif text-headline-lg" style="font-size: 2rem;">Essai Virtuel 3D</h2>
+            </div>
+            
+            <div class="grid-cols-12" style="gap: 48px; align-items: start;">
+                <!-- Live Try-On Workspace (Left Column) -->
+                <div class="col-span-7">
+                    <div class="tryon-container">
+                        <!-- Video Feed (hidden by default) -->
+                        <video id="tryon-video" class="tryon-video" autoplay playsinline muted style="display: none;"></video>
+                        
+                        <!-- Overlay Canvas for Drawing Webcam Feed / Portrait + Sunglasses -->
+                        <canvas id="tryon-canvas" class="tryon-overlay-canvas" width="640" height="480"></canvas>
+                        
+                        <!-- Fallback Screen before Cam Activation or Photo Upload -->
+                        <div class="tryon-fallback">
+                            <span class="material-symbols-outlined" style="font-size: 64px; color: var(--color-muted-gold); margin-bottom: 20px;">face</span>
+                            <h3 class="font-serif text-headline-md" style="color: #fff; margin-bottom: 12px;">Activez votre Essai Virtuel</h3>
+                            <p class="text-body-md" style="color: var(--color-soft-slate); max-width: 440px; margin-bottom: 28px; font-size: 0.95rem;">Visualisez cette monture sur votre visage en direct avec votre webcam ou en important un portrait photo.</p>
+                            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                                <button id="start-cam-btn" class="btn btn-gold" style="padding: 12px 24px; font-size: 0.8rem; font-weight: bold; border: none; display: flex; align-items: center; gap: 8px;">
+                                    <span class="material-symbols-outlined" style="font-size: 20px;">videocam</span>
+                                    Activer la Caméra
+                                </button>
+                                <button id="upload-photo-btn" class="btn btn-secondary" style="padding: 12px 24px; font-size: 0.8rem; font-weight: bold; border-color: rgba(255,255,255,0.3); color: #fff; display: flex; align-items: center; gap: 8px;">
+                                    <span class="material-symbols-outlined" style="font-size: 20px;">upload</span>
+                                    Importer une Photo
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Viewfinder Calibration Guides -->
+                        <div id="tryon-viewfinder" class="tryon-viewfinder">
+                            <div class="viewfinder-corner viewfinder-corner-tl"></div>
+                            <div class="viewfinder-corner viewfinder-corner-tr"></div>
+                            <div class="viewfinder-corner viewfinder-corner-bl"></div>
+                            <div class="viewfinder-corner viewfinder-corner-br"></div>
+                            <div class="viewfinder-crosshairs"></div>
+                            <div class="viewfinder-instruction">Faites glisser les lunettes pour ajuster la position</div>
+                        </div>
+                        
+                        <!-- Flash effect overlay -->
+                        <div id="tryon-flash" class="tryon-flash"></div>
+                    </div>
+                </div>
+                
+                <!-- Controls and Fine-Tuning panel (Right Column) -->
+                <div class="col-span-5" style="display: flex; flex-direction: column; gap: 24px;">
+                    <div class="luxury-card" style="padding: 32px; background-color: #faf9f6; border-color: rgba(197, 160, 89, 0.25);">
+                        <h4 class="font-serif text-headline-md" style="font-size: 1.25rem; margin-bottom: 8px; border-bottom: 2px solid var(--color-deep-charcoal); padding-bottom: 8px;">Contrôles de précision</h4>
+                        <p class="text-caption" style="margin-bottom: 20px;">Ajustez manuellement la monture en la faisant glisser sur l'écran ou en utilisant les curseurs ci-dessous.</p>
+                        
+                        <div id="tryon-controls-panel" class="tryon-controls-panel" style="margin-top: 0; background: transparent; padding: 0; border: none; box-shadow: none; display: flex;">
+                            <div style="display: flex; flex-direction: column; gap: 20px; width: 100%;">
+                                <div class="control-row">
+                                    <span class="material-symbols-outlined control-label-icon" style="font-size: 22px;">zoom_in</span>
+                                    <input type="range" id="tryon-scale" class="tryon-slider" min="0.5" max="2.0" step="0.05" value="1.0" style="width: 100%;">
+                                </div>
+                                <div class="control-row">
+                                    <span class="material-symbols-outlined control-label-icon" style="font-size: 22px;">rotate_right</span>
+                                    <input type="range" id="tryon-rotate" class="tryon-slider" min="-90" max="90" step="1" value="0" style="width: 100%;">
+                                </div>
+                                <div style="display: flex; gap: 12px; margin-top: 16px; width: 100%;">
+                                    <button id="tryon-reset-btn" class="tryon-action-btn" style="flex: 1; padding: 14px 0; font-size: 0.8rem; display: flex; justify-content: center; gap: 8px;">
+                                        <span class="material-symbols-outlined" style="font-size: 18px;">restart_alt</span>
+                                        Réinitialiser
+                                    </button>
+                                    <button id="tryon-snap-btn" class="tryon-action-btn btn-gold" style="flex: 1.5; padding: 14px 0; font-size: 0.8rem; font-weight: bold; border: none; display: flex; justify-content: center; gap: 8px;">
+                                        <span class="material-symbols-outlined" style="font-size: 18px;">photo_camera</span>
+                                        Prendre Photo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Related Products Section -->
+        <section class="section-padding container animate-fade-in" style="padding-top: 48px; border-top: 1px solid var(--color-border-subtle); margin-top: 64px;">
+            <div style="margin-bottom: 40px; text-align: left;">
+                <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block; text-transform: uppercase;">Sélection de Prestige</span>
+                <h2 class="font-serif text-headline-lg" style="font-size: 2rem;">Produits Similaires</h2>
+            </div>
+            
+            <div class="grid-cols-12" id="related-products-grid" style="row-gap: 48px;">
+                <!-- Injected via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Unified Footer -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div>
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique &amp; Services Logo" style="height: 64px; margin-bottom: 24px; width: auto; object-fit: contain;">
+                <p class="text-body-md" style="margin-bottom: 24px;">Expertise Optique d'Excellence et collections haut de gamme à votre service depuis 5 ans.</p>
+                <div class="footer-socials">
+                    <span class="material-symbols-outlined social-icon" id="soc-instagram">public</span>
+                    <span class="material-symbols-outlined social-icon" id="soc-share">share</span>
+                </div>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Navigation</h5>
+                <ul class="footer-links">
+                    <li><a href="index.html" class="footer-link">Accueil</a></li>
+                    <li><a href="boutique.html" class="footer-link">Boutique</a></li>
+                    <li><a href="services.html" class="footer-link">Nos Services</a></li>
+                    <li><a href="a-propos.html" class="footer-link">À Propos</a></li>
+                    <li><a href="contact.html" class="footer-link">Rendez-vous</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Contact &amp; Accès</h5>
+                <ul class="footer-links text-body-md">
+                    <li style="display: flex; gap: 12px; align-items: flex-start;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; margin-top: 4px; color: var(--color-muted-gold);">location_on</span>
+                        <span>Ouest Foire, Dakar, Sénégal</span>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: center;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-muted-gold);">call</span>
+                        <span>+221 78 681 15 26</span>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: center;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-muted-gold);">mail</span>
+                        <span>contact@mageoptique.fr</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Newsletter</h5>
+                <p class="text-body-md" style="margin-bottom: 20px;">Abonnez-vous pour recevoir les dernières collections de créateurs et des conseils de santé visuelle.</p>
+                <form onsubmit="event.preventDefault(); alert('Merci pour votre inscription à la newsletter Mage Optique &amp; Services !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
+                    <input type="email" placeholder="Votre adresse e-mail" style="flex-grow: 1; padding: 4px 0; color: var(--color-deep-charcoal); font-size: 0.95rem;" required id="news-email-input">
+                    <button type="submit" class="material-symbols-outlined" style="color: var(--color-muted-gold); cursor: pointer;" id="news-submit-btn">arrow_forward</button>
+                </form>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--color-border-subtle); margin-top: 64px; padding-top: 24px; text-align: center;">
+            <p class="text-caption">Â© 2026 Mage Optique &amp; Services. Expertise Optique d'Excellence. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- Interactive Sidebar Concierge -->
+    <div style="position: fixed; bottom: 32px; right: 32px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 16px;">
+        <div id="concierge-message" class="glass-effect" style="display: none; padding: 12px 20px; border-radius: var(--border-radius-lg); font-size: 0.875rem; font-weight: 500; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-color: var(--color-muted-gold); animation: fadeIn 0.3s ease-out; max-width: 240px; color: var(--color-deep-charcoal);">
+            Besoin d'un conseil ? Chattez avec l'un de nos visagistes en direct.
+        </div>
+        <button onclick="alert('L\'assistant conseil Mage Optique &amp; Services est en cours d\'initialisation...')" onmouseover="document.getElementById('concierge-message').style.display='block'" onmouseout="document.getElementById('concierge-message').style.display='none'" class="flex-center" style="width: 56px; height: 56px; border-radius: var(--border-radius-full); background-color: var(--color-deep-charcoal); color: var(--color-paper-white); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; transition: var(--transition-fast);" id="concierge-floating-btn">
+            <span class="material-symbols-outlined" style="font-size: 28px;">chat</span>
+        </button>
+    </div>
+
+    <!-- Core Scripting & Database integration -->
+    <script src="js/db.js?v=3"></script>
+    <script src="js/main.js?v=7"></script>
+    <script>
+        function initDetails() {
+            const products = getProducts();
+            if (!products || products.length === 0) {
+                alert("La boutique est vide. Redirection vers la page boutique.");
+                window.location.href = 'boutique.html';
+                return;
+            }
+
+            // Get product ID from URL query parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            
+            let product = products.find(p => p.id === productId);
+            if (!product) {
+                product = products[0];
+            }
+
+            // Set canvas default frame for Try-On
+            const tryonCanvas = document.getElementById('tryon-canvas');
+            if (tryonCanvas && product.image) {
+                tryonCanvas.setAttribute('data-default-frame', product.image);
+            }
+
+            // Render main product details
+            const detailImg = document.getElementById('product-detail-img');
+            const detailCategory = document.getElementById('product-detail-category');
+            const detailTitle = document.getElementById('product-detail-title');
+            const detailTag = document.getElementById('product-detail-tag');
+            const detailPrice = document.getElementById('product-detail-price');
+            const detailDesc = document.getElementById('product-detail-desc');
+            const addBtn = document.getElementById('product-detail-add-btn');
+            const favBtn = document.getElementById('product-detail-fav-btn');
+
+            if (detailImg) {
+                detailImg.src = product.image;
+                detailImg.alt = product.title;
+            }
+
+            if (detailCategory) {
+                const catLabels = {
+                    premium: "Édition Limitée - Prestige",
+                    vue: "Nouveautés - Lunettes de vue",
+                    solaire: "Solaires - Protection Haute Définition",
+                    enfant: "Enfants - Collection Junior"
+                };
+                detailCategory.textContent = catLabels[product.category] || product.category;
+            }
+
+            if (detailTitle) {
+                detailTitle.textContent = product.title;
+            }
+
+            if (detailTag) {
+                detailTag.textContent = product.tag;
+                if (!product.tag) {
+                    detailTag.style.display = 'none';
+                } else {
+                    detailTag.style.display = 'inline-block';
+                }
+            }
+
+            if (detailPrice) {
+                detailPrice.textContent = new Intl.NumberFormat('fr-FR').format(product.price) + " FCFA";
+            }
+
+            if (detailDesc) {
+                detailDesc.innerHTML = product.desc;
+            }
+
+            // Set cart button attributes
+            if (addBtn) {
+                addBtn.setAttribute('onclick', `addToCartMockup('${product.id}')`);
+            }
+
+            // Set favorite button attributes
+            if (favBtn) {
+                favBtn.setAttribute('onclick', `toggleFavoriteMockup(this, '${product.id}')`);
+                favBtn.setAttribute('data-product-id', product.id);
+            }
+
+            // Populate Technical specs
+            const specsContainer = document.getElementById('product-detail-specs-list');
+            if (specsContainer) {
+                const isSolaire = product.category === 'solaire';
+                specsContainer.innerHTML = `
+                    <div class="spec-item">
+                        <span style="font-weight: 600;">Monture / Style</span>
+                        <span style="color: var(--color-soft-slate);">${product.specs}</span>
+                    </div>
+                    <div class="spec-item">
+                        <span style="font-weight: 600;">Provenance</span>
+                        <span style="color: var(--color-soft-slate);">Artisans Lunetiers - Sénégal</span>
+                    </div>
+                    <div class="spec-item">
+                        <span style="font-weight: 600;">Verres inclus</span>
+                        <span style="color: var(--color-soft-slate);">${isSolaire ? "Polarisés UV400 Protecteurs" : "Démonstration (Ajustables en salon)"}</span>
+                    </div>
+                    <div class="spec-item">
+                        <span style="font-weight: 600;">Garantie Exclusive</span>
+                        <span style="color: var(--color-soft-slate);">2 ans (Assistance &amp; Ajustements)</span>
+                    </div>
+                `;
+            }
+
+            // Render related products grid
+            const relatedGrid = document.getElementById('related-products-grid');
+            if (relatedGrid) {
+                relatedGrid.innerHTML = '';
+                
+                // Find products of same category or gender, excluding current product
+                let related = products
+                    .filter(p => p.id !== product.id)
+                    .filter(p => p.category === product.category || p.gender === product.gender);
+                
+                // Fallback to other products if we don't have enough matching
+                if (related.length < 3) {
+                    const existingIds = related.map(p => p.id);
+                    const fallbacks = products
+                        .filter(p => p.id !== product.id && !existingIds.includes(p.id));
+                    related.push(...fallbacks);
+                }
+                
+                // Limit to exactly 3 items
+                related = related.slice(0, 3);
+
+                related.forEach(p => {
+                    const col = document.createElement('div');
+                    col.className = 'product-card col-span-4 animate-fade-in';
+                    
+                    let tagStyle = '';
+                    if (p.category === 'solaire') tagStyle = 'style="background-color: var(--color-deep-charcoal);"';
+                    
+                    const isFav = typeof getFavorites === 'function' ? getFavorites().includes(p.id) : false;
+                    const favStyle = isFav ? 'style="color: red; top: 40px; right: 40px; z-index: 10;"' : 'style="top: 40px; right: 40px; z-index: 10;"';
+                    const favClass = isFav ? 'material-symbols-outlined product-favorite active-favorite' : 'material-symbols-outlined product-favorite';
+
+                    col.innerHTML = `
+                        <div class="product-img-wrapper" onclick="location.href='details.html?id=${p.id}'">
+                            <div class="product-tag" ${tagStyle}>${p.tag}</div>
+                            <img src="${p.image}" alt="${p.title}" class="product-img">
+                        </div>
+                        <span class="${favClass}" ${favStyle} data-product-id="${p.id}" onclick="event.stopPropagation(); toggleFavoriteMockup(this, '${p.id}')">favorite</span>
+                        <div>
+                            <h3 class="text-headline-md" style="font-size: 1.25rem; margin-bottom: 8px; cursor: pointer;" onclick="location.href='details.html?id=${p.id}'">${p.title}</h3>
+                            <p class="text-caption" style="margin-bottom: 12px;">${p.desc}</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                 <span class="text-body-md" style="color: var(--color-muted-gold); font-weight: 700;">${new Intl.NumberFormat('fr-FR').format(p.price)} FCFA</span>
+                                 <button class="btn btn-secondary" style="padding: 10px 16px; font-size: 0.75rem;" onclick="addToCartMockup('${p.id}')">Ajouter</button>
+                            </div>
+                        </div>
+                    `;
+                    relatedGrid.appendChild(col);
+                });
+            }
+
+            // Set heart button state on load
+            if (typeof syncFavoriteUIs === 'function') {
+                syncFavoriteUIs();
+            }
+
+            // Initialize 3D Card tilt effects on dynamically loaded related cards
+            if (typeof initTiltCards === 'function') {
+                initTiltCards();
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initDetails);
+        } else {
+            initDetails();
+        }
+        window.addEventListener('supabase-synced', initDetails);
+    </script>
+</body>
+</html>

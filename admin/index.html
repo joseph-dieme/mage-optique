@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Accès sécurisé à la console d'administration de Mage Optique & Services.">
+    <title>Connexion Administrateur | Mage Optique & Services</title>
+    
+    <!-- Google Fonts & Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet">
+    
+    <!-- Core Stylesheet from parent directory -->
+    <link rel="stylesheet" href="../css/style.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #090c0c 0%, #151a1a 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: #e2e2e2;
+        }
+        
+        .login-main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            padding: 40px 16px;
+        }
+        
+        .login-card {
+            background: rgba(255, 255, 255, 0.015);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: var(--border-radius-lg);
+            width: 100%;
+            max-width: 440px;
+            padding: 48px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            animation: loginCardFadeIn 0.5s ease-out;
+        }
+        
+        @keyframes loginCardFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .login-logo {
+            height: 60px;
+            margin-bottom: 24px;
+            object-fit: contain;
+        }
+        
+        .login-title {
+            font-family: var(--font-serif);
+            font-size: 1.75rem;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .login-subtitle {
+            font-size: 0.85rem;
+            color: var(--color-soft-slate);
+            margin-bottom: 32px;
+        }
+        
+        .login-form-input {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--border-radius-md);
+            padding: 14px 16px;
+            color: #fff;
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            outline: none;
+            transition: var(--transition-fast);
+            margin-top: 8px;
+        }
+        
+        .login-form-input:focus {
+            border-color: var(--color-muted-gold);
+            background-color: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 10px rgba(197, 160, 89, 0.15);
+        }
+        
+        .demo-credentials {
+            background-color: rgba(197, 160, 89, 0.05);
+            border: 1px dashed rgba(197, 160, 89, 0.2);
+            border-radius: var(--border-radius-md);
+            padding: 16px;
+            font-size: 0.8rem;
+            color: var(--color-muted-gold);
+            text-align: left;
+            margin-top: 24px;
+            line-height: 1.6;
+        }
+        
+        .error-message {
+            color: var(--color-error);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: none;
+            text-align: left;
+            padding: 8px 12px;
+            background-color: rgba(239, 68, 68, 0.1);
+            border-radius: var(--border-radius-sm);
+        }
+        
+        /* Gold tint button */
+        .btn-gold {
+            background-color: var(--color-muted-gold);
+            color: var(--color-deep-charcoal);
+            border: none;
+            padding: 14px 24px;
+            font-weight: 700;
+            font-family: var(--font-sans);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            border-radius: var(--border-radius-md);
+        }
+        .btn-gold:hover {
+            background-color: #d1ab62;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Small Header just for navigation back -->
+    <header style="padding: 24px 0; border-bottom: 1px solid rgba(255,255,255,0.03);">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="../index.html" class="nav-logo" style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Logo" class="logo-img" style="height: 32px;">
+                <span class="logo-text font-serif" style="color: #fff; font-size: 1.1rem;">Mage Optique &amp; Services</span>
+            </a>
+            <a href="../index.html" class="btn-link" style="color: #fff; display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 0.85rem; text-transform: uppercase; font-weight: bold; letter-spacing: 0.05em;">
+                <span class="material-symbols-outlined" style="font-size: 18px;">arrow_back</span>
+                Retour au site
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content Panel -->
+    <main class="login-main">
+        <div class="login-card">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique Logo" class="login-logo">
+            
+            <h1 class="login-title">Console Admin</h1>
+            <p class="login-subtitle">Connectez-vous pour gérer les collections et commandes.</p>
+            
+            <div class="error-message" id="login-error-msg">
+                Identifiants administrateur incorrects. Veuillez réessayer.
+            </div>
+            
+            <form id="login-form" onsubmit="event.preventDefault(); handleLoginSubmit();">
+                <div class="form-group" style="text-align: left;">
+                    <label class="form-label" for="login-email" style="color: var(--color-soft-slate); font-size: 0.725rem;">Adresse e-mail Admin</label>
+                    <input type="email" id="login-email" class="login-form-input" required placeholder="magelopticien@gmail.com">
+                </div>
+                
+                <div class="form-group" style="text-align: left; margin-bottom: 28px;">
+                    <label class="form-label" for="login-password" style="color: var(--color-soft-slate); font-size: 0.725rem;">Mot de passe</label>
+                    <input type="password" id="login-password" class="login-form-input" required placeholder="••••••••">
+                </div>
+                
+                <button type="submit" class="btn btn-gold" style="width: 100%; border: none; padding: 14px 0; font-size: 0.85rem; font-weight: bold;">
+                    Se Connecter
+                </button>
+            </form>
+            
+        </div>
+    </main>
+
+    <!-- Small Footer -->
+    <footer style="padding: 24px 0; text-align: center; border-top: 1px solid rgba(255,255,255,0.03); font-size: 0.75rem; color: var(--color-soft-slate);">
+        <p>© 2026 Mage Optique &amp; Services. Console d'Administration Privée.</p>
+    </footer>
+
+    <script>
+        // Dynamically load Supabase client
+        let _supabaseClient = null;
+        async function getSupabase() {
+            if (_supabaseClient) return _supabaseClient;
+            if (typeof supabase === 'undefined') {
+                await new Promise((resolve) => {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+                    script.onload = resolve;
+                    document.head.appendChild(script);
+                });
+            }
+            const supabaseUrl = 'https://psizngczubktsfxioofh.supabase.co';
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzaXpuZ2N6dWJrdHNmeGlvb2ZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0ODcwODksImV4cCI6MjA5NjA2MzA4OX0.SkYF2NfgJM5ubgIk84CTTYm9PrD4-QtxviaBNBvr8Mw';
+            _supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+            return _supabaseClient;
+        }
+
+        // Redirection si déjà connecté
+        document.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('mage_optique_admin_logged') === 'true') {
+                location.href = '../admin.html';
+            }
+        });
+
+        async function handleLoginSubmit() {
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const pass = document.getElementById('login-password').value;
+            const errorMsg = document.getElementById('login-error-msg');
+            
+            errorMsg.style.display = 'none';
+            
+            try {
+                const client = await getSupabase();
+                
+                // Sign in with Supabase Auth
+                let { data, error } = await client.auth.signInWithPassword({
+                    email: email,
+                    password: pass
+                });
+                
+                if (error) {
+                    // Implicit signup for new admin accounts (must contain "admin" or match official admin email)
+                    if (error.message.includes('Invalid login credentials') && (email.includes('admin') || email === 'magelopticien@gmail.com')) {
+                        const { data: signUpData, error: signUpError } = await client.auth.signUp({
+                            email: email,
+                            password: pass,
+                            options: {
+                                data: {
+                                    name: email.split('@')[0],
+                                    role: 'admin'
+                                }
+                            }
+                        });
+                        
+                        if (signUpError) {
+                            errorMsg.textContent = "Erreur de création de console : " + signUpError.message;
+                            errorMsg.style.display = 'block';
+                            return;
+                        }
+                        data = signUpData;
+                        error = null;
+                        alert("Console d'Administration créée avec succès !");
+                    } else {
+                        errorMsg.textContent = "Erreur de connexion : " + error.message;
+                        errorMsg.style.display = 'block';
+                        return;
+                    }
+                }
+                
+                // Fetch user role from profiles table
+                const { data: profile, error: profileErr } = await client.from('profiles').select('role').eq('id', data.user.id).single();
+                
+                if (profileErr || !profile || profile.role !== 'admin') {
+                    // Sign out immediately if not admin
+                    await client.auth.signOut();
+                    errorMsg.textContent = "Accès refusé. Vous n'avez pas les droits d'administration.";
+                    errorMsg.style.display = 'block';
+                    return;
+                }
+                
+                // Set admin session state in sessionStorage and localStorage for role consistency
+                sessionStorage.setItem('mage_optique_admin_logged', 'true');
+                localStorage.setItem('mage_optique_client_logged', 'true');
+                localStorage.setItem('mage_optique_client_email', email);
+                localStorage.setItem('mage_optique_user_id', data.user.id);
+                localStorage.setItem('mage_optique_client_role', 'admin');
+                
+                alert('Connexion Admin réussie ! Redirection vers la console.');
+                location.href = '../admin.html';
+            } catch (err) {
+                console.error("Admin login error:", err);
+                errorMsg.textContent = "Une erreur s'est produite lors de la connexion.";
+                errorMsg.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Prenez rendez-vous en ligne chez Mage Optique & Services. Sélectionnez votre date, heure et type de prestation : examen de vue, essai à domicile ou stylisme.">
+    <title>Prendre Rendez-vous | Mage Optique & Services | Haute Lunetterie</title>
+    
+    <!-- Google Fonts & Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet">
+    
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="css/style.css?v=3">
+    
+    <style>
+        .step-node-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            text-align: center;
+        }
+        .step-label {
+            font-size: 0.65rem;
+            font-family: var(--font-sans);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-top: 8px;
+            color: var(--color-soft-slate);
+            white-space: normal;
+            max-width: 72px;
+            line-height: 1.2;
+            text-align: center;
+        }
+        .step-node-container.active .step-label {
+            color: var(--color-muted-gold);
+        }
+        .hours-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--color-border-subtle);
+            font-size: 0.95rem;
+        }
+        @media (max-width: 576px) {
+            .hours-row {
+                font-size: 0.85rem;
+                padding: 10px 0;
+            }
+        }
+
+        /* Success Modal Styles */
+        #success-modal.show {
+            opacity: 1 !important;
+        }
+        #success-modal.show > div {
+            transform: scale(1) !important;
+        }
+        .contact-grid {
+            gap: 48px;
+        }
+        @media (max-width: 768px) {
+            .contact-grid {
+                gap: 24px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Unified Header / TopAppBar -->
+    <header class="top-header glass-effect">
+        <div class="container nav-bar">
+            <a href="index.html" class="nav-logo" id="logo-link">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique &amp; Services Logo" class="logo-img">
+                <span class="logo-text font-serif">Mage Optique &amp; Services</span>
+            </a>
+            
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Accueil</a>
+                <a href="boutique.html" class="nav-link">Boutique</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="a-propos.html" class="nav-link">À Propos</a>
+                <a href="contact.html" class="nav-link active">Contact</a>
+            </nav>
+            
+            <div class="nav-actions">
+                <a href="boutique.html" class="material-symbols-outlined icon-btn" id="search-nav-btn">search</a>
+                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre liste de favoris est vide.')" id="fav-nav-btn">favorite</span>
+                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre panier Mage Optique &amp; Services est vide.')" id="cart-nav-btn">shopping_bag</span>
+                <a href="connexion.html" class="material-symbols-outlined icon-btn" id="login-nav-btn">person</a>
+                <span class="mobile-nav-toggle material-symbols-outlined" id="menu-toggle-btn">menu</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Menu -->
+    <div class="mobile-menu-overlay" id="drawer-overlay"></div>
+    <div class="mobile-menu" id="drawer-menu">
+        <div class="mobile-menu-header">
+            <span class="font-serif text-headline-md">Mage Optique &amp; Services</span>
+            <span class="material-symbols-outlined icon-btn close-menu" id="close-menu-btn">close</span>
+        </div>
+        <nav class="mobile-nav-links">
+            <a href="index.html" class="mobile-nav-link">Accueil</a>
+            <a href="boutique.html" class="mobile-nav-link">Boutique</a>
+            <a href="services.html" class="mobile-nav-link">Services</a>
+            <a href="a-propos.html" class="mobile-nav-link">À Propos</a>
+            <a href="contact.html" class="mobile-nav-link active">Contact</a>
+            <a href="connexion.html" class="mobile-nav-link">Connexion</a>
+        </nav>
+    </div>
+
+    <!-- Main Container -->
+    <main style="padding-top: 80px;">
+
+        <!-- Header intro -->
+        <section class="section-padding container animate-fade-in" style="padding-bottom: 24px;">
+            <div style="text-align: center; max-width: 600px; margin: 0 auto 40px auto;">
+                <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">Planification en Ligne</span>
+                <h1 class="text-display-lg">Votre Concierge Optique</h1>
+                <p class="text-body-md" style="margin-top: 12px;">Planifiez votre venue dans notre salon d'excellence ou demandez un rendez-vous d'ajustement à domicile.</p>
+            </div>
+        </section>
+
+        <!-- Contact details left & Booking widget right -->
+        <section class="container" style="padding-bottom: 96px;">
+            <div class="grid-cols-12 contact-grid">
+                <!-- Contact info & Hours left -->
+                <div class="col-span-5" style="display: flex; flex-direction: column; gap: 40px;">
+                    <div>
+                        <h4 class="text-label-md" style="border-bottom: 2px solid var(--color-deep-charcoal); padding-bottom: 8px; margin-bottom: 20px; color: var(--color-deep-charcoal);">Coordonnées</h4>
+                        <ul class="footer-links text-body-md">
+                            <li style="display: flex; gap: 12px; align-items: flex-start; margin-bottom: 16px;">
+                                <span class="material-symbols-outlined" style="color: var(--color-muted-gold);">location_on</span>
+                                <div>
+                                    <strong style="color: var(--color-deep-charcoal);">Mage Optique &amp; Services</strong><br>
+                                    Ouest Foire, Dakar, Sénégal
+                                </div>
+                            </li>
+                            <li style="display: flex; gap: 12px; align-items: center; margin-bottom: 16px;">
+                                <span class="material-symbols-outlined" style="color: var(--color-muted-gold);">call</span>
+                                <span>+221 78 681 15 26</span>
+                            </li>
+                            <li style="display: flex; gap: 12px; align-items: center;">
+                                <span class="material-symbols-outlined" style="color: var(--color-muted-gold);">mail</span>
+                                <span>contact@mageoptique.fr</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-label-md" style="border-bottom: 2px solid var(--color-deep-charcoal); padding-bottom: 8px; margin-bottom: 20px; color: var(--color-deep-charcoal);">Horaires d'Ouverture</h4>
+                        <div class="hours-row"><span style="font-weight: 600;">Lundi - Samedi</span><span style="color: var(--color-soft-slate);">09h00 - 20h00</span></div>
+                        <div class="hours-row">
+                            <span style="font-weight: 600; color: var(--color-error);">Dimanche</span>
+                            <span style="color: var(--color-error); font-weight: 600;">Fermé</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking Widget right -->
+                <div class="col-span-7">
+                    <div class="booking-widget" id="bookingConciergeForm">
+                        <div class="booking-header">
+                            <h3 class="font-serif text-headline-md" style="color: var(--color-paper-white); margin-bottom: 8px;">Demande de Consultation</h3>
+                            <p class="text-body-md" style="color: rgba(255,255,255,0.7); font-size: 0.95rem;">Réservez votre séance d'optique en quelques instants.</p>
+                        </div>
+                        
+                        <div class="booking-body">
+                            <!-- Steps Progress Nodes -->
+                            <div class="step-indicator">
+                                <div class="step-node-container active">
+                                    <div class="step-node flex-center">1</div>
+                                    <span class="step-label">Prestation</span>
+                                </div>
+                                <div class="step-node-container">
+                                    <div class="step-node flex-center">2</div>
+                                    <span class="step-label">Date &amp; Heure</span>
+                                </div>
+                                <div class="step-node-container">
+                                    <div class="step-node flex-center">3</div>
+                                    <span class="step-label">Coordonnées</span>
+                                </div>
+                                <div class="step-node-container">
+                                    <div class="step-node flex-center">4</div>
+                                    <span class="step-label">Billet</span>
+                                </div>
+                            </div>
+
+                            <!-- Step 1: Prestation Selection -->
+                            <div class="booking-step active" id="step-1">
+                                <h4 class="text-headline-md" style="font-size: 1.15rem; margin-bottom: 20px;">Sélectionnez votre prestation :</h4>
+                                <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+                                    <div class="service-card-select" onclick="selectBookingService(this)" data-service="Examen de vue en salon (25 000 FCFA - Offert si achat)">
+                                        <h5 class="text-label-md" style="color: var(--color-deep-charcoal); margin-bottom: 4px;">Examen de Vue en Salon</h5>
+                                        <p class="text-caption">Contrôle d'acuité clinique par nos experts. (1 heure)</p>
+                                    </div>
+                                    
+                                    <div class="service-card-select" onclick="selectBookingService(this)" data-service="Service d'essai de montures à domicile (Gratuit)">
+                                        <h5 class="text-label-md" style="color: var(--color-deep-charcoal); margin-bottom: 4px;">Ajustement &amp; Essai à Domicile</h5>
+                                        <p class="text-caption">Déplacement d'un opticien avec 5 montures de créateurs. (1 heure)</p>
+                                    </div>
+
+                                    <div class="service-card-select" onclick="selectBookingService(this)" data-service="Stylisme &amp; Conseils Visagisme (Inclus)">
+                                        <h5 class="text-label-md" style="color: var(--color-deep-charcoal); margin-bottom: 4px;">Visagisme &amp; Conseils</h5>
+                                        <p class="text-caption">Recherche stylistique personnalisée en salon selon votre visage. (45 min)</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="booking-actions" style="justify-content: flex-end;">
+                                    <button class="btn btn-primary btn-next" onclick="goToBookingStep(1)" disabled>Continuer</button>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Date & Time selection -->
+                            <div class="booking-step" id="step-2">
+                                <h4 class="text-headline-md" style="font-size: 1.15rem; margin-bottom: 20px;">Date et horaire souhaités :</h4>
+                                
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label class="form-label" for="booking-date">Choisir la date :</label>
+                                    <input type="date" id="booking-date" class="form-input" onchange="selectBookingDate(this)" required style="border: 1px solid var(--color-border-subtle); border-radius: var(--border-radius-md); padding: 12px; background-color: var(--color-background);">
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 24px;">
+                                    <label class="form-label">Horaires disponibles :</label>
+                                    <div class="time-slot-grid">
+                                        <div class="time-slot" onclick="selectBookingTime(this)">09:30</div>
+                                        <div class="time-slot" onclick="selectBookingTime(this)">10:30</div>
+                                        <div class="time-slot" onclick="selectBookingTime(this)">11:30</div>
+                                        <div class="time-slot" onclick="selectBookingTime(this)">14:00</div>
+                                        <div class="time-slot" onclick="selectBookingTime(this)">15:00</div>
+                                        <div class="time-slot" onclick="selectBookingTime(this)">16:30</div>
+                                        <div class="time-slot" onclick="selectBookingTime(this)">17:30</div>
+                                    </div>
+                                </div>
+
+                                <div class="booking-actions">
+                                    <button class="btn btn-secondary btn-prev" onclick="goToBookingStep(0)">Retour</button>
+                                    <button class="btn btn-primary btn-next" onclick="goToBookingStep(2)" disabled>Continuer</button>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Contact info -->
+                            <div class="booking-step" id="step-3">
+                                <h4 class="text-headline-md" style="font-size: 1.15rem; margin-bottom: 24px;">Vos Coordonnées :</h4>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="client-name">Nom complet</label>
+                                    <input type="text" id="client-name" class="form-input" placeholder="ex. Jean Dupont" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="client-email">Adresse e-mail</label>
+                                    <input type="email" id="client-email" class="form-input" placeholder="ex. jean.dupont@exemple.com" required>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 24px;">
+                                    <label class="form-label" for="client-phone">Numéro de téléphone</label>
+                                    <input type="tel" id="client-phone" class="form-input" placeholder="ex. +33 6 12 34 56 78" required>
+                                </div>
+
+                                <div class="booking-actions">
+                                    <button class="btn btn-secondary btn-prev" onclick="goToBookingStep(1)">Retour</button>
+                                    <button class="btn btn-gold btn-next" onclick="confirmAppointment()">Confirmer le Rendez-vous</button>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Booking Ticket Success -->
+                            <div class="booking-step" id="step-4">
+                                <div class="ticket">
+                                    <span class="material-symbols-outlined" style="font-size: 56px; color: var(--color-muted-gold); margin-bottom: 20px;">check_circle</span>
+                                    <h3 class="font-serif text-headline-lg" style="color: #fff; margin-bottom: 8px;">Rendez-vous Confirmé</h3>
+                                    <p class="text-body-md" style="color: rgba(255,255,255,0.7); font-size: 0.95rem; margin-bottom: 24px;">Votre billet de réservation unique Mage Optique &amp; Services :</p>
+                                    
+                                    <!-- Dynamic ticket content injected here -->
+                                    <div id="ticket-details"></div>
+                                </div>
+
+                                <div style="display: flex; justify-content: center; margin-top: 40px;">
+                                    <button class="btn btn-primary" onclick="location.reload();">Planifier un autre rendez-vous</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Unified Footer -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div>
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique &amp; Services Logo" style="height: 64px; margin-bottom: 24px; width: auto; object-fit: contain;">
+                <p class="text-body-md" style="margin-bottom: 24px;">Expertise Optique d'Excellence et collections haut de gamme à votre service depuis 5 ans.</p>
+                <div class="footer-socials">
+                    <span class="material-symbols-outlined social-icon" id="soc-instagram">public</span>
+                    <span class="material-symbols-outlined social-icon" id="soc-share">share</span>
+                </div>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Navigation</h5>
+                <ul class="footer-links">
+                    <li><a href="index.html" class="footer-link">Accueil</a></li>
+                    <li><a href="boutique.html" class="footer-link">Boutique</a></li>
+                    <li><a href="services.html" class="footer-link">Nos Services</a></li>
+                    <li><a href="a-propos.html" class="footer-link">À Propos</a></li>
+                    <li><a href="contact.html" class="footer-link">Rendez-vous</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Contact &amp; Accès</h5>
+                <ul class="footer-links text-body-md">
+                    <li style="display: flex; gap: 12px; align-items: flex-start;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; margin-top: 4px; color: var(--color-muted-gold);">location_on</span>
+                        <span>Ouest Foire, Dakar, Sénégal</span>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: center;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-muted-gold);">call</span>
+                        <span>+221 78 681 15 26</span>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: center;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-muted-gold);">mail</span>
+                        <span>contact@mageoptique.fr</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Newsletter</h5>
+                <p class="text-body-md" style="margin-bottom: 20px;">Abonnez-vous pour recevoir les dernières collections de créateurs et des conseils de santé visuelle.</p>
+                <form onsubmit="event.preventDefault(); alert('Merci pour votre inscription à la newsletter Mage Optique &amp; Services !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
+                    <input type="email" placeholder="Votre adresse e-mail" style="flex-grow: 1; padding: 4px 0; color: var(--color-deep-charcoal); font-size: 0.95rem;" required id="news-email-input">
+                    <button type="submit" class="material-symbols-outlined" style="color: var(--color-muted-gold); cursor: pointer;" id="news-submit-btn">arrow_forward</button>
+                </form>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--color-border-subtle); margin-top: 64px; padding-top: 24px; text-align: center;">
+            <p class="text-caption">Â© 2026 Mage Optique &amp; Services. Expertise Optique d'Excellence. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- Interactive Sidebar Concierge -->
+    <div style="position: fixed; bottom: 32px; right: 32px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 16px;">
+        <div id="concierge-message" class="glass-effect" style="display: none; padding: 12px 20px; border-radius: var(--border-radius-lg); font-size: 0.875rem; font-weight: 500; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-color: var(--color-muted-gold); animation: fadeIn 0.3s ease-out; max-width: 240px; color: var(--color-deep-charcoal);">
+            Besoin d'un conseil ? Chattez avec l'un de nos visagistes en direct.
+        </div>
+        <button onclick="alert('L\'assistant conseil Mage Optique &amp; Services est en cours d\'initialisation...')" onmouseover="document.getElementById('concierge-message').style.display='block'" onmouseout="document.getElementById('concierge-message').style.display='none'" class="flex-center" style="width: 56px; height: 56px; border-radius: var(--border-radius-full); background-color: var(--color-deep-charcoal); color: var(--color-paper-white); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; transition: var(--transition-fast);" id="concierge-floating-btn">
+            <span class="material-symbols-outlined" style="font-size: 28px;">chat</span>
+        </button>
+    </div>
+
+    <!-- Premium Success Modal Popup -->
+    <div id="success-modal" style="display: none; position: fixed; inset: 0; background: rgba(18, 18, 18, 0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 10000; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+        <div class="glass-effect" style="max-width: 420px; width: 90%; text-align: center; border: 1px solid var(--color-muted-gold); border-radius: var(--border-radius-lg); padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); background: var(--color-paper-white);">
+            <span class="material-symbols-outlined" style="font-size: 64px; color: var(--color-muted-gold); margin-bottom: 20px;">check_circle</span>
+            <h3 class="font-serif text-headline-md" style="color: var(--color-deep-charcoal); margin-bottom: 12px; font-size: 1.5rem;">Rendez-vous Envoyé</h3>
+            <p class="text-body-md" style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 28px; color: var(--color-soft-slate);">Votre demande de consultation d'excellence a bien été prise en compte. Notre équipe de Dakar vous contactera très rapidement pour confirmation.</p>
+            <button class="btn btn-gold" onclick="closeSuccessModal()" style="width: 100%; border: none; padding: 14px 0; font-size: 0.85rem; font-weight: 700; border-radius: var(--border-radius-md); cursor: pointer;">OK</button>
+        </div>
+    </div>
+
+    <!-- Core Scripting -->
+    <script src="js/db.js?v=3"></script>
+    <script src="js/main.js?v=7"></script>
+    <script>
+        // Global variables for booking flow
+        window.currentBookingStep = 0;
+        window.bookingData = {
+            service: '',
+            date: '',
+            time: '',
+            name: '',
+            email: '',
+            phone: ''
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set standard date restrictions (minimum is tomorrow)
+            const dateInput = document.getElementById('booking-date');
+            if (dateInput) {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const tomorrowStr = tomorrow.toISOString().split('T')[0];
+                dateInput.setAttribute('min', tomorrowStr);
+            }
+        });
+
+        // Step 1: Prestation Selection click handler
+        function selectBookingService(element) {
+            // Remove 'selected' class from all cards
+            const cards = document.querySelectorAll('.service-card-select');
+            cards.forEach(c => c.classList.remove('selected'));
+            
+            // Add 'selected' class to current card
+            element.classList.add('selected');
+            
+            // Save selected service
+            window.bookingData.service = element.getAttribute('data-service');
+            
+            // Enable Next Button for Step 1
+            const nextBtn = document.querySelector('#step-1 .btn-next');
+            if (nextBtn) nextBtn.removeAttribute('disabled');
+            
+            // Auto-advance to Step 2 after a brief delay
+            setTimeout(() => {
+                if (window.currentBookingStep === 0) {
+                    goToBookingStep(1);
+                }
+            }, 350);
+        }
+
+        // Step 2: Date Change handler
+        function selectBookingDate(element) {
+            window.bookingData.date = element.value;
+            checkStep2Validation();
+        }
+
+        // Step 2: Time Selection click handler
+        function selectBookingTime(element) {
+            // Remove 'selected' class from all time slots
+            const slots = document.querySelectorAll('.time-slot');
+            slots.forEach(s => s.classList.remove('selected'));
+            
+            // Add 'selected' class to current slot
+            element.classList.add('selected');
+            
+            // Save selected time
+            window.bookingData.time = element.textContent.trim();
+            
+            checkStep2Validation();
+            
+            // Auto-advance to Step 3 if Date is also selected
+            if (window.bookingData.date) {
+                setTimeout(() => {
+                    if (window.currentBookingStep === 1) {
+                        goToBookingStep(2);
+                    }
+                }, 350);
+            }
+        }
+
+        // Helper: Validate Step 2 inputs
+        function checkStep2Validation() {
+            const nextBtn = document.querySelector('#step-2 .btn-next');
+            if (nextBtn) {
+                if (window.bookingData.date && window.bookingData.time) {
+                    nextBtn.removeAttribute('disabled');
+                } else {
+                    nextBtn.setAttribute('disabled', 'true');
+                }
+            }
+        }
+
+        // Core Step Navigation Transition Engine
+        function goToBookingStep(stepIdx) {
+            window.currentBookingStep = stepIdx;
+            
+            // Update active booking steps visibility
+            const steps = document.querySelectorAll('.booking-step');
+            steps.forEach((step, idx) => {
+                if (idx === stepIdx) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+            
+            // Update step indicator header nodes
+            const nodes = document.querySelectorAll('.step-node');
+            nodes.forEach((node, idx) => {
+                node.classList.remove('active', 'completed');
+                if (idx === stepIdx && stepIdx !== 3) {
+                    node.classList.add('active');
+                    node.innerHTML = idx + 1;
+                } else if (idx < stepIdx || stepIdx === 3) {
+                    node.classList.add('completed');
+                    node.innerHTML = '✓';
+                } else {
+                    node.innerHTML = idx + 1;
+                }
+            });
+        }
+
+        // Step 3: Complete Reservation Submission
+        function confirmAppointment() {
+            window.bookingData.name = document.getElementById('client-name').value.trim();
+            window.bookingData.email = document.getElementById('client-email').value.trim();
+            window.bookingData.phone = document.getElementById('client-phone').value.trim();
+
+            if (!window.bookingData.name) {
+                alert('Veuillez renseigner votre nom complet.');
+                document.getElementById('client-name').focus();
+                return;
+            }
+            if (!window.bookingData.email) {
+                alert('Veuillez renseigner votre adresse e-mail.');
+                document.getElementById('client-email').focus();
+                return;
+            }
+            if (!window.bookingData.phone) {
+                alert('Veuillez renseigner votre numéro de téléphone.');
+                document.getElementById('client-phone').focus();
+                return;
+            }
+
+            // Save dynamically to database for admin access
+            if (typeof addAppointment === 'function') {
+                addAppointment(window.bookingData);
+            } else {
+                const appts = JSON.parse(localStorage.getItem('mage_optique_appointments') || '[]');
+                appts.push({
+                    id: 'appt-' + Date.now(),
+                    ...window.bookingData,
+                    status: 'En attente'
+                });
+                localStorage.setItem('mage_optique_appointments', JSON.stringify(appts));
+            }
+
+            // Generate premium success ticket details
+            generateBookingTicketInline(window.bookingData);
+
+            // Go to step 4
+            goToBookingStep(3);
+
+            // Trigger beautiful custom success modal popup instead of browser alert
+            showSuccessModal();
+        }
+
+        // Helper: Inject Dynamic Ticket markup
+        function generateBookingTicketInline(data) {
+            const ticketDetails = document.getElementById('ticket-details');
+            if (!ticketDetails) return;
+
+            const dateFormatted = new Date(data.date).toLocaleDateString('fr-FR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            ticketDetails.innerHTML = `
+                <div style="font-size: 1.125rem; font-weight: 600; color: #C5A059; margin-bottom: 20px;">
+                    ${data.service}
+                </div>
+                <div style="margin-bottom: 12px; font-family: 'Playfair Display'; font-size: 1.25rem;">
+                    ${dateFormatted}
+                </div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #FFFFFF; margin-bottom: 24px;">
+                    ${data.time}
+                </div>
+                <div class="ticket-divider"></div>
+                <div style="font-size: 0.875rem; text-align: left; opacity: 0.8; line-height: 1.8; margin-bottom: 24px;">
+                    <p><strong>Client :</strong> ${data.name}</p>
+                    <p><strong>Email :</strong> ${data.email}</p>
+                    <p><strong>Tél :</strong> ${data.phone}</p>
+                </div>
+                <div class="ticket-divider"></div>
+                <div style="font-size: 0.85rem; font-style: italic; color: #C5A059; line-height: 1.6; text-align: center; margin-top: 16px;">
+                    Votre rendez-vous a été pris en charge. Mage Optique &amp; Services va vous appeler pour confirmer votre rendez-vous. Merci !
+                </div>
+            `;
+        }
+
+        // Custom Success Modal Open/Close triggers
+        function showSuccessModal() {
+            const modal = document.getElementById('success-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                setTimeout(() => {
+                    modal.classList.add('show');
+                }, 10);
+            }
+        }
+
+        function closeSuccessModal() {
+            const modal = document.getElementById('success-modal');
+            if (modal) {
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+        }
+    </script>
+</body>
+</html>

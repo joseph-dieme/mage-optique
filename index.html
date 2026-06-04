@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Mage Optique & Services | Haute lunetterie et expertise optique d'excellence. Découvrez nos montures de créateurs et planifiez votre examen de vue.">
+    <title>Mage Optique & Services | Haute Lunetterie & Expertise</title>
+    
+    <!-- Google Fonts & Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet">
+    
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="css/style.css?v=3">
+    
+    <style>
+        .hero-carousel {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            height: 100%;
+            width: 100%;
+        }
+        .carousel-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            width: 100%;
+        }
+        .carousel-slide.active {
+            opacity: 1;
+        }
+        @media (max-width: 768px) {
+            .hero-overlay-mask {
+                background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.75) 100%) !important;
+            }
+            .text-body-lg {
+                color: #121212 !important;
+                font-weight: 500 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Unified Header / TopAppBar -->
+    <header class="top-header glass-effect">
+        <div class="container nav-bar">
+            <a href="index.html" class="nav-logo" id="logo-link">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique &amp; Services Logo" class="logo-img">
+                <span class="logo-text font-serif">Mage Optique &amp; Services</span>
+            </a>
+            
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link active">Accueil</a>
+                <a href="boutique.html" class="nav-link">Boutique</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="a-propos.html" class="nav-link">À Propos</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </nav>
+            
+            <div class="nav-actions">
+                <a href="boutique.html" class="material-symbols-outlined icon-btn" id="search-nav-btn">search</a>
+                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre liste de favoris est vide.')" id="fav-nav-btn">favorite</span>
+                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre panier Mage Optique &amp; Services est vide.')" id="cart-nav-btn">shopping_bag</span>
+                <a href="connexion.html" class="material-symbols-outlined icon-btn" id="login-nav-btn">person</a>
+                <span class="mobile-nav-toggle material-symbols-outlined" id="menu-toggle-btn">menu</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Menu -->
+    <div class="mobile-menu-overlay" id="drawer-overlay"></div>
+    <div class="mobile-menu" id="drawer-menu">
+        <div class="mobile-menu-header">
+            <span class="font-serif text-headline-md">Mage Optique &amp; Services</span>
+            <span class="material-symbols-outlined icon-btn close-menu" id="close-menu-btn">close</span>
+        </div>
+        <nav class="mobile-nav-links">
+            <a href="index.html" class="mobile-nav-link active">Accueil</a>
+            <a href="boutique.html" class="mobile-nav-link">Boutique</a>
+            <a href="services.html" class="mobile-nav-link">Services</a>
+            <a href="a-propos.html" class="mobile-nav-link">À Propos</a>
+            <a href="contact.html" class="mobile-nav-link">Contact</a>
+            <a href="connexion.html" class="mobile-nav-link">Connexion</a>
+        </nav>
+    </div>
+
+    <!-- Main Container -->
+    <main style="padding-top: 80px;">
+
+        <!-- Hero Section -->
+        <section class="animate-fade-in" style="position: relative; height: 90vh; display: flex; align-items: center; overflow: hidden; background-color: var(--color-surface-dim);">
+            <!-- Animated Hero Carousel -->
+            <div class="hero-carousel">
+                <div class="carousel-slide active">
+                    <img src="assets/hero_black_man.png" alt="Jeune homme élégant portant des lunettes de créateur Mage Optique &amp; Services" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="carousel-slide">
+                    <img src="assets/hero_elegant_woman.png" alt="Grande dame et mamie africaine élégante portant des lunettes de créateur Mage Optique &amp; Services" style="width: 100%; height: 100%; object-fit: cover; object-position: center 22%; transform: scale(1.18); transform-origin: center 22%;">
+                </div>
+                <div class="carousel-slide">
+                    <img src="assets/hero_elegant_child.png" alt="Enfant noir élégant portant des lunettes tendance Mage Optique &amp; Services" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="carousel-slide">
+                    <img src="assets/hero_african_veiled_woman.png" alt="Femme noire africaine voilée élégante portant des lunettes de créateur Mage Optique &amp; Services" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="carousel-slide">
+                    <img src="assets/hero_mixed_senior.png" alt="Sénior métissé élégant et souriant portant des lunettes de créateur Mage Optique &amp; Services" style="width: 100%; height: 100%; object-fit: cover; object-position: center 15%; transform: scale(1.15); transform-origin: center 15%;">
+                </div>
+                <!-- Unified mask overlay to guarantee optimal text contrast across all slides -->
+                <div class="hero-overlay-mask" style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(255,255,255,0.85) 30%, rgba(255,255,255,0.4) 60%, transparent 100%); z-index: 2;"></div>
+            </div>
+            
+            <div class="container" style="position: relative; z-index: 3;">
+                <div style="max-width: 600px;">
+                    <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 16px; display: block;">Excellence Visuelle</span>
+                    <h1 class="text-display-lg" style="margin-bottom: 24px;">Voyez mieux,<br>Vivez mieux.</h1>
+                    <p class="text-body-lg" style="margin-bottom: 40px; max-width: 480px;">Découvrez une expertise optique d'exception alliant technologie de pointe et esthétique intemporelle pour sublimer votre regard.</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+                        <a href="contact.html" class="btn btn-primary" id="hero-book-btn">Prendre Rendez-vous</a>
+                        <a href="boutique.html" class="btn btn-secondary" id="hero-explore-btn">Explorer la Collection</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bento Grid Nouveautés -->
+        <section class="section-padding container">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 48px;">
+                <div>
+                    <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">Collections</span>
+                    <h2 class="text-headline-lg">Nouveautés d'Excellence</h2>
+                    <p class="text-body-md" style="margin-top: 8px;">Les dernières créations méticuleusement façonnées par nos artisans lunetiers.</p>
+                </div>
+                <a href="boutique.html" class="btn-link" id="view-all-nouveautes">Tout voir</a>
+            </div>
+
+            <div class="bento-grid">
+                <!-- Large Bento element (Featured) -->
+                <div class="bento-card bento-large" id="bento-card-large" onclick="location.href='details.html?id=prod-1'">
+                    <div class="bento-image-wrapper">
+                        <img src="assets/bento_wood.png" alt="Artisanal wood spectacles" class="bento-img">
+                    </div>
+                    <div>
+                        <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">Édition Limitée</span>
+                        <h3 class="text-headline-md">L'Héritage Artisanal</h3>
+                        <p class="text-body-md" style="margin-top: 4px;">Lunettes exclusives façonnées en acétate noble et bois précieux.</p>
+                    </div>
+                </div>
+
+                <!-- Small Bento 1 -->
+                <div class="bento-card bento-small" id="bento-card-small1" onclick="location.href='details.html?id=prod-2'">
+                    <div class="bento-image-wrapper">
+                        <img src="assets/bento_titanium.png" alt="Titanium Minimal" class="bento-img">
+                    </div>
+                    <div>
+                        <h4 class="text-label-md" style="margin-bottom: 4px;">Titanium Minimal</h4>
+                        <p class="text-body-md" style="color: var(--color-muted-gold); font-weight: 600;">68 000 FCFA</p>
+                    </div>
+                </div>
+
+                <!-- Small Bento 2 -->
+                <div class="bento-card bento-small" id="bento-card-small2" onclick="location.href='details.html?id=prod-3'">
+                    <div class="bento-image-wrapper">
+                        <img src="assets/bento_tortoise.png" alt="Tortoise Shell Sun" class="bento-img">
+                    </div>
+                    <div>
+                        <h4 class="text-label-md" style="margin-bottom: 4px;">Tortoise Shell Sun</h4>
+                        <p class="text-body-md" style="color: var(--color-muted-gold); font-weight: 600;">75 000 FCFA</p>
+                    </div>
+                </div>
+
+                <!-- Medium Bento 3 -->
+                <div class="bento-card bento-medium" id="bento-card-medium" onclick="location.href='details.html?id=prod-4'">
+                    <div style="display: flex; height: 100%; width: 100%; align-items: center; gap: 24px;">
+                        <div style="width: 50%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <img src="assets/bento_cristal.png" alt="Collection Cristal" class="bento-img" style="max-height: 180px;">
+                        </div>
+                        <div style="width: 50%;">
+                            <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">Tendance 2026</span>
+                            <h3 class="text-headline-md" style="margin-bottom: 8px;">Collection Cristal</h3>
+                            <p class="text-body-md" style="margin-bottom: 16px;">Légèreté absolue et transparence épurée pour un look résolument contemporain.</p>
+                            <span class="btn-link">Découvrir</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Preview Section -->
+        <section style="background-color: var(--color-surface-container); padding: 96px 0;">
+            <div class="container">
+                <div style="text-align: center; max-width: 600px; margin: 0 auto 64px auto;">
+                    <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">Mage Optique &amp; Services</span>
+                    <h2 class="text-headline-lg">Prestations sur Mesure</h2>
+                    <p class="text-body-md" style="margin-top: 12px;">Plus qu'un simple opticien, un partenaire expert et attentionné dédié à la santé et au confort de vos yeux.</p>
+                </div>
+
+                <div class="grid-cols-12">
+                    <!-- Service 1 -->
+                    <div class="card-shadow-hover col-span-4" style="background-color: var(--color-paper-white); border: 1px solid var(--color-border-subtle); padding: 40px; border-radius: var(--border-radius-md); text-align: center; display: flex; flex-direction: column; align-items: center;">
+                        <div style="width: 64px; height: 64px; border-radius: var(--border-radius-full); background-color: var(--color-surface-container); margin-bottom: 24px;" class="flex-center">
+                            <span class="material-symbols-outlined" style="font-size: 32px; color: var(--color-deep-charcoal);">visibility</span>
+                        </div>
+                        <h3 class="text-headline-md" style="margin-bottom: 16px;">Examen de vue complet</h3>
+                        <p class="text-body-md" style="margin-bottom: 24px; flex-grow: 1;">Une analyse approfondie et ultra-précise de votre acuité visuelle, réalisée par nos opticiens diplômés à l'aide d'équipements de dernière génération.</p>
+                        <a href="contact.html" class="btn-link">Prendre RDV</a>
+                    </div>
+
+                    <!-- Service 2 -->
+                    <div class="card-shadow-hover col-span-4" style="background-color: var(--color-paper-white); border: 1px solid var(--color-border-subtle); padding: 40px; border-radius: var(--border-radius-md); text-align: center; display: flex; flex-direction: column; align-items: center;">
+                        <div style="width: 64px; height: 64px; border-radius: var(--border-radius-full); background-color: var(--color-surface-container); margin-bottom: 24px;" class="flex-center">
+                            <span class="material-symbols-outlined" style="font-size: 32px; color: var(--color-deep-charcoal);">assignment</span>
+                        </div>
+                        <h3 class="text-headline-md" style="margin-bottom: 16px;">Devis en Ligne Gratuit</h3>
+                        <p class="text-body-md" style="margin-bottom: 24px; flex-grow: 1;">Téléchargez votre ordonnance optique et recevez une estimation chiffrée claire, détaillée et gratuite de vos verres et montures sous 24 heures.</p>
+                        <a href="services.html" class="btn-link">Demander un Devis</a>
+                    </div>
+
+                    <!-- Service 3 -->
+                    <div class="card-shadow-hover col-span-4" style="background-color: var(--color-paper-white); border: 1px solid var(--color-border-subtle); padding: 40px; border-radius: var(--border-radius-md); text-align: center; display: flex; flex-direction: column; align-items: center;">
+                        <div style="width: 64px; height: 64px; border-radius: var(--border-radius-full); background-color: var(--color-surface-container); margin-bottom: 24px;" class="flex-center">
+                            <span class="material-symbols-outlined" style="font-size: 32px; color: var(--color-deep-charcoal);">face</span>
+                        </div>
+                        <h3 class="text-headline-md" style="margin-bottom: 16px;">Visagisme &amp; Conseils</h3>
+                        <p class="text-body-md" style="margin-top: 4px; margin-bottom: 24px; flex-grow: 1;">Trouvez la paire parfaite grâce à l'expertise morphologique et stylistique de nos conseillers en visagisme haut de gamme.</p>
+                        <a href="a-propos.html" class="btn-link">Découvrir l'approche</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Experience Section -->
+        <section style="position: relative; padding: 120px 0; overflow: hidden; color: var(--color-paper-white);">
+            <div style="position: absolute; inset: 0; z-index: 1;">
+                <img src="assets/salon_interior.png" alt="Mage Optique &amp; Services high-end salon interior" style="width: 100%; height: 100%; object-fit: cover;">
+                <div style="position: absolute; inset: 0; background-color: rgba(18, 18, 18, 0.65);"></div>
+            </div>
+
+            <div class="container" style="position: relative; z-index: 2; text-align: center;">
+                <h2 class="text-display-lg font-serif" style="margin-bottom: 20px; color: var(--color-paper-white);">Vivez l'expérience Mage Optique &amp; Services</h2>
+                <p class="text-body-lg" style="margin-bottom: 48px; max-width: 640px; margin-left: auto; margin-right: auto; opacity: 0.9; color: var(--color-paper-white);">Prenez rendez-vous en ligne pour une consultation sur-mesure d'une heure avec l'un de nos opticiens d'exception.</p>
+                <a href="contact.html" class="btn btn-gold" style="padding: 20px 48px; display: inline-flex; align-items: center; gap: 12px;" id="cta-book-btn">
+                    <span class="material-symbols-outlined">calendar_month</span>
+                    Prendre Rendez-vous
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Unified Footer -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div>
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique &amp; Services Logo" style="height: 64px; margin-bottom: 24px; width: auto; object-fit: contain;">
+                <p class="text-body-md" style="margin-bottom: 24px;">Expertise Optique d'Excellence et collections haut de gamme à votre service depuis 5 ans.</p>
+                <div class="footer-socials">
+                    <span class="material-symbols-outlined social-icon" id="soc-instagram">public</span>
+                    <span class="material-symbols-outlined social-icon" id="soc-share">share</span>
+                </div>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Navigation</h5>
+                <ul class="footer-links">
+                    <li><a href="index.html" class="footer-link">Accueil</a></li>
+                    <li><a href="boutique.html" class="footer-link">Boutique</a></li>
+                    <li><a href="services.html" class="footer-link">Nos Services</a></li>
+                    <li><a href="a-propos.html" class="footer-link">À Propos</a></li>
+                    <li><a href="contact.html" class="footer-link">Rendez-vous</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Contact &amp; Accès</h5>
+                <ul class="footer-links text-body-md">
+                    <li style="display: flex; gap: 12px; align-items: flex-start;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; margin-top: 4px; color: var(--color-muted-gold);">location_on</span>
+                        <span>Ouest Foire, Dakar, Sénégal</span>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: center;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-muted-gold);">call</span>
+                        <span>+221 78 681 15 26</span>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: center;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-muted-gold);">mail</span>
+                        <span>contact@mageoptique.fr</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Newsletter</h5>
+                <p class="text-body-md" style="margin-bottom: 20px;">Abonnez-vous pour recevoir les dernières collections de créateurs et des conseils de santé visuelle.</p>
+                <form onsubmit="event.preventDefault(); alert('Merci pour votre inscription à la newsletter Mage Optique &amp; Services !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
+                    <input type="email" placeholder="Votre adresse e-mail" style="flex-grow: 1; padding: 4px 0; color: var(--color-deep-charcoal); font-size: 0.95rem;" required id="news-email-input">
+                    <button type="submit" class="material-symbols-outlined" style="color: var(--color-muted-gold); cursor: pointer;" id="news-submit-btn">arrow_forward</button>
+                </form>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--color-border-subtle); margin-top: 64px; padding-top: 24px; text-align: center;">
+            <p class="text-caption">Â© 2026 Mage Optique &amp; Services. Expertise Optique d'Excellence. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- Interactive Sidebar Concierge -->
+    <div style="position: fixed; bottom: 32px; right: 32px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 16px;">
+        <div id="concierge-message" class="glass-effect" style="display: none; padding: 12px 20px; border-radius: var(--border-radius-lg); font-size: 0.875rem; font-weight: 500; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-color: var(--color-muted-gold); animation: fadeIn 0.3s ease-out; max-width: 240px; color: var(--color-deep-charcoal);">
+            Besoin d'un conseil ? Chattez avec l'un de nos visagistes en direct.
+        </div>
+        <button onclick="alert('L\'assistant conseil Mage Optique &amp; Services est en cours d\'initialisation...')" onmouseover="document.getElementById('concierge-message').style.display='block'" onmouseout="document.getElementById('concierge-message').style.display='none'" class="flex-center" style="width: 56px; height: 56px; border-radius: var(--border-radius-full); background-color: var(--color-deep-charcoal); color: var(--color-paper-white); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; transition: var(--transition-fast);" id="concierge-floating-btn">
+            <span class="material-symbols-outlined" style="font-size: 28px;">chat</span>
+        </button>
+    </div>
+
+    <!-- Core Scripting -->
+    <script src="js/db.js?v=3"></script>
+    <script src="js/main.js?v=7"></script>
+    <script>
+        // Smooth fade-in hero carousel automation
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.carousel-slide');
+            if (slides.length === 0) return;
+            
+            let currentIdx = 0;
+            setInterval(() => {
+                slides[currentIdx].classList.remove('active');
+                currentIdx = (currentIdx + 1) % slides.length;
+                slides[currentIdx].classList.add('active');
+            }, 5000); // Transitions every 5 seconds
+
+            // Initial bento render
+            renderBentoGrid();
+        });
+
+        // Re-render when products are synced from Supabase
+        window.addEventListener('supabase-synced', renderBentoGrid);
+
+        function renderBentoGrid() {
+            const products = typeof getProducts === 'function' ? getProducts() : [];
+            
+            // 1. Large Bento
+            const pLarge = products.find(p => p.homepage_placement === 'large');
+            const cardLarge = document.getElementById('bento-card-large');
+            if (cardLarge) {
+                if (pLarge) {
+                    cardLarge.setAttribute('onclick', `location.href='details.html?id=${pLarge.id}'`);
+                    cardLarge.innerHTML = `
+                        <div class="bento-image-wrapper">
+                            <img src="${pLarge.image}" alt="${pLarge.title}" class="bento-img">
+                        </div>
+                        <div>
+                            <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">${pLarge.tag || 'Édition Limitée'}</span>
+                            <h3 class="text-headline-md">${pLarge.title}</h3>
+                            <p class="text-body-md" style="margin-top: 4px;">${pLarge.desc}</p>
+                        </div>
+                    `;
+                } else {
+                    cardLarge.setAttribute('onclick', `location.href='details.html?id=prod-1'`);
+                    cardLarge.innerHTML = `
+                        <div class="bento-image-wrapper">
+                            <img src="assets/bento_wood.png" alt="Artisanal wood spectacles" class="bento-img">
+                        </div>
+                        <div>
+                            <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">Édition Limitée</span>
+                            <h3 class="text-headline-md">L'Héritage Artisanal</h3>
+                            <p class="text-body-md" style="margin-top: 4px;">Lunettes exclusives façonnées en acétate noble et bois précieux.</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // 2. Small Bento 1
+            const pSmall1 = products.find(p => p.homepage_placement === 'small1');
+            const cardSmall1 = document.getElementById('bento-card-small1');
+            if (cardSmall1) {
+                if (pSmall1) {
+                    cardSmall1.setAttribute('onclick', `location.href='details.html?id=${pSmall1.id}'`);
+                    cardSmall1.innerHTML = `
+                        <div class="bento-image-wrapper">
+                            <img src="${pSmall1.image}" alt="${pSmall1.title}" class="bento-img">
+                        </div>
+                        <div>
+                            <h4 class="text-label-md" style="margin-bottom: 4px;">${pSmall1.title}</h4>
+                            <p class="text-body-md" style="color: var(--color-muted-gold); font-weight: 600;">${new Intl.NumberFormat('fr-FR').format(pSmall1.price)} FCFA</p>
+                        </div>
+                    `;
+                } else {
+                    cardSmall1.setAttribute('onclick', `location.href='details.html?id=prod-2'`);
+                    cardSmall1.innerHTML = `
+                        <div class="bento-image-wrapper">
+                            <img src="assets/bento_titanium.png" alt="Titanium Minimal" class="bento-img">
+                        </div>
+                        <div>
+                            <h4 class="text-label-md" style="margin-bottom: 4px;">Titanium Minimal</h4>
+                            <p class="text-body-md" style="color: var(--color-muted-gold); font-weight: 600;">68 000 FCFA</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // 3. Small Bento 2
+            const pSmall2 = products.find(p => p.homepage_placement === 'small2');
+            const cardSmall2 = document.getElementById('bento-card-small2');
+            if (cardSmall2) {
+                if (pSmall2) {
+                    cardSmall2.setAttribute('onclick', `location.href='details.html?id=${pSmall2.id}'`);
+                    cardSmall2.innerHTML = `
+                        <div class="bento-image-wrapper">
+                            <img src="${pSmall2.image}" alt="${pSmall2.title}" class="bento-img">
+                        </div>
+                        <div>
+                            <h4 class="text-label-md" style="margin-bottom: 4px;">${pSmall2.title}</h4>
+                            <p class="text-body-md" style="color: var(--color-muted-gold); font-weight: 600;">${new Intl.NumberFormat('fr-FR').format(pSmall2.price)} FCFA</p>
+                        </div>
+                    `;
+                } else {
+                    cardSmall2.setAttribute('onclick', `location.href='details.html?id=prod-3'`);
+                    cardSmall2.innerHTML = `
+                        <div class="bento-image-wrapper">
+                            <img src="assets/bento_tortoise.png" alt="Tortoise Shell Sun" class="bento-img">
+                        </div>
+                        <div>
+                            <h4 class="text-label-md" style="margin-bottom: 4px;">Tortoise Shell Sun</h4>
+                            <p class="text-body-md" style="color: var(--color-muted-gold); font-weight: 600;">75 000 FCFA</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // 4. Medium Bento
+            const pMedium = products.find(p => p.homepage_placement === 'medium');
+            const cardMedium = document.getElementById('bento-card-medium');
+            if (cardMedium) {
+                if (pMedium) {
+                    cardMedium.setAttribute('onclick', `location.href='details.html?id=${pMedium.id}'`);
+                    cardMedium.innerHTML = `
+                        <div style="display: flex; height: 100%; width: 100%; align-items: center; gap: 24px;">
+                            <div style="width: 50%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                                <img src="${pMedium.image}" alt="${pMedium.title}" class="bento-img" style="max-height: 180px;">
+                            </div>
+                            <div style="width: 50%;">
+                                <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">${pMedium.tag || 'Tendance 2026'}</span>
+                                <h3 class="text-headline-md" style="margin-bottom: 8px;">${pMedium.title}</h3>
+                                <p class="text-body-md" style="margin-bottom: 16px;">${pMedium.desc}</p>
+                                <span class="btn-link">Découvrir</span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    cardMedium.setAttribute('onclick', `location.href='details.html?id=prod-4'`);
+                    cardMedium.innerHTML = `
+                        <div style="display: flex; height: 100%; width: 100%; align-items: center; gap: 24px;">
+                            <div style="width: 50%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                                <img src="assets/bento_cristal.png" alt="Collection Cristal" class="bento-img" style="max-height: 180px;">
+                            </div>
+                            <div style="width: 50%;">
+                                <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">Tendance 2026</span>
+                                <h3 class="text-headline-md" style="margin-bottom: 8px;">Collection Cristal</h3>
+                                <p class="text-body-md" style="margin-bottom: 16px;">Légèreté absolue et transparence épurée pour un look résolument contemporain.</p>
+                                <span class="btn-link">Découvrir</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            // Re-initialize 3D Card tilt effects on new content
+            if (typeof initTiltCards === 'function') {
+                initTiltCards();
+            }
+        }
+    </script>
+</body>
+</html>

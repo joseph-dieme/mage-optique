@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Découvrez l'histoire de Mage Optique & Services, notre atelier d'opticiens diplômés et notre amour pour les montures artisanales durables.">
+    <title>À Propos | Mage Optique & Services | Notre Histoire</title>
+    
+    <!-- Google Fonts & Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet">
+    
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="css/style.css?v=3">
+    
+    <style>
+        .testimonial-slider {
+            position: relative;
+            background-color: var(--color-paper-white);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--border-radius-lg);
+            padding: 56px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            text-align: center;
+        }
+        .testimonial-slide {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .testimonial-slide.active {
+            display: block;
+        }
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            border-radius: var(--border-radius-full);
+            background-color: var(--color-surface-container);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            z-index: 10;
+        }
+        .slider-arrow:hover {
+            background-color: var(--color-muted-gold);
+            color: var(--color-paper-white);
+        }
+        .slider-prev {
+            left: 20px;
+        }
+        .slider-next {
+            right: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Unified Header / TopAppBar -->
+    <header class="top-header glass-effect">
+        <div class="container nav-bar">
+            <a href="index.html" class="nav-logo" id="logo-link">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique &amp; Services Logo" class="logo-img">
+                <span class="logo-text font-serif">Mage Optique &amp; Services</span>
+            </a>
+            
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Accueil</a>
+                <a href="boutique.html" class="nav-link">Boutique</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="a-propos.html" class="nav-link active">À Propos</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </nav>
+            
+            <div class="nav-actions">
+                <a href="boutique.html" class="material-symbols-outlined icon-btn" id="search-nav-btn">search</a>
+                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre liste de favoris est vide.')" id="fav-nav-btn">favorite</span>
+                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre panier Mage Optique &amp; Services est vide.')" id="cart-nav-btn">shopping_bag</span>
+                <a href="connexion.html" class="material-symbols-outlined icon-btn" id="login-nav-btn">person</a>
+                <span class="mobile-nav-toggle material-symbols-outlined" id="menu-toggle-btn">menu</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Menu -->
+    <div class="mobile-menu-overlay" id="drawer-overlay"></div>
+    <div class="mobile-menu" id="drawer-menu">
+        <div class="mobile-menu-header">
+            <span class="font-serif text-headline-md">Mage Optique &amp; Services</span>
+            <span class="material-symbols-outlined icon-btn close-menu" id="close-menu-btn">close</span>
+        </div>
+        <nav class="mobile-nav-links">
+            <a href="index.html" class="mobile-nav-link">Accueil</a>
+            <a href="boutique.html" class="mobile-nav-link">Boutique</a>
+            <a href="services.html" class="mobile-nav-link">Services</a>
+            <a href="a-propos.html" class="mobile-nav-link active">À Propos</a>
+            <a href="contact.html" class="mobile-nav-link">Contact</a>
+            <a href="connexion.html" class="mobile-nav-link">Connexion</a>
+        </nav>
+    </div>
+
+    <!-- Main Container -->
+    <main style="padding-top: 80px;">
+
+        <!-- Editorial About header -->
+        <section class="section-padding container animate-fade-in" style="padding-bottom: 40px;">
+            <div style="text-align: center; max-width: 600px; margin: 0 auto;">
+                <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">L'Atelier Mage</span>
+                <h1 class="text-display-lg">Savoir-Faire &amp; Exigence</h1>
+                <p class="text-body-md" style="margin-top: 12px;">depuis 5 ans, notre salon s'attache à marier la rigueur de la santé visuelle au raffinement de la haute lunetterie.</p>
+            </div>
+        </section>
+
+        <!-- Editorial Content 1 -->
+        <section class="container" style="padding-bottom: 80px;">
+            <div class="grid-cols-12" style="align-items: center; gap: 48px;">
+                <div class="col-span-6">
+                    <h2 class="text-headline-lg font-serif" style="margin-bottom: 20px;">L'amour des matières nobles</h2>
+                    <p class="text-body-md" style="margin-bottom: 20px; line-height: 1.7;">
+                        Chez Mage Optique &amp; Services, nous considérons la lunette comme une Å“uvre d'art et un prolongement de votre personality. C'est pourquoi nous sélectionnons rigoureusement des créateurs qui partagent nos valeurs de durabilité et d'esthétique.
+                    </p>
+                    <p class="text-body-md" style="line-height: 1.7;">
+                        Nous travaillons avec des acétates de cellulose d'origine végétale issus d'ateliers centenaires, des bois précieux certifiés éco-responsables et des métaux chirurgicaux anallergiques comme le titane japonais. Chaque monture de notre collection porte en elle l'histoire d'un artisanat de transmission.
+                    </p>
+                </div>
+                <div class="col-span-6" style="border-radius: var(--border-radius-lg); overflow: hidden; height: 380px;">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuADvTQRHptO9tv2gvFXJyVQrLIB95XR_oMJDrZBixRKNQAGFvId4U0befUAq3AKC4Gr8v4HHExgSVHNLqoy4TAv6BZ-fn0PUVJlFWGcybZpd2BeNAAZsItl93Ka-TphZaaq5JyH8tzP6hqbhSXKg_PTvHxMH6WurvmsGDgIO3Bs_HT2m3R-i-ulgeSpmWugDIpWG8Q5ixZzsLyOBq5pPUSh4w4jIMbIEyjafLaknc8Rfln4dCL1nIJlseP16_fNynuIx5ambsxZmrI" alt="Spectacles crafting" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+            </div>
+        </section>
+
+        <!-- Editorial Content 2 -->
+        <section class="container" style="padding-bottom: 96px;">
+            <div class="grid-cols-12" style="align-items: center; gap: 48px;">
+                <div class="col-span-6" style="border-radius: var(--border-radius-lg); overflow: hidden; height: 380px;">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcd2-kkh19cvWdNnfOOF9yyPj69DcVgo6DBArkuflx6WanLsnAaD-roiiRK-pa9xob-qCeDH5duJvww5JgT7mb2aW-V96y0WryDZkVNCBDkzQkgceoq2gTJ4OBHlch8U4-EW98D2gAG0rmQt1aGAUejSRMmJ19u7vMP-HN-JUQKZ6jDi9otP7QxYB18DHTIygE8DLFd7_CDZqTbdcieIYddWX9FDPSbjKmpQLsbeJstvHhagBlBRqiz9JtpjlEJ9MI9Wnc6E6LJ7w" alt="Optician consultation office" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                
+                <div class="col-span-6">
+                    <h2 class="text-headline-lg font-serif" style="margin-bottom: 20px;">L'expertise optique de pointe</h2>
+                    <p class="text-body-md" style="margin-bottom: 20px; line-height: 1.7;">
+                        Notre vocation ne s'arrête pas à l'élégance du design. Notre équipe est constituée d'opticiens-lunetiers diplômés d'Ã‰tat continuellement formés aux dernières innovations technologiques de la réfraction clinique.
+                    </p>
+                    <p class="text-body-md" style="line-height: 1.7;">
+                        Dans notre espace d'examen, nous mesurons précisément vos paramètres visuels en utilisant des méthodes de centrage numérique 3D brevetées. Cela nous permet de calibrer vos verres au dixième de millimètre près, garantissant une acuité visuelle sans distorsion et une adaptation immédiate.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonial slider component -->
+        <section style="background-color: var(--color-surface-container); padding: 96px 0;">
+            <div class="container">
+                <div style="text-align: center; max-width: 600px; margin: 0 auto 56px auto;">
+                    <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">Témoignages</span>
+                    <h2 class="text-headline-lg font-serif">La confiance de nos clients</h2>
+                </div>
+
+                <div class="testimonial-slider" id="testimonial-slider">
+                    <!-- Slide 1 -->
+                    <div class="testimonial-slide active">
+                        <span class="material-symbols-outlined" style="font-size: 48px; color: var(--color-muted-gold); margin-bottom: 24px;">format_quote</span>
+                        <p class="text-body-lg" style="font-family: var(--font-serif); font-style: italic; color: var(--color-deep-charcoal); line-height: 1.8; max-width: 800px; margin: 0 auto 24px auto;">
+                            "Une expérience d'achat incomparable. J'ai été bluffée par l'expertise en visagisme de l'équipe Mage Optique &amp; Services. Ils ont immédiatement identifié la forme de monture qui mettait en valeur mon regard, et la qualité des verres progressifs est tout simplement parfaite."
+                        </p>
+                        <h4 class="text-label-md" style="color: var(--color-muted-gold); font-size: 0.9rem;">Hélène D. - Artiste Peintre</h4>
+                    </div>
+
+                    <!-- Slide 2 -->
+                    <div class="testimonial-slide">
+                        <span class="material-symbols-outlined" style="font-size: 48px; color: var(--color-muted-gold); margin-bottom: 24px;">format_quote</span>
+                        <p class="text-body-lg" style="font-family: var(--font-serif); font-style: italic; color: var(--color-deep-charcoal); line-height: 1.8; max-width: 800px; margin: 0 auto 24px auto;">
+                            "J'achète toutes mes lunettes solaires et d'affaires chez Mage Optique &amp; Services depuis 5 ans. Leur service d'entretien et d'ajustement gratuit à vie est exceptionnel. La monture en titane que je porte au quotidien est d'une solidité et d'une légèreté incomparables."
+                        </p>
+                        <h4 class="text-label-md" style="color: var(--color-muted-gold); font-size: 0.9rem;">Alexandre M. - Cabinet de Conseil</h4>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="testimonial-slide">
+                        <span class="material-symbols-outlined" style="font-size: 48px; color: var(--color-muted-gold); margin-bottom: 24px;">format_quote</span>
+                        <p class="text-body-lg" style="font-family: var(--font-serif); font-style: italic; color: var(--color-deep-charcoal); line-height: 1.8; max-width: 800px; margin: 0 auto 24px auto;">
+                            "Le service d'essai à domicile de Mage Optique &amp; Services a révolutionné ma façon de choisir mes lunettes. L'opticien s'est déplacé directement à mon bureau avec une sélection splendide de montures en acétate. Un service VIP inestimable quand on manque de temps."
+                        </p>
+                        <h4 class="text-label-md" style="color: var(--color-muted-gold); font-size: 0.9rem;">Sophia K. - Directrice de Galerie d'Art</h4>
+                    </div>
+
+                    <!-- Navigation arrows -->
+                    <button class="slider-arrow slider-prev flex-center" id="prev-slide-btn">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <button class="slider-arrow slider-next flex-center" id="next-slide-btn">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Unified Footer -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div>
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique &amp; Services Logo" style="height: 64px; margin-bottom: 24px; width: auto; object-fit: contain;">
+                <p class="text-body-md" style="margin-bottom: 24px;">Expertise Optique d'Excellence et collections haut de gamme à votre service depuis 5 ans.</p>
+                <div class="footer-socials">
+                    <span class="material-symbols-outlined social-icon" id="soc-instagram">public</span>
+                    <span class="material-symbols-outlined social-icon" id="soc-share">share</span>
+                </div>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Navigation</h5>
+                <ul class="footer-links">
+                    <li><a href="index.html" class="footer-link">Accueil</a></li>
+                    <li><a href="boutique.html" class="footer-link">Boutique</a></li>
+                    <li><a href="services.html" class="footer-link">Nos Services</a></li>
+                    <li><a href="a-propos.html" class="footer-link">À Propos</a></li>
+                    <li><a href="contact.html" class="footer-link">Rendez-vous</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Contact &amp; Accès</h5>
+                <ul class="footer-links text-body-md">
+                    <li style="display: flex; gap: 12px; align-items: flex-start;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; margin-top: 4px; color: var(--color-muted-gold);">location_on</span>
+                        <span>Ouest Foire, Dakar, Sénégal</span>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: center;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-muted-gold);">call</span>
+                        <span>+221 78 681 15 26</span>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: center;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-muted-gold);">mail</span>
+                        <span>contact@mageoptique.fr</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Newsletter</h5>
+                <p class="text-body-md" style="margin-bottom: 20px;">Abonnez-vous pour recevoir les dernières collections de créateurs et des conseils de santé visuelle.</p>
+                <form onsubmit="event.preventDefault(); alert('Merci pour votre inscription à la newsletter Mage Optique &amp; Services !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
+                    <input type="email" placeholder="Votre adresse e-mail" style="flex-grow: 1; padding: 4px 0; color: var(--color-deep-charcoal); font-size: 0.95rem;" required id="news-email-input">
+                    <button type="submit" class="material-symbols-outlined" style="color: var(--color-muted-gold); cursor: pointer;" id="news-submit-btn">arrow_forward</button>
+                </form>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--color-border-subtle); margin-top: 64px; padding-top: 24px; text-align: center;">
+            <p class="text-caption">Â© 2026 Mage Optique &amp; Services. Expertise Optique d'Excellence. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- Interactive Sidebar Concierge -->
+    <div style="position: fixed; bottom: 32px; right: 32px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 16px;">
+        <div id="concierge-message" class="glass-effect" style="display: none; padding: 12px 20px; border-radius: var(--border-radius-lg); font-size: 0.875rem; font-weight: 500; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-color: var(--color-muted-gold); animation: fadeIn 0.3s ease-out; max-width: 240px; color: var(--color-deep-charcoal);">
+            Besoin d'un conseil ? Chattez avec l'un de nos visagistes en direct.
+        </div>
+        <button onclick="alert('L\'assistant conseil Mage Optique &amp; Services est en cours d\'initialisation...')" onmouseover="document.getElementById('concierge-message').style.display='block'" onmouseout="document.getElementById('concierge-message').style.display='none'" class="flex-center" style="width: 56px; height: 56px; border-radius: var(--border-radius-full); background-color: var(--color-deep-charcoal); color: var(--color-paper-white); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; transition: var(--transition-fast);" id="concierge-floating-btn">
+            <span class="material-symbols-outlined" style="font-size: 28px;">chat</span>
+        </button>
+    </div>
+
+    <!-- Core Scripting & Testimonials slider scripting -->
+    <script src="js/db.js?v=3"></script>
+    <script src="js/main.js?v=7"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.testimonial-slide');
+            const prevBtn = document.getElementById('prev-slide-btn');
+            const nextBtn = document.getElementById('next-slide-btn');
+            let currentSlide = 0;
+
+            function showSlide(idx) {
+                slides.forEach(slide => slide.classList.remove('active'));
+                
+                // Wrap index
+                if (idx < 0) {
+                    currentSlide = slides.length - 1;
+                } else if (idx >= slides.length) {
+                    currentSlide = 0;
+                } else {
+                    currentSlide = idx;
+                }
+
+                slides[currentSlide].classList.add('active');
+            }
+
+            if (prevBtn && nextBtn) {
+                prevBtn.addEventListener('click', () => {
+                    showSlide(currentSlide - 1);
+                });
+                
+                nextBtn.addEventListener('click', () => {
+                    showSlide(currentSlide + 1);
+                });
+            }
+
+            // Auto rotation every 8 seconds
+            setInterval(() => {
+                showSlide(currentSlide + 1);
+            }, 8000);
+        });
+    </script>
+</body>
+</html>

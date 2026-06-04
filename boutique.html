@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explorez la boutique en ligne Mage Optique & Services. Découvrez notre sélection exclusive de lunettes de vue et de lunettes de soleil de luxe.">
+    <title>La Boutique | Mage Optique & Services | Haute Lunetterie</title>
+    
+    <!-- Google Fonts & Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet">
+    
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="css/style.css?v=3">
+    
+    <style>
+        .filter-tab {
+            padding: 10px 24px;
+            font-family: var(--font-sans);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition-fast);
+            color: var(--color-soft-slate);
+        }
+        .filter-tab.active, .filter-tab:hover {
+            color: var(--color-muted-gold);
+            border-color: var(--color-muted-gold);
+        }
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+        }
+        .search-input {
+            width: 100%;
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--border-radius-md);
+            padding: 12px 40px 12px 16px;
+            font-size: 0.95rem;
+            transition: var(--transition-fast);
+            background-color: var(--color-paper-white);
+        }
+        .search-input:focus {
+            border-color: var(--color-muted-gold);
+        }
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-soft-slate);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Unified Header / TopAppBar -->
+    <header class="top-header glass-effect">
+        <div class="container nav-bar">
+            <a href="index.html" class="nav-logo" id="logo-link">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique &amp; Services Logo" class="logo-img">
+                <span class="logo-text font-serif">Mage Optique &amp; Services</span>
+            </a>
+            
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Accueil</a>
+                <a href="boutique.html" class="nav-link active">Boutique</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="a-propos.html" class="nav-link">À Propos</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </nav>
+            
+            <div class="nav-actions">
+                <a href="boutique.html" class="material-symbols-outlined icon-btn active-icon" id="search-nav-btn" style="color: var(--color-muted-gold);">search</a>
+                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre liste de favoris est vide.')" id="fav-nav-btn">favorite</span>
+                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre panier Mage Optique &amp; Services est vide.')" id="cart-nav-btn">shopping_bag</span>
+                <a href="connexion.html" class="material-symbols-outlined icon-btn" id="login-nav-btn">person</a>
+                <span class="mobile-nav-toggle material-symbols-outlined" id="menu-toggle-btn">menu</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Menu -->
+    <div class="mobile-menu-overlay" id="drawer-overlay"></div>
+    <div class="mobile-menu" id="drawer-menu">
+        <div class="mobile-menu-header">
+            <span class="font-serif text-headline-md">Mage Optique &amp; Services</span>
+            <span class="material-symbols-outlined icon-btn close-menu" id="close-menu-btn">close</span>
+        </div>
+        <nav class="mobile-nav-links">
+            <a href="index.html" class="mobile-nav-link">Accueil</a>
+            <a href="boutique.html" class="mobile-nav-link active">Boutique</a>
+            <a href="services.html" class="mobile-nav-link">Services</a>
+            <a href="a-propos.html" class="mobile-nav-link">À Propos</a>
+            <a href="contact.html" class="mobile-nav-link">Contact</a>
+            <a href="connexion.html" class="mobile-nav-link">Connexion</a>
+        </nav>
+    </div>
+
+    <!-- Main Container -->
+    <main style="padding-top: 80px;">
+
+        <!-- Header Panel -->
+        <section class="section-padding container animate-fade-in" style="padding-bottom: 24px;">
+            <div style="text-align: center; max-width: 600px; margin: 0 auto 40px auto;">
+                <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">Haute Lunetterie</span>
+                <h1 class="text-display-lg">La Collection Signature</h1>
+                <p class="text-body-md" style="margin-top: 12px;">Une alliance subtile d'excellence technologique, d'acétates de prestige et de métaux nobles pour une vision d'exception.</p>
+            </div>
+
+            <!-- Category Tabs & Search Bar -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 24px; border-bottom: 1px solid var(--color-border-subtle); padding-bottom: 16px; margin-bottom: 48px;">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;" id="boutique-tabs">
+                    <span class="filter-tab active" data-category="all">Tout voir</span>
+                    <span class="filter-tab" data-category="vue">Nouveautés</span>
+                    <span class="filter-tab" data-category="solaire">Solaires</span>
+                    <span class="filter-tab" data-category="premium">Éditions Limitées</span>
+                    <span class="filter-tab" data-category="homme">Hommes</span>
+                    <span class="filter-tab" data-category="femme">Femmes</span>
+                    <span class="filter-tab" data-category="enfant">Enfants</span>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" placeholder="Rechercher une monture..." class="search-input" id="search-input">
+                    <span class="material-symbols-outlined search-icon">search</span>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="grid-cols-12" id="product-grid" style="row-gap: 48px;">
+            </div>
+        </section>
+        
+    </main>
+
+    <!-- Unified Footer -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div>
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique &amp; Services Logo" style="height: 64px; margin-bottom: 24px; width: auto; object-fit: contain;">
+                <p class="text-body-md" style="margin-bottom: 24px;">Expertise Optique d'Excellence et collections haut de gamme à votre service depuis 5 ans.</p>
+                <div class="footer-socials">
+                    <span class="material-symbols-outlined social-icon" id="soc-instagram">public</span>
+                    <span class="material-symbols-outlined social-icon" id="soc-share">share</span>
+                </div>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Navigation</h5>
+                <ul class="footer-links">
+                    <li><a href="index.html" class="footer-link">Accueil</a></li>
+                    <li><a href="boutique.html" class="footer-link">Boutique</a></li>
+                    <li><a href="services.html" class="footer-link">Nos Services</a></li>
+                    <li><a href="a-propos.html" class="footer-link">À Propos</a></li>
+                    <li><a href="contact.html" class="footer-link">Rendez-vous</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Contact &amp; Accès</h5>
+                <ul class="footer-links text-body-md">
+                    <li style="display: flex; gap: 12px; align-items: flex-start;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; margin-top: 4px; color: var(--color-muted-gold);">location_on</span>
+                        <span>Ouest Foire, Dakar, Sénégal</span>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: center;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-muted-gold);">call</span>
+                        <span>+221 78 681 15 26</span>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: center;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-muted-gold);">mail</span>
+                        <span>contact@mageoptique.fr</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Newsletter</h5>
+                <p class="text-body-md" style="margin-bottom: 20px;">Abonnez-vous pour recevoir les dernières collections de créateurs et des conseils de santé visuelle.</p>
+                <form onsubmit="event.preventDefault(); alert('Merci pour votre inscription à la newsletter Mage Optique &amp; Services !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
+                    <input type="email" placeholder="Votre adresse e-mail" style="flex-grow: 1; padding: 4px 0; color: var(--color-deep-charcoal); font-size: 0.95rem;" required id="news-email-input">
+                    <button type="submit" class="material-symbols-outlined" style="color: var(--color-muted-gold); cursor: pointer;" id="news-submit-btn">arrow_forward</button>
+                </form>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--color-border-subtle); margin-top: 64px; padding-top: 24px; text-align: center;">
+            <p class="text-caption">Â© 2026 Mage Optique &amp; Services. Expertise Optique d'Excellence. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- Interactive Sidebar Concierge -->
+    <div style="position: fixed; bottom: 32px; right: 32px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 16px;">
+        <div id="concierge-message" class="glass-effect" style="display: none; padding: 12px 20px; border-radius: var(--border-radius-lg); font-size: 0.875rem; font-weight: 500; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-color: var(--color-muted-gold); animation: fadeIn 0.3s ease-out; max-width: 240px; color: var(--color-deep-charcoal);">
+            Besoin d'un conseil ? Chattez avec l'un de nos visagistes en direct.
+        </div>
+        <button onclick="alert('L\'assistant conseil Mage Optique &amp; Services est en cours d\'initialisation...')" onmouseover="document.getElementById('concierge-message').style.display='block'" onmouseout="document.getElementById('concierge-message').style.display='none'" class="flex-center" style="width: 56px; height: 56px; border-radius: var(--border-radius-full); background-color: var(--color-deep-charcoal); color: var(--color-paper-white); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; transition: var(--transition-fast);" id="concierge-floating-btn">
+            <span class="material-symbols-outlined" style="font-size: 28px;">chat</span>
+        </button>
+    </div>
+
+    <!-- Core Scripting & Boutique database & filters scripting -->
+    <script src="js/db.js?v=3"></script>
+    <script src="js/main.js?v=7"></script>
+    <script>
+        function initBoutique() {
+            const tabs = document.querySelectorAll('.filter-tab');
+            const searchInput = document.getElementById('search-input');
+            const productGrid = document.getElementById('product-grid');
+            if (!productGrid) return;
+
+            function renderProducts() {
+                const activeTab = document.querySelector('.filter-tab.active');
+                const category = activeTab.getAttribute('data-category');
+                const searchQuery = searchInput.value.toLowerCase().trim();
+                const products = getProducts();
+
+                productGrid.innerHTML = '';
+                let renderedCount = 0;
+
+                products.forEach(p => {
+                    const matchesCategory = (category === 'all' || p.category === category || p.gender === category);
+                    const matchesSearch = (p.title.toLowerCase().includes(searchQuery) || 
+                                           p.desc.toLowerCase().includes(searchQuery) || 
+                                           (p.category && p.category.toLowerCase().includes(searchQuery)) || 
+                                           (p.gender && p.gender.toLowerCase().includes(searchQuery)) || 
+                                           (p.tag && p.tag.toLowerCase().includes(searchQuery)) || 
+                                           (p.specs && p.specs.toLowerCase().includes(searchQuery)));
+
+                    if (matchesCategory && matchesSearch) {
+                        renderedCount++;
+                        const card = document.createElement('div');
+                        card.className = 'product-card col-span-4 animate-fade-in';
+                        card.setAttribute('data-category', p.category);
+
+                        // Tag style
+                        let tagStyle = '';
+                        if (p.category === 'solaire') tagStyle = 'style="background-color: var(--color-deep-charcoal);"';
+
+                        // Favorites active status determination
+                        const isFav = typeof getFavorites === 'function' ? getFavorites().includes(p.id) : false;
+                        const favStyle = isFav ? 'style="color: red; top: 40px; right: 40px; z-index: 10;"' : 'style="top: 40px; right: 40px; z-index: 10;"';
+                        const favClass = isFav ? 'material-symbols-outlined product-favorite active-favorite' : 'material-symbols-outlined product-favorite';
+
+                        card.innerHTML = `
+                            <div class="product-img-wrapper" onclick="location.href='details.html?id=${p.id}'">
+                                <div class="product-tag" ${tagStyle}>${p.tag}</div>
+                                <img src="${p.image}" alt="${p.title}" class="product-img">
+                            </div>
+                            <span class="${favClass}" ${favStyle} data-product-id="${p.id}" onclick="event.stopPropagation(); toggleFavoriteMockup(this, '${p.id}')">favorite</span>
+                            <div>
+                                <h3 class="text-headline-md" style="font-size: 1.25rem; margin-bottom: 8px; cursor: pointer;" onclick="location.href='details.html?id=${p.id}'">${p.title}</h3>
+                                <p class="text-caption" style="margin-bottom: 12px;">${p.desc}</p>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                     <span class="text-body-md" style="color: var(--color-muted-gold); font-weight: 700;">${new Intl.NumberFormat('fr-FR').format(p.price)} FCFA</span>
+                                     <button class="btn btn-secondary" style="padding: 10px 16px; font-size: 0.75rem;" onclick="addToCartMockup('${p.id}')">Ajouter</button>
+                                </div>
+                            </div>
+                        `;
+                        productGrid.appendChild(card);
+                    }
+                });
+
+                if (renderedCount === 0) {
+                    productGrid.innerHTML = `
+                        <div class="col-span-12 animate-fade-in" style="text-align: center; padding: 80px var(--margin-mobile); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;">
+                            <span class="material-symbols-outlined" style="font-size: 64px; color: var(--color-soft-slate); opacity: 0.3;">info</span>
+                            <h3 class="font-serif text-headline-md" style="margin: 0; color: var(--color-deep-charcoal);">Boutique vide</h3>
+                            <p class="text-body-md" style="color: var(--color-soft-slate); max-width: 440px; margin: 0 auto; font-size: 0.95rem; line-height: 1.6;">Notre catalogue est en cours d'approvisionnement ou aucun modèle ne correspond aux filtres de recherche appliqués.</p>
+                        </div>
+                    `;
+                }
+
+                // Re-initialize 3D Card tilt effects for newly rendered elements!
+                initTiltCards();
+            }
+
+            // Tabs events
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    renderProducts();
+                });
+            });
+
+            // Search events & synchronization with header search input
+            searchInput.addEventListener('input', () => {
+                const headerSearchInput = document.getElementById('nav-search-input');
+                if (headerSearchInput) {
+                    headerSearchInput.value = searchInput.value;
+                }
+                renderProducts();
+            });
+
+            // Check if there is a search query in the URL params
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialQuery = urlParams.get('search');
+            if (initialQuery) {
+                searchInput.value = initialQuery;
+                tabs.forEach(t => t.classList.remove('active'));
+                const allTab = document.querySelector('.filter-tab[data-category="all"]');
+                if (allTab) allTab.classList.add('active');
+                
+                // Wait a bit to sync with header search input
+                setTimeout(() => {
+                    const headerSearchInput = document.getElementById('nav-search-input');
+                    if (headerSearchInput) {
+                        headerSearchInput.value = initialQuery;
+                    }
+                }, 100);
+            }
+
+            // Initial render
+            renderProducts();
+
+            // Background sync event listener
+            window.addEventListener('supabase-synced', renderProducts);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initBoutique);
+        } else {
+            initBoutique();
+        }
+    </script>
+</body>
+</html>

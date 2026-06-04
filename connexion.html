@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Espace Client Privé Mage Optique & Services. Suivez l'état de vos commandes de montures d'exception et gérez vos informations.">
+    <title>Espace Client d'Excellence | Mage Optique & Services</title>
+    
+    <!-- Google Fonts & Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet">
+    
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="css/style.css?v=3">
+    
+    <style>
+        body {
+            background-color: var(--color-background);
+            color: var(--color-deep-charcoal);
+        }
+        
+        .client-portal-container {
+            padding: 48px 0 96px 0;
+            min-height: 70vh;
+        }
+        
+        .luxury-card {
+            background-color: var(--color-paper-white);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--border-radius-lg);
+            padding: 48px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        .login-card-mini {
+            max-width: 440px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .order-history-card {
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--border-radius-md);
+            padding: 24px;
+            margin-bottom: 24px;
+            background-color: #faf9f6;
+            transition: var(--transition-fast);
+        }
+        
+        .order-history-card:hover {
+            border-color: var(--color-muted-gold);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--color-border-subtle);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .order-id {
+            font-family: monospace;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--color-muted-gold);
+        }
+        
+        .order-date {
+            font-size: 0.8rem;
+            color: var(--color-soft-slate);
+        }
+        
+        .order-item-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+        }
+        
+        .order-item-row:last-child {
+            border-bottom: none;
+        }
+        
+        .order-total-row {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--color-border-subtle);
+            color: var(--color-deep-charcoal);
+        }
+        
+        .badge-status {
+            padding: 4px 12px;
+            border-radius: var(--border-radius-full);
+            font-size: 0.725rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .status-pending {
+            background-color: rgba(197, 160, 89, 0.15);
+            color: var(--color-muted-gold);
+        }
+        
+        .status-confirmed {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+        }
+        
+        .status-cancelled {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--color-error);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Unified Header / TopAppBar -->
+    <header class="top-header glass-effect">
+        <div class="container nav-bar">
+            <a href="index.html" class="nav-logo" id="logo-link">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique &amp; Services Logo" class="logo-img">
+                <span class="logo-text font-serif">Mage Optique &amp; Services</span>
+            </a>
+            
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Accueil</a>
+                <a href="boutique.html" class="nav-link">Boutique</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="a-propos.html" class="nav-link">À Propos</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </nav>
+            
+            <div class="nav-actions">
+                <a href="boutique.html" class="material-symbols-outlined icon-btn" id="search-nav-btn">search</a>
+                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre liste de favoris est vide.')" id="fav-nav-btn">favorite</span>
+                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre panier Mage Optique &amp; Services est vide.')" id="cart-nav-btn">shopping_bag</span>
+                <a href="connexion.html" class="material-symbols-outlined icon-btn active-icon" id="login-nav-btn" style="color: var(--color-muted-gold);">person</a>
+                <span class="mobile-nav-toggle material-symbols-outlined" id="menu-toggle-btn">menu</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Menu -->
+    <div class="mobile-menu-overlay" id="drawer-overlay"></div>
+    <div class="mobile-menu" id="drawer-menu">
+        <div class="mobile-menu-header">
+            <span class="font-serif text-headline-md">Mage Optique &amp; Services</span>
+            <span class="material-symbols-outlined icon-btn close-menu" id="close-menu-btn">close</span>
+        </div>
+        <nav class="mobile-nav-links">
+            <a href="index.html" class="mobile-nav-link">Accueil</a>
+            <a href="boutique.html" class="mobile-nav-link">Boutique</a>
+            <a href="services.html" class="mobile-nav-link">Services</a>
+            <a href="a-propos.html" class="mobile-nav-link">À Propos</a>
+            <a href="contact.html" class="mobile-nav-link">Contact</a>
+            <a href="connexion.html" class="mobile-nav-link active">Connexion</a>
+        </nav>
+    </div>
+
+    <!-- Main Container -->
+    <main style="padding-top: 80px;">
+
+        <!-- Portal Section -->
+        <section class="container client-portal-container">
+            
+            <!-- STATE A: Client Logged In Portal -->
+            <div id="portal-logged-state" style="display: none;" class="luxury-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px; border-bottom: 2px solid var(--color-deep-charcoal); padding-bottom: 24px; margin-bottom: 40px;">
+                    <div>
+                        <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">Espace Membre</span>
+                        <h1 class="text-display-lg" style="font-size: 2.25rem; margin: 0;" id="portal-welcome-title">Bienvenue dans votre Salon Virtuel</h1>
+                        <p class="text-body-md" style="margin-top: 8px;" id="portal-welcome-subtitle">client@email.com</p>
+                    </div>
+                    
+                    <button class="btn btn-secondary" onclick="handleClientLogout()" style="padding: 12px 24px; display: flex; align-items: center; gap: 8px; font-size: 0.8rem;">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">logout</span>
+                        Déconnexion
+                    </button>
+                </div>
+
+                <div>
+                    <h3 class="font-serif text-headline-md" style="margin-bottom: 24px;">Historique de vos Commandes d'Excellence</h3>
+                    
+                    <!-- Dynamic orders list -->
+                    <div id="client-orders-container">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATE B: Login/Registration Form -->
+            <div id="portal-login-state" class="luxury-card" style="max-width: 500px;">
+                <div class="login-card-mini">
+                    <span class="material-symbols-outlined" style="font-size: 56px; color: var(--color-muted-gold); margin-bottom: 20px;">account_circle</span>
+                    
+                    <h2 class="font-serif text-headline-lg" style="margin-bottom: 8px;">Votre Espace Client</h2>
+                    <p class="text-body-md" style="color: var(--color-soft-slate); font-size: 0.95rem; margin-bottom: 32px;">Connectez-vous pour consulter l'historique et l'état de livraison de vos commandes.</p>
+                    
+                    <form id="client-login-form" onsubmit="event.preventDefault(); handleClientLoginSubmit();">
+                        <div class="form-group" style="text-align: left;">
+                            <label class="form-label" for="client-email">Votre adresse e-mail</label>
+                            <input type="email" id="client-email" class="form-input" placeholder="ex. client@exemple.com" required style="border-radius: var(--border-radius-md); border: 1px solid var(--color-border-subtle); padding: 12px;">
+                        </div>
+                        
+                        <div class="form-group" style="text-align: left; margin-bottom: 28px;">
+                            <label class="form-label" for="client-password">Mot de passe</label>
+                            <input type="password" id="client-password" class="form-input" placeholder="••••••••" required style="border-radius: var(--border-radius-md); border: 1px solid var(--color-border-subtle); padding: 12px;">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-gold" style="width: 100%; border: none; padding: 16px 0; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <span class="material-symbols-outlined" style="font-size: 20px;">login</span>
+                            Accéder à mon Espace
+                        </button>
+                    </form>
+                    
+                    <p class="text-caption" style="margin-top: 24px; font-size: 0.8rem; color: var(--color-soft-slate);">
+                        💡 <strong>Note :</strong> S'il s'agit de votre première visite, entrez simplement votre adresse e-mail et le mot de passe de votre choix pour créer instantanément votre compte.
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Unified Footer -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div>
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique &amp; Services Logo" style="height: 64px; margin-bottom: 24px; width: auto; object-fit: contain;">
+                <p class="text-body-md" style="margin-bottom: 24px;">Expertise Optique d'Excellence et collections haut de gamme à votre service depuis 5 ans.</p>
+                <div class="footer-socials">
+                    <span class="material-symbols-outlined social-icon" id="soc-instagram">public</span>
+                    <span class="material-symbols-outlined social-icon" id="soc-share">share</span>
+                </div>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Navigation</h5>
+                <ul class="footer-links">
+                    <li><a href="index.html" class="footer-link">Accueil</a></li>
+                    <li><a href="boutique.html" class="footer-link">Boutique</a></li>
+                    <li><a href="services.html" class="footer-link">Nos Services</a></li>
+                    <li><a href="a-propos.html" class="footer-link">À Propos</a></li>
+                    <li><a href="contact.html" class="footer-link">Rendez-vous</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Contact &amp; Accès</h5>
+                <ul class="footer-links text-body-md">
+                    <li style="display: flex; gap: 12px; align-items: flex-start;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; margin-top: 4px; color: var(--color-muted-gold);">location_on</span>
+                        <span>Ouest Foire, Dakar, Sénégal</span>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: center;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-muted-gold);">call</span>
+                        <span>+221 78 681 15 26</span>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: center;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-muted-gold);">mail</span>
+                        <span>contact@mageoptique.fr</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Newsletter</h5>
+                <p class="text-body-md" style="margin-bottom: 20px;">Abonnez-vous pour recevoir les dernières collections de créateurs et des conseils de santé visuelle.</p>
+                <form onsubmit="event.preventDefault(); alert('Merci pour votre inscription à la newsletter Mage Optique &amp; Services !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
+                    <input type="email" placeholder="Votre adresse e-mail" style="flex-grow: 1; padding: 4px 0; color: var(--color-deep-charcoal); font-size: 0.95rem;" required id="news-email-input">
+                    <button type="submit" class="material-symbols-outlined" style="color: var(--color-muted-gold); cursor: pointer;" id="news-submit-btn">arrow_forward</button>
+                </form>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--color-border-subtle); margin-top: 64px; padding-top: 24px; text-align: center;">
+            <p class="text-caption">© 2026 Mage Optique &amp; Services. Expertise Optique d'Excellence. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- Core Scripting -->
+    <script src="js/db.js?v=3"></script>
+    <script src="js/main.js?v=7"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPortalState();
+        });
+        window.addEventListener('supabase-synced', renderPortalState);
+
+        function renderPortalState() {
+            const isLogged = localStorage.getItem('mage_optique_client_logged') === 'true';
+            const email = localStorage.getItem('mage_optique_client_email') || '';
+            
+            const loginStateEl = document.getElementById('portal-login-state');
+            const loggedStateEl = document.getElementById('portal-logged-state');
+            
+            if (isLogged && email) {
+                loginStateEl.style.display = 'none';
+                loggedStateEl.style.display = 'block';
+                
+                document.getElementById('portal-welcome-subtitle').textContent = email;
+                
+                // Greeting message based on local email username
+                const username = email.split('@')[0];
+                const cleanName = username.charAt(0).toUpperCase() + username.slice(1);
+                document.getElementById('portal-welcome-title').textContent = `Ravi de vous revoir, ${cleanName}`;
+                
+                renderClientOrders(email);
+            } else {
+                loginStateEl.style.display = 'block';
+                loggedStateEl.style.display = 'none';
+            }
+        }
+
+        function showLoginSuccessModalAndRedirect() {
+            if (document.getElementById('login-success-modal')) return;
+            
+            // Inject CSS styles
+            const style = document.createElement('style');
+            style.textContent = `
+                .login-success-overlay {
+                    position: fixed;
+                    inset: 0;
+                    background-color: rgba(18, 18, 18, 0.4);
+                    backdrop-filter: blur(15px);
+                    -webkit-backdrop-filter: blur(15px);
+                    z-index: 1000000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    opacity: 0;
+                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    padding: 24px;
+                }
+                .login-success-overlay.show {
+                    opacity: 1;
+                }
+                .login-success-card {
+                    background: rgba(255, 255, 255, 0.95);
+                    border: 1px solid rgba(197, 160, 89, 0.25);
+                    border-radius: var(--border-radius-xl);
+                    width: 100%;
+                    max-width: 400px;
+                    padding: 48px 40px;
+                    box-shadow: 0 30px 60px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6);
+                    transform: translateY(20px) scale(0.96);
+                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    text-align: center;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 24px;
+                }
+                .login-success-overlay.show .login-success-card {
+                    transform: translateY(0) scale(1);
+                }
+                .login-success-icon-container {
+                    width: 80px;
+                    height: 80px;
+                    border-radius: 50%;
+                    background: linear-gradient(135deg, rgba(197, 160, 89, 0.15), rgba(197, 160, 89, 0.02));
+                    border: 1px solid rgba(197, 160, 89, 0.2);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--color-muted-gold);
+                    box-shadow: 0 10px 20px rgba(197, 160, 89, 0.05);
+                    animation: successPulse 2s infinite ease-in-out;
+                }
+                @keyframes successPulse {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.05); }
+                    100% { transform: scale(1); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Create modal DOM elements
+            const modalDiv = document.createElement('div');
+            modalDiv.className = 'login-success-overlay';
+            modalDiv.id = 'login-success-modal';
+            
+            const pendingProductId = localStorage.getItem('mage_optique_pending_cart_item');
+            const targetText = pendingProductId 
+                ? "Connexion réussie ! Redirection automatique vers votre panier d'excellence..." 
+                : "Connexion réussie ! Chargement de votre Espace Membre...";
+
+            modalDiv.innerHTML = `
+                <div class="login-success-card">
+                    <div class="login-success-icon-container">
+                        <span class="material-symbols-outlined" style="font-size: 36px; font-weight: bold; color: var(--color-muted-gold);">check_circle</span>
+                    </div>
+                    <div>
+                        <h3 class="font-serif" style="margin: 0 0 10px 0; color: var(--color-deep-charcoal); font-size: 1.75rem; font-weight: 500; letter-spacing: -0.01em;">Vous êtes connecté</h3>
+                        <p style="color: var(--color-soft-slate); font-size: 0.95rem; line-height: 1.6; margin: 0; max-width: 300px;">${targetText}</p>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modalDiv);
+            
+            // Force reflow and show modal
+            modalDiv.offsetHeight;
+            modalDiv.classList.add('show');
+            
+            // Auto redirect after 1.8 seconds
+            setTimeout(() => {
+                const pendingProductId = localStorage.getItem('mage_optique_pending_cart_item');
+                if (pendingProductId) {
+                    window.location.href = 'panier.html';
+                } else {
+                    const modal = document.getElementById('login-success-modal');
+                    if (modal && modal.parentNode) {
+                        modal.parentNode.removeChild(modal);
+                    }
+                    renderPortalState();
+                }
+            }, 1800);
+        }
+
+        async function handleClientLoginSubmit() {
+            const emailInput = document.getElementById('client-email');
+            const passwordInput = document.getElementById('client-password');
+            const email = emailInput.value.trim().toLowerCase();
+            const password = passwordInput.value;
+            
+            if (!email || !password) return;
+            
+            try {
+                const client = await getSupabase();
+                
+                // Attempt sign in
+                const { data, error } = await client.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) {
+                    // If user does not exist, attempt to sign up (implicit signup as per original mockup logic)
+                    if (error.message.includes('Invalid login credentials')) {
+                        const is_admin_email = email.includes('admin') || email === 'magelopticien@gmail.com';
+                        const { data: signUpData, error: signUpError } = await client.auth.signUp({
+                            email: email,
+                            password: password,
+                            options: {
+                                data: {
+                                    name: email.split('@')[0],
+                                    role: is_admin_email ? 'admin' : 'client'
+                                }
+                            }
+                        });
+                        
+                        if (signUpError) {
+                            alert("Erreur de connexion / inscription : " + signUpError.message);
+                            return;
+                        }
+                        
+                        alert("Compte créé avec succès ! Vous êtes maintenant connecté.");
+                        localStorage.setItem('mage_optique_client_logged', 'true');
+                        localStorage.setItem('mage_optique_client_email', email);
+                        localStorage.setItem('mage_optique_user_id', signUpData.user.id);
+                        localStorage.setItem('mage_optique_client_role', is_admin_email ? 'admin' : 'client');
+                        
+                        // Sync database in background
+                        syncDatabaseFromSupabase();
+                        
+                        // Check if there is a pending cart item
+                        const pendingProductId = localStorage.getItem('mage_optique_pending_cart_item');
+                        if (pendingProductId) {
+                            if (typeof addToCartSilently === 'function') {
+                                addToCartSilently(pendingProductId);
+                            }
+                            localStorage.removeItem('mage_optique_pending_cart_item');
+                        }
+                        
+                        showLoginSuccessModalAndRedirect();
+                        return;
+                    } else {
+                        alert("Erreur de connexion : " + error.message);
+                        return;
+                    }
+                }
+                
+                // Sign in successful
+                localStorage.setItem('mage_optique_client_logged', 'true');
+                localStorage.setItem('mage_optique_client_email', email);
+                localStorage.setItem('mage_optique_user_id', data.user.id);
+                
+                // Get role from profiles table
+                const { data: profile, error: profileErr } = await client.from('profiles').select('role').eq('id', data.user.id).single();
+                const role = (!profileErr && profile) ? profile.role : 'client';
+                localStorage.setItem('mage_optique_client_role', role);
+                
+                // Sync database in background
+                syncDatabaseFromSupabase();
+                
+                // Check if there is a pending cart item
+                const pendingProductId = localStorage.getItem('mage_optique_pending_cart_item');
+                if (pendingProductId) {
+                    if (typeof addToCartSilently === 'function') {
+                        addToCartSilently(pendingProductId);
+                    }
+                    localStorage.removeItem('mage_optique_pending_cart_item');
+                }
+                
+                showLoginSuccessModalAndRedirect();
+            } catch (err) {
+                console.error("Authentication error:", err);
+                alert("Une erreur s'est produite lors de l'authentification.");
+            }
+        }
+
+        function showLogoutConfirmationModal() {
+            if (document.getElementById('logout-confirm-modal')) return;
+            
+            // Inject CSS styles for logout modal if not already present
+            if (!document.getElementById('logout-confirm-style')) {
+                const style = document.createElement('style');
+                style.id = 'logout-confirm-style';
+                style.textContent = `
+                    .logout-confirm-overlay {
+                        position: fixed;
+                        inset: 0;
+                        background-color: rgba(18, 18, 18, 0.4);
+                        backdrop-filter: blur(15px);
+                        -webkit-backdrop-filter: blur(15px);
+                        z-index: 1000000;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        opacity: 0;
+                        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                        padding: 24px;
+                    }
+                    .logout-confirm-overlay.show {
+                        opacity: 1;
+                    }
+                    .logout-confirm-card {
+                        background: rgba(255, 255, 255, 0.95);
+                        border: 1px solid rgba(197, 160, 89, 0.25);
+                        border-radius: var(--border-radius-xl);
+                        width: 100%;
+                        max-width: 400px;
+                        padding: 40px;
+                        box-shadow: 0 30px 60px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6);
+                        transform: translateY(20px) scale(0.96);
+                        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                        text-align: center;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 24px;
+                    }
+                    .logout-confirm-overlay.show .logout-confirm-card {
+                        transform: translateY(0) scale(1);
+                    }
+                    .logout-confirm-icon-container {
+                        width: 72px;
+                        height: 72px;
+                        border-radius: 50%;
+                        background: rgba(197, 160, 89, 0.08);
+                        border: 1px solid rgba(197, 160, 89, 0.2);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: var(--color-muted-gold);
+                    }
+                    .logout-confirm-buttons {
+                        display: flex;
+                        gap: 12px;
+                        width: 100%;
+                        justify-content: center;
+                    }
+                    .logout-confirm-btn {
+                        padding: 12px 24px;
+                        font-size: 0.8rem;
+                        font-family: var(--font-sans);
+                        font-weight: 600;
+                        text-transform: uppercase;
+                        letter-spacing: 0.05em;
+                        border-radius: var(--border-radius-md);
+                        cursor: pointer;
+                        transition: var(--transition-fast);
+                        flex: 1;
+                    }
+                    .logout-confirm-btn-yes {
+                        background-color: var(--color-deep-charcoal);
+                        color: var(--color-paper-white);
+                        border: none;
+                    }
+                    .logout-confirm-btn-yes:hover {
+                        background-color: var(--color-muted-gold);
+                    }
+                    .logout-confirm-btn-no {
+                        background-color: transparent;
+                        color: var(--color-soft-slate);
+                        border: 1px solid var(--color-border-subtle);
+                    }
+                    .logout-confirm-btn-no:hover {
+                        border-color: var(--color-deep-charcoal);
+                        color: var(--color-deep-charcoal);
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            const modalDiv = document.createElement('div');
+            modalDiv.className = 'logout-confirm-overlay';
+            modalDiv.id = 'logout-confirm-modal';
+            
+            modalDiv.innerHTML = `
+                <div class="logout-confirm-card">
+                    <div class="logout-confirm-icon-container">
+                        <span class="material-symbols-outlined" style="font-size: 32px; color: var(--color-muted-gold);">logout</span>
+                    </div>
+                    <div>
+                        <h3 class="font-serif" style="margin: 0 0 10px 0; color: var(--color-deep-charcoal); font-size: 1.5rem; font-weight: 500;">Déconnexion</h3>
+                        <p style="color: var(--color-soft-slate); font-size: 0.95rem; line-height: 1.5; margin: 0;">Voulez-vous vous déconnecter de votre Espace Client ?</p>
+                    </div>
+                    <div class="logout-confirm-buttons">
+                        <button class="logout-confirm-btn logout-confirm-btn-no" id="logout-cancel-btn">Annuler</button>
+                        <button class="logout-confirm-btn logout-confirm-btn-yes" id="logout-confirm-btn">Déconnexion</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modalDiv);
+            
+            // Force reflow and show
+            modalDiv.offsetHeight;
+            modalDiv.classList.add('show');
+            
+            // Event listeners
+            const confirmBtn = modalDiv.querySelector('#logout-confirm-btn');
+            const cancelBtn = modalDiv.querySelector('#logout-cancel-btn');
+            
+            const closeModal = () => {
+                modalDiv.classList.remove('show');
+                setTimeout(() => {
+                    if (modalDiv.parentNode) {
+                        modalDiv.parentNode.removeChild(modalDiv);
+                    }
+                }, 400);
+            };
+            
+            confirmBtn.addEventListener('click', async () => {
+                try {
+                    const client = await getSupabase();
+                    await client.auth.signOut();
+                } catch (e) {
+                    console.error("SignOut error:", e);
+                }
+                localStorage.removeItem('mage_optique_client_logged');
+                localStorage.removeItem('mage_optique_client_email');
+                localStorage.removeItem('mage_optique_user_id');
+                localStorage.removeItem('mage_optique_client_role');
+                renderPortalState();
+                closeModal();
+            });
+            
+            cancelBtn.addEventListener('click', closeModal);
+            
+            // Close if clicking outside the card
+            modalDiv.addEventListener('click', (e) => {
+                if (e.target === modalDiv) {
+                    closeModal();
+                }
+            });
+        }
+
+        function handleClientLogout() {
+            showLogoutConfirmationModal();
+        }
+
+        function formatFCFA(val) {
+            return new Intl.NumberFormat('fr-FR').format(val) + " FCFA";
+        }
+
+        function renderClientOrders(email) {
+            const container = document.getElementById('client-orders-container');
+            if (!container) return;
+            
+            const allOrders = getOrders();
+            // Filter orders by matching client email
+            const clientOrders = allOrders.filter(o => o.email.toLowerCase() === email.toLowerCase());
+            
+            container.innerHTML = '';
+            
+            if (clientOrders.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: var(--color-soft-slate); padding: 48px 0; border: 1px dashed var(--color-border-subtle); border-radius: var(--border-radius-md); background-color: #faf9f6;">
+                        <span class="material-symbols-outlined" style="font-size: 48px; opacity: 0.3; display: block; margin-bottom: 16px;">receipt_long</span>
+                        Vous n'avez pas encore passé de commande d'exception avec l'adresse e-mail <strong>${email}</strong>.
+                        <div style="margin-top: 24px;">
+                            <a href="boutique.html" class="btn btn-primary" style="padding: 12px 28px; font-size: 0.8rem;">Parcourir la Boutique</a>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Render list of client orders
+            clientOrders.forEach(o => {
+                const card = document.createElement('div');
+                card.className = 'order-history-card';
+                
+                // Status badge
+                let statusClass = 'status-pending';
+                if (o.status === 'Confirmé') statusClass = 'status-confirmed';
+                if (o.status === 'Annulé') statusClass = 'status-cancelled';
+                
+                // Render order items rows
+                let itemsHtml = '';
+                o.items.forEach(item => {
+                    itemsHtml += `
+                        <div class="order-item-row">
+                            <span style="color: var(--color-deep-charcoal); font-weight: 500;">
+                                ${item.title} <strong style="color: var(--color-muted-gold);">x${item.quantity}</strong>
+                            </span>
+                            <span style="color: var(--color-soft-slate); font-weight: 600;">
+                                ${formatFCFA(item.price * item.quantity)}
+                            </span>
+                        </div>
+                    `;
+                });
+                
+                card.innerHTML = `
+                    <div class="order-header">
+                        <div>
+                            <span class="order-id">${o.id.toUpperCase()}</span>
+                            <span class="order-date" style="margin-left: 12px;">Date: ${o.date}</span>
+                        </div>
+                        <span class="badge-status ${statusClass}">${o.status}</span>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--color-soft-slate); font-weight: 700; margin-bottom: 8px; letter-spacing: 0.05em;">Articles achetés</div>
+                        ${itemsHtml}
+                    </div>
+                    
+                    <div style="font-size: 0.825rem; color: var(--color-soft-slate); margin-bottom: 16px; background-color: rgba(0,0,0,0.01); padding: 8px 12px; border-radius: var(--border-radius-sm);">
+                        <strong>Mode de Retrait :</strong> ${o.address === 'Retrait en salon' ? 'Retrait physique au salon Mage' : `Livraison à : ${o.address}`} <br>
+                        <strong>Mode de paiement :</strong> ${o.payment}
+                    </div>
+                    
+                    <div class="order-total-row">
+                        <span>Montant Total</span>
+                        <span style="color: var(--color-muted-gold);">${formatFCFA(o.total)}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>

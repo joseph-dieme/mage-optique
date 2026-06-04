@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Découvrez nos services d'optique haut de gamme : examens de la vue avancés, devis optiques instantanés en ligne, conseils de visagisme personnalisés.">
+    <title>Nos Services | Mage Optique & Services | Expertise & Soin</title>
+    
+    <!-- Google Fonts & Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet">
+    
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="css/style.css?v=3">
+    
+    <style>
+        /* Success Modal Styles */
+        #success-modal.show {
+            opacity: 1 !important;
+        }
+        #success-modal.show > div {
+            transform: scale(1) !important;
+        }
+        .services-devis-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            align-items: center;
+            gap: 48px;
+        }
+        @media (max-width: 768px) {
+            .services-devis-grid {
+                grid-template-columns: 1fr;
+                gap: 24px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Unified Header / TopAppBar -->
+    <header class="top-header glass-effect">
+        <div class="container nav-bar">
+            <a href="index.html" class="nav-logo" id="logo-link">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique &amp; Services Logo" class="logo-img">
+                <span class="logo-text font-serif">Mage Optique &amp; Services</span>
+            </a>
+            
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Accueil</a>
+                <a href="boutique.html" class="nav-link">Boutique</a>
+                <a href="services.html" class="nav-link active">Services</a>
+                <a href="a-propos.html" class="nav-link">À Propos</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </nav>
+            
+            <div class="nav-actions">
+                <a href="boutique.html" class="material-symbols-outlined icon-btn" id="search-nav-btn">search</a>
+                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre liste de favoris est vide.')" id="fav-nav-btn">favorite</span>
+                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre panier Mage Optique &amp; Services est vide.')" id="cart-nav-btn">shopping_bag</span>
+                <a href="connexion.html" class="material-symbols-outlined icon-btn" id="login-nav-btn">person</a>
+                <span class="mobile-nav-toggle material-symbols-outlined" id="menu-toggle-btn">menu</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Menu -->
+    <div class="mobile-menu-overlay" id="drawer-overlay"></div>
+    <div class="mobile-menu" id="drawer-menu">
+        <div class="mobile-menu-header">
+            <span class="font-serif text-headline-md">Mage Optique &amp; Services</span>
+            <span class="material-symbols-outlined icon-btn close-menu" id="close-menu-btn">close</span>
+        </div>
+        <nav class="mobile-nav-links">
+            <a href="index.html" class="mobile-nav-link">Accueil</a>
+            <a href="boutique.html" class="mobile-nav-link">Boutique</a>
+            <a href="services.html" class="mobile-nav-link active">Services</a>
+            <a href="a-propos.html" class="mobile-nav-link">À Propos</a>
+            <a href="contact.html" class="mobile-nav-link">Contact</a>
+            <a href="connexion.html" class="mobile-nav-link">Connexion</a>
+        </nav>
+    </div>
+
+    <!-- Main Container -->
+    <main style="padding-top: 80px;">
+
+        <!-- Services Hero -->
+        <section class="section-padding container animate-fade-in" style="padding-bottom: 24px;">
+            <div style="text-align: center; max-width: 600px; margin: 0 auto 40px auto;">
+                <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">Expertise Professionnelle</span>
+                <h1 class="text-display-lg">Nos Prestations Services</h1>
+                <p class="text-body-md" style="margin-top: 12px;">Nous mettons notre savoir-faire clinique et notre passion esthétique au service de votre confort visuel.</p>
+            </div>
+        </section>
+
+        <!-- Services Detailed List -->
+        <section class="container" style="padding-bottom: 96px;">
+            <div class="grid-cols-12" style="row-gap: 64px;">
+                <!-- Service Item 1 -->
+                <div class="col-span-6" style="display: flex; gap: 24px; align-items: flex-start;">
+                    <div style="width: 48px; height: 48px; background-color: var(--color-gold-tint); border-radius: var(--border-radius-full); flex-shrink: 0;" class="flex-center">
+                        <span class="material-symbols-outlined" style="color: var(--color-muted-gold); font-size: 24px;">visibility</span>
+                    </div>
+                    <div>
+                        <h3 class="text-headline-md" style="font-size: 1.35rem; margin-bottom: 12px;">Examen Clinique de la Réfraction</h3>
+                        <p class="text-body-md" style="margin-bottom: 16px;">Nos opticiens examinent précisément votre vision à l'aide de réfractomètres automatiques de haute précision et de tests de sensibilité aux contrastes.</p>
+                        <span class="text-label-md" style="color: var(--color-muted-gold); font-size: 0.8rem; font-weight: 700;">Prix : 25 000 FCFA (Offert pour l'achat d'un équipement)</span>
+                    </div>
+                </div>
+
+                <!-- Service Item 2 -->
+                <div class="col-span-6" style="display: flex; gap: 24px; align-items: flex-start;">
+                    <div style="width: 48px; height: 48px; background-color: var(--color-gold-tint); border-radius: var(--border-radius-full); flex-shrink: 0;" class="flex-center">
+                        <span class="material-symbols-outlined" style="color: var(--color-muted-gold); font-size: 24px;">home</span>
+                    </div>
+                    <div>
+                        <h3 class="text-headline-md" style="font-size: 1.35rem; margin-bottom: 12px;">Service d'Essai à Domicile</h3>
+                        <p class="text-body-md" style="margin-bottom: 16px;">Sélectionnez jusqu'à 5 montures en ligne. Un opticien-visagiste Mage Optique &amp; Services se déplace chez vous ou sur votre lieu de travail pour effectuer l'ajustement et la prise de mesures.</p>
+                        <span class="text-label-md" style="color: var(--color-muted-gold); font-size: 0.8rem; font-weight: 700;">Prix : Service Offert sur rendez-vous</span>
+                    </div>
+                </div>
+
+                <!-- Service Item 3 -->
+                <div class="col-span-6" style="display: flex; gap: 24px; align-items: flex-start;">
+                    <div style="width: 48px; height: 48px; background-color: var(--color-gold-tint); border-radius: var(--border-radius-full); flex-shrink: 0;" class="flex-center">
+                        <span class="material-symbols-outlined" style="color: var(--color-muted-gold); font-size: 24px;">build</span>
+                    </div>
+                    <div>
+                        <h3 class="text-headline-md" style="font-size: 1.35rem; margin-bottom: 12px;">Entretien &amp; Ajustements Gratuits à Vie</h3>
+                        <p class="text-body-md" style="margin-bottom: 16px;">Nettoyage complet par ultrasons, remplacement des plaquettes, resserrage des vis et ajustement anatomique de vos lunettes. Un suivi indispensable pour maintenir un confort optimal.</p>
+                        <span class="text-label-md" style="color: var(--color-muted-gold); font-size: 0.8rem; font-weight: 700;">Prix : Gratuit pour tous nos clients</span>
+                    </div>
+                </div>
+
+                <!-- Service Item 4 -->
+                <div class="col-span-6" style="display: flex; gap: 24px; align-items: flex-start;">
+                    <div style="width: 48px; height: 48px; background-color: var(--color-gold-tint); border-radius: var(--border-radius-full); flex-shrink: 0;" class="flex-center">
+                        <span class="material-symbols-outlined" style="color: var(--color-muted-gold); font-size: 24px;">face</span>
+                    </div>
+                    <div>
+                        <h3 class="text-headline-md" style="font-size: 1.35rem; margin-bottom: 12px;">Stylisme &amp; Diagnostic Visagiste</h3>
+                        <p class="text-body-md" style="margin-bottom: 16px;">Nos stylistes analysent la géométrie de votre visage, l'espacement de vos yeux, votre teint et votre style pour vous orienter vers les formes de montures les plus adaptées.</p>
+                        <span class="text-label-md" style="color: var(--color-muted-gold); font-size: 0.8rem; font-weight: 700;">Prix : Inclus dans nos rendez-vous en salon</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive online quotation widget (Devis en ligne) -->
+        <section style="background-color: var(--color-surface-container); padding: 96px 0;">
+            <div class="container">
+                <div class="services-devis-grid">
+                    <!-- Intro left -->
+                    <div class="col-span-5">
+                        <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">Simplicité &amp; Rapidité</span>
+                        <h2 class="text-headline-lg font-serif">Demande de Devis Optique en Ligne</h2>
+                        <p class="text-body-md" style="margin-top: 16px; margin-bottom: 24px;">Faites chiffrer vos futurs verres et montures en quelques clics. Téléchargez votre ordonnance optique et nos experts formuleront une proposition tarifaire précise (verres unifocaux ou progressifs de haute qualité) compatible avec votre mutuelle sous 24h.</p>
+                        
+                        <div style="display: flex; gap: 12px; align-items: center; font-weight: 600;" class="text-label-md">
+                            <span class="material-symbols-outlined" style="color: var(--color-muted-gold); font-size: 28px;">verified_user</span>
+                            Agrée toutes mutuelles et assurances
+                        </div>
+                    </div>
+
+                    <div class="col-span-7">
+                        <div class="devis-form-card">
+                            <form onsubmit="event.preventDefault(); handleDevisFormSubmit(this);" id="devis-form">
+                                <div class="devis-form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label" for="devis-lastname">Nom</label>
+                                        <input type="text" id="devis-lastname" class="form-input" required placeholder="Votre nom">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="devis-firstname">Prénom</label>
+                                        <input type="text" id="devis-firstname" class="form-input" required placeholder="Votre prénom">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="devis-email">E-mail de contact</label>
+                                    <input type="email" id="devis-email" class="form-input" required placeholder="nom@exemple.com">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="devis-lens">Type de verres souhaité</label>
+                                    <select id="devis-lens" class="form-input" required style="background: none; border-bottom: 1px solid var(--color-outline); padding: 12px 0;">
+                                        <option value="" disabled selected>Sélectionner le type de verres</option>
+                                        <option value="unifocaux">Verres Unifocaux (Vision de loin ou de près)</option>
+                                        <option value="progressifs">Verres Progressifs (Vision multi-distances)</option>
+                                        <option value="fatigue">Verres Anti-fatigue (Travail sur écran)</option>
+                                        <option value="sans-verres">Monture seule (Sans correction)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="devis-insurance">Assurance / Mutuelle de santé (Optionnel)</label>
+                                    <input type="text" id="devis-insurance" class="form-input" placeholder="ex. AXA, Saham, Mutuelle Générale, etc.">
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 32px;">
+                                    <label class="form-label">Ordonnance médicale (.pdf or image)</label>
+                                    <div style="border: 2px dashed var(--color-border-subtle); padding: 24px; text-align: center; border-radius: var(--border-radius-md); cursor: pointer;" onclick="document.getElementById('devis-upload').click();">
+                                        <span class="material-symbols-outlined" style="font-size: 36px; color: var(--color-muted-gold); margin-bottom: 8px;">upload_file</span>
+                                        <p class="text-body-md" style="font-size: 0.9rem;">Cliquer pour ajouter ou glisser-déposer votre ordonnance</p>
+                                        <input type="file" id="devis-upload" accept="image/*,application/pdf" style="display: none;" required>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" style="width: 100%;">Soumettre ma demande de devis</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Unified Footer -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div>
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwqlxYZJdaf6-sfikkfYF-2ikAigaDGM4gLBwG2Tdkl9VKjE3JPgOGy9bwxyMAmdnwNZiP2IruuZ8pDhe5b7bw8FNOwBG3oNz896U3Au7tyHyJM5jpoAoC5ui5bmQrq7y9qWBbW56Ht44Fz95uww8UQfhknkoyMX_J2R9wgs6C7UWdp5PHdGLDKRqeVHjfC6YhMEepzzkK1fCdcur0L0s9Fw95X2tVsuQB1NLOSAU6W8m_2gZF9oHLZGxe_sAcHwE-g2s-KlgQvBg" alt="Mage Optique &amp; Services Logo" style="height: 64px; margin-bottom: 24px; width: auto; object-fit: contain;">
+                <p class="text-body-md" style="margin-bottom: 24px;">Expertise Optique d'Excellence et collections haut de gamme à votre service depuis 5 ans.</p>
+                <div class="footer-socials">
+                    <span class="material-symbols-outlined social-icon" id="soc-instagram">public</span>
+                    <span class="material-symbols-outlined social-icon" id="soc-share">share</span>
+                </div>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Navigation</h5>
+                <ul class="footer-links">
+                    <li><a href="index.html" class="footer-link">Accueil</a></li>
+                    <li><a href="boutique.html" class="footer-link">Boutique</a></li>
+                    <li><a href="services.html" class="footer-link">Nos Services</a></li>
+                    <li><a href="a-propos.html" class="footer-link">À Propos</a></li>
+                    <li><a href="contact.html" class="footer-link">Rendez-vous</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Contact &amp; Accès</h5>
+                <ul class="footer-links text-body-md">
+                    <li style="display: flex; gap: 12px; align-items: flex-start;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; margin-top: 4px; color: var(--color-muted-gold);">location_on</span>
+                        <span>Ouest Foire, Dakar, Sénégal</span>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: center;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-muted-gold);">call</span>
+                        <span>+221 78 681 15 26</span>
+                    </li>
+                    <li style="display: flex; gap: 12px; align-items: center;">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-muted-gold);">mail</span>
+                        <span>contact@mageoptique.fr</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="footer-title">Newsletter</h5>
+                <p class="text-body-md" style="margin-bottom: 20px;">Abonnez-vous pour recevoir les dernières collections de créateurs et des conseils de santé visuelle.</p>
+                <form onsubmit="event.preventDefault(); alert('Merci pour votre inscription à la newsletter Mage Optique &amp; Services !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
+                    <input type="email" placeholder="Votre adresse e-mail" style="flex-grow: 1; padding: 4px 0; color: var(--color-deep-charcoal); font-size: 0.95rem;" required id="news-email-input">
+                    <button type="submit" class="material-symbols-outlined" style="color: var(--color-muted-gold); cursor: pointer;" id="news-submit-btn">arrow_forward</button>
+                </form>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--color-border-subtle); margin-top: 64px; padding-top: 24px; text-align: center;">
+            <p class="text-caption">Â© 2026 Mage Optique &amp; Services. Expertise Optique d'Excellence. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- Premium Success Modal Popup -->
+    <div id="success-modal" style="display: none; position: fixed; inset: 0; background: rgba(18, 18, 18, 0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 10000; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+        <div class="glass-effect" style="max-width: 420px; width: 90%; text-align: center; border: 1px solid var(--color-muted-gold); border-radius: var(--border-radius-lg); padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); background: var(--color-paper-white);">
+            <span class="material-symbols-outlined" style="font-size: 64px; color: var(--color-muted-gold); margin-bottom: 20px;">check_circle</span>
+            <h3 class="font-serif text-headline-md" style="color: var(--color-deep-charcoal); margin-bottom: 12px; font-size: 1.5rem;">Demande de Devis Envoyée</h3>
+            <p class="text-body-md" style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 28px; color: var(--color-soft-slate);">Votre demande de devis optique d'excellence a bien été enregistrée avec succès. Nos opticiens étudieront votre ordonnance et vous répondront sous 24 heures.</p>
+            <button class="btn btn-gold" onclick="closeSuccessModal()" style="width: 100%; border: none; padding: 14px 0; font-size: 0.85rem; font-weight: 700; border-radius: var(--border-radius-md); cursor: pointer;">OK</button>
+        </div>
+    </div>
+
+    <!-- Interactive Sidebar Concierge -->
+    <div style="position: fixed; bottom: 32px; right: 32px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 16px;">
+        <div id="concierge-message" class="glass-effect" style="display: none; padding: 12px 20px; border-radius: var(--border-radius-lg); font-size: 0.875rem; font-weight: 500; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-color: var(--color-muted-gold); animation: fadeIn 0.3s ease-out; max-width: 240px; color: var(--color-deep-charcoal);">
+            Besoin d'un conseil ? Chattez avec l'un de nos visagistes en direct.
+        </div>
+        <button onclick="alert('L\'assistant conseil Mage Optique &amp; Services est en cours d\'initialisation...')" onmouseover="document.getElementById('concierge-message').style.display='block'" onmouseout="document.getElementById('concierge-message').style.display='none'" class="flex-center" style="width: 56px; height: 56px; border-radius: var(--border-radius-full); background-color: var(--color-deep-charcoal); color: var(--color-paper-white); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; transition: var(--transition-fast);" id="concierge-floating-btn">
+            <span class="material-symbols-outlined" style="font-size: 28px;">chat</span>
+        </button>
+    </div>
+
+    <!-- Core Scripting -->
+    <script src="js/db.js?v=3"></script>
+    <script src="js/main.js?v=7"></script>
+    <script>
+        // Simple prescription upload naming change
+        const devisUpload = document.getElementById('devis-upload');
+        if (devisUpload) {
+            devisUpload.addEventListener('change', (e) => {
+                const label = devisUpload.previousElementSibling;
+                if (label && e.target.files[0]) {
+                    label.textContent = `Fichier choisi : ${e.target.files[0].name}`;
+                    label.style.color = 'var(--color-muted-gold)';
+                }
+            });
+        }
+
+        // Handle devis form submit
+        function handleDevisFormSubmit(form) {
+            const lastname = document.getElementById('devis-lastname').value.trim();
+            const firstname = document.getElementById('devis-firstname').value.trim();
+            const email = document.getElementById('devis-email').value.trim();
+            const lens = document.getElementById('devis-lens').value;
+            const insurance = document.getElementById('devis-insurance').value.trim();
+            const fileInput = document.getElementById('devis-upload');
+            
+            const file = fileInput && fileInput.files[0] ? fileInput.files[0] : null;
+            const fileName = file ? file.name : 'Ordonnance.pdf';
+            
+            const saveAndShow = (fileData = '') => {
+                // Enregistrement dans la base de données locale
+                if (typeof addDevis === 'function') {
+                    addDevis({ lastname, firstname, email, lens, insurance, fileName, fileData });
+                }
+                
+                showSuccessModal();
+                
+                form.reset();
+                const uploadLabel = devisUpload ? devisUpload.previousElementSibling : null;
+                if (uploadLabel) {
+                    uploadLabel.textContent = "Cliquer pour ajouter ou glisser-déposer votre ordonnance";
+                    uploadLabel.style.color = '';
+                }
+            };
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    saveAndShow(e.target.result); // Base64 data URI representation
+                };
+                reader.onerror = function() {
+                    saveAndShow(''); // Fallback on reader error
+                };
+                reader.readAsDataURL(file);
+            } else {
+                saveAndShow('');
+            }
+        }
+
+        // Custom Success Modal Open/Close triggers
+        function showSuccessModal() {
+            const modal = document.getElementById('success-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                setTimeout(() => {
+                    modal.classList.add('show');
+                }, 10);
+            }
+        }
+
+        function closeSuccessModal() {
+            const modal = document.getElementById('success-modal');
+            if (modal) {
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+        }
+    </script>
+</body>
+</html>
