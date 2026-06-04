@@ -505,6 +505,13 @@
                 }
                 
                 // Sign in successful
+                const isConfirmed = data.user.email_confirmed_at || data.user.confirmed_at;
+                if (!isConfirmed) {
+                    await client.auth.signOut();
+                    alert("Votre adresse e-mail n'a pas encore été confirmée. Veuillez vérifier votre boîte de réception et cliquer sur le lien d'activation envoyé par Supabase pour valider votre compte.");
+                    return;
+                }
+
                 localStorage.setItem('mage_optique_client_logged', 'true');
                 localStorage.setItem('mage_optique_client_email', email);
                 localStorage.setItem('mage_optique_user_id', data.user.id);

@@ -166,7 +166,7 @@
             <form id="login-form" onsubmit="event.preventDefault(); handleLoginSubmit();">
                 <div class="form-group" style="text-align: left;">
                     <label class="form-label" for="login-email" style="color: var(--color-soft-slate); font-size: 0.725rem;">Adresse e-mail Admin</label>
-                    <input type="email" id="login-email" class="login-form-input" required placeholder="magelopticien@gmail.com">
+                    <input type="email" id="login-email" class="login-form-input" required placeholder="ex. admin@mageoptique.com">
                 </div>
                 
                 <div class="form-group" style="text-align: left; margin-bottom: 28px;">
@@ -266,8 +266,16 @@
                         errorMsg.style.display = 'block';
                         return;
                     }
-                }
                 
+                // Verify email is confirmed
+                const isConfirmed = data.user.email_confirmed_at || data.user.confirmed_at;
+                if (!isConfirmed) {
+                    await client.auth.signOut();
+                    errorMsg.textContent = "Votre adresse e-mail d'administrateur n'a pas encore été confirmée. Veuillez valider votre compte via le lien reçu par e-mail.";
+                    errorMsg.style.display = 'block';
+                    return;
+                }
+
                 // Fetch user role from profiles table
                 const { data: profile, error: profileErr } = await client.from('profiles').select('role').eq('id', data.user.id).single();
                 
