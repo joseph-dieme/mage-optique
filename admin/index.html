@@ -213,6 +213,98 @@
             }
         });
 
+        function showLoginSuccessModalAndRedirect() {
+            if (document.getElementById('login-success-modal')) return;
+            
+            // Inject CSS styles matching the dark luxury admin theme
+            const style = document.createElement('style');
+            style.textContent = `
+                .login-success-overlay {
+                    position: fixed;
+                    inset: 0;
+                    background-color: rgba(9, 12, 12, 0.6);
+                    backdrop-filter: blur(15px);
+                    -webkit-backdrop-filter: blur(15px);
+                    z-index: 1000000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    opacity: 0;
+                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    padding: 24px;
+                }
+                .login-success-overlay.show {
+                    opacity: 1;
+                }
+                .login-success-card {
+                    background: rgba(21, 26, 26, 0.95);
+                    border: 1px solid rgba(197, 160, 89, 0.2);
+                    border-radius: var(--border-radius-xl);
+                    width: 100%;
+                    max-width: 400px;
+                    padding: 48px 40px;
+                    box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+                    transform: translateY(20px) scale(0.96);
+                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    text-align: center;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 24px;
+                }
+                .login-success-overlay.show .login-success-card {
+                    transform: translateY(0) scale(1);
+                }
+                .login-success-icon-container {
+                    width: 80px;
+                    height: 80px;
+                    border-radius: 50%;
+                    background: linear-gradient(135deg, rgba(197, 160, 89, 0.15), rgba(197, 160, 89, 0.02));
+                    border: 1px solid rgba(197, 160, 89, 0.25);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--color-muted-gold);
+                    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+                    animation: successPulse 2s infinite ease-in-out;
+                }
+                @keyframes successPulse {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.05); }
+                    100% { transform: scale(1); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Create modal DOM elements
+            const modalDiv = document.createElement('div');
+            modalDiv.className = 'login-success-overlay';
+            modalDiv.id = 'login-success-modal';
+            
+            modalDiv.innerHTML = `
+                <div class="login-success-card">
+                    <div class="login-success-icon-container">
+                        <span class="material-symbols-outlined" style="font-size: 36px; font-weight: bold; color: var(--color-muted-gold);">check_circle</span>
+                    </div>
+                    <div>
+                        <h3 class="font-serif" style="margin: 0 0 10px 0; color: #fff; font-size: 1.75rem; font-weight: 500; letter-spacing: -0.01em;">Connexion Réussie</h3>
+                        <p style="color: var(--color-soft-slate); font-size: 0.95rem; line-height: 1.6; margin: 0; max-width: 300px;">Accès autorisé. Chargement de la console d'administration...</p>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modalDiv);
+            
+            // Force reflow and show modal
+            modalDiv.offsetHeight;
+            modalDiv.classList.add('show');
+            
+            // Auto redirect after 1.8 seconds
+            setTimeout(() => {
+                location.href = '../admin.html';
+            }, 1800);
+        }
+
         async function handleLoginSubmit() {
             const email = document.getElementById('login-email').value.trim().toLowerCase();
             const pass = document.getElementById('login-password').value;
@@ -295,8 +387,7 @@
                 localStorage.setItem('mage_optique_user_id', data.user.id);
                 localStorage.setItem('mage_optique_client_role', 'admin');
                 
-                alert('Connexion Admin réussie ! Redirection vers la console.');
-                location.href = '../admin.html';
+                showLoginSuccessModalAndRedirect();
             } catch (err) {
                 console.error("Admin login error:", err);
                 errorMsg.textContent = "Une erreur s'est produite lors de la connexion.";
