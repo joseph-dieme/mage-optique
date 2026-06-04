@@ -248,9 +248,19 @@
                             errorMsg.style.display = 'block';
                             return;
                         }
+                        
+                        if (!signUpData.session) {
+                            alert("Console d'Administration créée ! Un e-mail de confirmation a été envoyé à " + email + ". Veuillez vérifier votre boîte de réception et cliquer sur le lien d'activation avant de vous connecter.");
+                            return;
+                        }
+                        
                         data = signUpData;
                         error = null;
                         alert("Console d'Administration créée avec succès !");
+                    } else if (error.message.toLowerCase().includes('email not confirmed') || error.message.toLowerCase().includes('confirmed') || error.message.toLowerCase().includes('confirm')) {
+                        errorMsg.textContent = "Votre adresse e-mail d'administrateur n'a pas encore été confirmée. Veuillez vérifier votre boîte de réception et valider votre compte.";
+                        errorMsg.style.display = 'block';
+                        return;
                     } else {
                         errorMsg.textContent = "Erreur de connexion : " + error.message;
                         errorMsg.style.display = 'block';

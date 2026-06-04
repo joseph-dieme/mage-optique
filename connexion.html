@@ -469,6 +469,12 @@
                             return;
                         }
                         
+                        // Check if email confirmation is required (session will be null)
+                        if (!signUpData.session) {
+                            alert("Compte créé avec succès ! Un e-mail de confirmation a été envoyé à " + email + ". Veuillez vérifier votre boîte de réception et cliquer sur le lien d'activation avant de vous connecter.");
+                            return;
+                        }
+                        
                         alert("Compte créé avec succès ! Vous êtes maintenant connecté.");
                         localStorage.setItem('mage_optique_client_logged', 'true');
                         localStorage.setItem('mage_optique_client_email', email);
@@ -488,6 +494,9 @@
                         }
                         
                         showLoginSuccessModalAndRedirect();
+                        return;
+                    } else if (error.message.toLowerCase().includes('email not confirmed') || error.message.toLowerCase().includes('confirmed') || error.message.toLowerCase().includes('confirm')) {
+                        alert("Votre adresse e-mail n'a pas encore été confirmée. Veuillez vérifier votre boîte de réception et cliquer sur le lien d'activation envoyé par Supabase pour valider votre compte.");
                         return;
                     } else {
                         alert("Erreur de connexion : " + error.message);
