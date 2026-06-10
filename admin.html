@@ -1966,7 +1966,7 @@
         }
 
         // Concierge Settings Tab rendering
-        function renderConciergeSettings() {
+        async function renderConciergeSettings() {
             const apiKeyInput = document.getElementById('admin-chat-api-key');
             const modelSelect = document.getElementById('admin-chat-model');
             const toggleKeyBtn = document.getElementById('admin-chat-toggle-key');
@@ -1974,12 +1974,41 @@
 
             if (!apiKeyInput || !modelSelect) return;
 
-            // Load settings from localStorage
-            const rawKey = localStorage.getItem('mage_optique_openrouter_key') || '';
+            // Load settings from localStorage first
+            let rawKey = localStorage.getItem('mage_optique_openrouter_key') || '';
+            let savedModel = localStorage.getItem('mage_optique_openrouter_model') || '';
+
+            // Check Supabase and perform bidirectional sync
+            if (typeof getAISettings === 'function') {
+                const settings = await getAISettings();
+                const dbKey = settings ? settings.openrouter_key : '';
+                const dbModel = settings ? settings.openrouter_model : '';
+
+                if (rawKey && (!dbKey || dbKey !== rawKey)) {
+                    // Local key exists, but Supabase key is empty or different: push local to Supabase
+                    if (typeof saveAISetting === 'function') {
+                        await saveAISetting('openrouter_key', rawKey);
+                        if (savedModel) {
+                            await saveAISetting('openrouter_model', savedModel);
+                        }
+                    }
+                } else if (!rawKey && dbKey) {
+                    // Local key is empty, but Supabase has it: sync from Supabase to Local
+                    rawKey = dbKey;
+                    localStorage.setItem('mage_optique_openrouter_key', dbKey);
+                    if (dbModel) {
+                        savedModel = dbModel;
+                        localStorage.setItem('mage_optique_openrouter_model', dbModel);
+                    }
+                }
+            }
+
+            if (!savedModel) {
+                savedModel = 'google/gemma-4-31b-it:free';
+            }
+
             const deobfuscated = typeof deobfuscateKey === 'function' ? deobfuscateKey(rawKey) : rawKey;
             apiKeyInput.value = deobfuscated;
-
-            const savedModel = localStorage.getItem('mage_optique_openrouter_model') || 'google/gemma-4-31b-it:free';
             modelSelect.value = savedModel;
 
             // Reset password field to password type
@@ -1992,7 +2021,7 @@
         }
 
         // Save Concierge settings
-        function saveConciergeSettings() {
+        async function saveConciergeSettings() {
             const apiKeyInput = document.getElementById('admin-chat-api-key');
             const modelSelect = document.getElementById('admin-chat-model');
 
@@ -2005,6 +2034,12 @@
             const obfuscated = typeof obfuscateKey === 'function' ? obfuscateKey(key) : key;
             localStorage.setItem('mage_optique_openrouter_key', obfuscated);
             localStorage.setItem('mage_optique_openrouter_model', model);
+
+            // Save in Supabase
+            if (typeof saveAISetting === 'function') {
+                await saveAISetting('openrouter_key', obfuscated);
+                await saveAISetting('openrouter_model', model);
+            }
 
             showToast("Paramètres de la Conciergerie IA sauvegardés et sécurisés.", 'success');
         }

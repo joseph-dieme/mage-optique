@@ -2345,13 +2345,28 @@ function initChatDrawer(drawer) {
     let chatHistory = [];
     const defaultGreeting = `Bonjour ! Je suis <strong>Antoine</strong>, votre conseiller visagiste et concierge d'exception pour <strong>Mage Optique & Services</strong>.<br><br>Comment puis-je magnifier votre regard aujourd'hui ? Décrivez-moi votre visage ou posez-moi vos questions.`;
 
+    // Only show settings toggle to logged-in administrators
+    const isAdminUser = localStorage.getItem('mage_optique_client_role') === 'admin' && 
+                        localStorage.getItem('mage_optique_client_logged') === 'true';
+    if (!isAdminUser && settingsToggleBtn) {
+        settingsToggleBtn.style.display = 'none';
+    }
+
     function checkApiKeyStatus() {
         const rawKey = localStorage.getItem('mage_optique_openrouter_key') || '';
         const key = typeof deobfuscateKey === 'function' ? deobfuscateKey(rawKey) : rawKey;
+        const isAdmin = localStorage.getItem('mage_optique_client_role') === 'admin' && 
+                        localStorage.getItem('mage_optique_client_logged') === 'true';
+
         if (!key) {
-            apiWarning.style.display = 'block';
+            if (isAdmin) {
+                apiWarning.style.display = 'block';
+                userInput.placeholder = "Configurez la clé API pour chater...";
+            } else {
+                apiWarning.style.display = 'none';
+                userInput.placeholder = "Service de discussion indisponible...";
+            }
             userInput.disabled = true;
-            userInput.placeholder = "Configurez la clé API pour chater...";
             sendBtn.disabled = true;
             sendBtn.style.opacity = '0.5';
         } else {
@@ -2442,13 +2457,19 @@ function initChatDrawer(drawer) {
     }
     modelSelect.value = savedModel;
 
-    saveSettingsBtn.addEventListener('click', () => {
+    saveSettingsBtn.addEventListener('click', async () => {
         const key = apiKeyInput.value.trim();
         const model = modelSelect.value;
         
         const storedKey = typeof obfuscateKey === 'function' ? obfuscateKey(key) : key;
         localStorage.setItem('mage_optique_openrouter_key', storedKey);
         localStorage.setItem('mage_optique_openrouter_model', model);
+
+        // Sync to Supabase so other users get it
+        if (typeof saveAISetting === 'function') {
+            await saveAISetting('openrouter_key', storedKey);
+            await saveAISetting('openrouter_model', model);
+        }
         
         settingsPanel.classList.remove('show');
         checkApiKeyStatus();
@@ -2547,7 +2568,30 @@ function initChatDrawer(drawer) {
     });
 
     // Init state
-    checkApiKeyStatus();
+    async function loadSharedSettingsAndCheck() {
+        // Load whatever we have locally first as immediate fallback
+        checkApiKeyStatus();
+
+        // Then fetch from Supabase asynchronously to get the latest key
+        if (typeof getAISettings === 'function') {
+            const settings = await getAISettings();
+            if (settings && settings.openrouter_key) {
+                localStorage.setItem('mage_optique_openrouter_key', settings.openrouter_key);
+                if (settings.openrouter_model) {
+                    localStorage.setItem('mage_optique_openrouter_model', settings.openrouter_model);
+                }
+                // Update the settings inputs if they exist
+                if (apiKeyInput) {
+                    apiKeyInput.value = typeof deobfuscateKey === 'function' ? deobfuscateKey(settings.openrouter_key) : settings.openrouter_key;
+                }
+                if (modelSelect) {
+                    modelSelect.value = settings.openrouter_model || 'google/gemma-4-31b-it:free';
+                }
+            }
+        }
+        checkApiKeyStatus();
+    }
+    loadSharedSettingsAndCheck();
     loadChatHistory();
 }
 

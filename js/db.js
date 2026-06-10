@@ -624,3 +624,33 @@ function deobfuscateKey(obfuscated) {
         return obfuscated;
     }
 }
+
+async function getAISettings() {
+    try {
+        const client = await getSupabase();
+        const { data, error } = await client.from('settings').select('*');
+        if (!error && data) {
+            const settings = {};
+            data.forEach(item => {
+                settings[item.key] = item.value;
+            });
+            return settings;
+        }
+    } catch (e) {
+        console.error("Failed to fetch AI settings from Supabase:", e);
+    }
+    return null;
+}
+
+async function saveAISetting(key, value) {
+    try {
+        const client = await getSupabase();
+        const { error } = await client.from('settings').upsert([{ key, value, updated_at: new Date().toISOString() }]);
+        if (error) console.error("Failed to save AI setting in Supabase:", error);
+    } catch (e) {
+        console.error("Failed to save AI setting in Supabase:", e);
+    }
+}
+
+window.getAISettings = getAISettings;
+window.saveAISetting = saveAISetting;
