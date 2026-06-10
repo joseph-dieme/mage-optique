@@ -76,8 +76,8 @@
             
             <div class="nav-actions">
                 <a href="boutique.html" class="material-symbols-outlined icon-btn active-icon" id="search-nav-btn" style="color: var(--color-muted-gold);">search</a>
-                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre liste de favoris est vide.')" id="fav-nav-btn">favorite</span>
-                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre panier Mage Optique &amp; Services est vide.')" id="cart-nav-btn">shopping_bag</span>
+                <span class="material-symbols-outlined icon-btn" id="fav-nav-btn">favorite</span>
+                <span class="material-symbols-outlined icon-btn" id="cart-nav-btn">shopping_bag</span>
                 <a href="connexion.html" class="material-symbols-outlined icon-btn" id="login-nav-btn">person</a>
                 <span class="mobile-nav-toggle material-symbols-outlined" id="menu-toggle-btn">menu</span>
             </div>
@@ -156,7 +156,7 @@
                     <li><a href="boutique.html" class="footer-link">Boutique</a></li>
                     <li><a href="services.html" class="footer-link">Nos Services</a></li>
                     <li><a href="a-propos.html" class="footer-link">À Propos</a></li>
-                    <li><a href="contact.html" class="footer-link">Rendez-vous</a></li>
+                    <li><a href="services.html#bookingConciergeForm" class="footer-link">Rendez-vous</a></li>
                 </ul>
             </div>
 
@@ -181,7 +181,7 @@
             <div>
                 <h5 class="footer-title">Newsletter</h5>
                 <p class="text-body-md" style="margin-bottom: 20px;">Abonnez-vous pour recevoir les dernières collections de créateurs et des conseils de santé visuelle.</p>
-                <form onsubmit="event.preventDefault(); alert('Merci pour votre inscription à la newsletter Mage Optique &amp; Services !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
+                <form onsubmit="event.preventDefault(); showToast('Merci pour votre inscription à notre newsletter !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
                     <input type="email" placeholder="Votre adresse e-mail" style="flex-grow: 1; padding: 4px 0; color: var(--color-deep-charcoal); font-size: 0.95rem;" required id="news-email-input">
                     <button type="submit" class="material-symbols-outlined" style="color: var(--color-muted-gold); cursor: pointer;" id="news-submit-btn">arrow_forward</button>
                 </form>
@@ -198,14 +198,14 @@
         <div id="concierge-message" class="glass-effect" style="display: none; padding: 12px 20px; border-radius: var(--border-radius-lg); font-size: 0.875rem; font-weight: 500; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-color: var(--color-muted-gold); animation: fadeIn 0.3s ease-out; max-width: 240px; color: var(--color-deep-charcoal);">
             Besoin d'un conseil ? Chattez avec l'un de nos visagistes en direct.
         </div>
-        <button onclick="alert('L\'assistant conseil Mage Optique &amp; Services est en cours d\'initialisation...')" onmouseover="document.getElementById('concierge-message').style.display='block'" onmouseout="document.getElementById('concierge-message').style.display='none'" class="flex-center" style="width: 56px; height: 56px; border-radius: var(--border-radius-full); background-color: var(--color-deep-charcoal); color: var(--color-paper-white); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; transition: var(--transition-fast);" id="concierge-floating-btn">
+        <button onclick="showToast('Notre service de conciergerie optique ouvre très prochainement !')" onmouseover="document.getElementById('concierge-message').style.display='block'" onmouseout="document.getElementById('concierge-message').style.display='none'" class="flex-center" style="width: 56px; height: 56px; border-radius: var(--border-radius-full); background-color: var(--color-deep-charcoal); color: var(--color-paper-white); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; transition: var(--transition-fast);" id="concierge-floating-btn">
             <span class="material-symbols-outlined" style="font-size: 28px;">chat</span>
         </button>
     </div>
 
     <!-- Core Scripting & Boutique database & filters scripting -->
     <script src="js/db.js?v=3"></script>
-    <script src="js/main.js?v=7"></script>
+    <script src="js/main.js?v=8"></script>
     <script>
         function initBoutique() {
             const tabs = document.querySelectorAll('.filter-tab');
@@ -222,7 +222,12 @@
                 productGrid.innerHTML = '';
                 let renderedCount = 0;
 
+                // Initialize product registry for reliable cart lookup
+                if (!window._productRegistry) window._productRegistry = {};
+
                 products.forEach(p => {
+                    // Register every product for instant lookup by ID
+                    window._productRegistry[p.id] = p;
                     const matchesCategory = (category === 'all' || p.category === category || p.gender === category);
                     const matchesSearch = (p.title.toLowerCase().includes(searchQuery) || 
                                            p.desc.toLowerCase().includes(searchQuery) || 
@@ -241,23 +246,48 @@
                         let tagStyle = '';
                         if (p.category === 'solaire') tagStyle = 'style="background-color: var(--color-deep-charcoal);"';
 
+                        // Store product data in card data-attributes for robust cart fallback
+                        card.setAttribute('data-product-id', p.id);
+                        card.setAttribute('data-product-title', p.title);
+                        card.setAttribute('data-product-price', p.price);
+                        card.setAttribute('data-product-image', p.image);
+
                         // Favorites active status determination
                         const isFav = typeof getFavorites === 'function' ? getFavorites().includes(p.id) : false;
-                        const favStyle = isFav ? 'style="color: red; top: 40px; right: 40px; z-index: 10;"' : 'style="top: 40px; right: 40px; z-index: 10;"';
                         const favClass = isFav ? 'material-symbols-outlined product-favorite active-favorite' : 'material-symbols-outlined product-favorite';
 
                         card.innerHTML = `
-                            <div class="product-img-wrapper" onclick="location.href='details.html?id=${p.id}'">
+                            <div class="product-img-wrapper" onclick="location.href='details.html?id=${p.id}'" style="cursor:pointer;">
                                 <div class="product-tag" ${tagStyle}>${p.tag}</div>
-                                <img src="${p.image}" alt="${p.title}" class="product-img">
+                                <img src="${p.image}" alt="${p.title}" class="product-img" loading="lazy">
+                                <!-- Quick action overlay on hover -->
+                                <div class="product-card-overlay">
+                                    <button class="product-overlay-btn" onclick="event.stopPropagation(); addToCartDirect('${p.id}')">
+                                        <span class="material-symbols-outlined" style="font-size: 18px;">shopping_bag</span>
+                                        Ajouter au panier
+                                    </button>
+                                    <button class="product-overlay-btn product-overlay-btn-secondary" onclick="event.stopPropagation(); location.href='details.html?id=${p.id}'">
+                                        <span class="material-symbols-outlined" style="font-size: 18px;">visibility</span>
+                                        Voir le produit
+                                    </button>
+                                </div>
                             </div>
-                            <span class="${favClass}" ${favStyle} data-product-id="${p.id}" onclick="event.stopPropagation(); toggleFavoriteMockup(this, '${p.id}')">favorite</span>
-                            <div>
-                                <h3 class="text-headline-md" style="font-size: 1.25rem; margin-bottom: 8px; cursor: pointer;" onclick="location.href='details.html?id=${p.id}'">${p.title}</h3>
-                                <p class="text-caption" style="margin-bottom: 12px;">${p.desc}</p>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                     <span class="text-body-md" style="color: var(--color-muted-gold); font-weight: 700;">${new Intl.NumberFormat('fr-FR').format(p.price)} FCFA</span>
-                                     <button class="btn btn-secondary" style="padding: 10px 16px; font-size: 0.75rem;" onclick="addToCartMockup('${p.id}')">Ajouter</button>
+                            <span class="${favClass}" data-product-id="${p.id}" style="top: 12px; right: 12px; z-index: 15; ${isFav ? 'color:red;' : ''}" onclick="event.stopPropagation(); toggleFavoriteMockup(this, '${p.id}')">favorite</span>
+                            <div style="padding: 4px 0; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <p class="text-caption" style="color: var(--color-soft-slate); margin-bottom: 4px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;">${p.category === 'solaire' ? 'Solaires' : (p.category === 'premium' ? 'Éditions Limitées' : 'Lunettes de Vue')} — ${p.gender === 'femme' ? 'Femme' : (p.gender === 'enfant' ? 'Enfant' : 'Homme')}</p>
+                                    <h3 class="text-headline-md" style="font-size: 1.1rem; margin-bottom: 6px; cursor: pointer; font-family: var(--font-serif); font-weight: 500; line-height: 1.3;" onclick="location.href='details.html?id=${p.id}'">${p.title}</h3>
+                                    <p class="text-caption" style="margin-bottom: 16px; color: var(--color-soft-slate); font-size: 0.82rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${p.desc}</p>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--color-border-subtle); padding-top: 14px;">
+                                    <div>
+                                        <span style="display: block; font-size: 0.65rem; color: var(--color-soft-slate); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">Prix</span>
+                                        <span class="text-body-md" style="color: var(--color-muted-gold); font-weight: 700; font-size: 1.05rem;">${new Intl.NumberFormat('fr-FR').format(p.price)} FCFA</span>
+                                    </div>
+                                    <button class="btn btn-primary" style="padding: 10px 18px; font-size: 0.7rem; display: flex; align-items: center; gap: 6px;" onclick="addToCartDirect('${p.id}')">
+                                        <span class="material-symbols-outlined" style="font-size: 16px;">add_shopping_cart</span>
+                                        Ajouter
+                                    </button>
                                 </div>
                             </div>
                         `;

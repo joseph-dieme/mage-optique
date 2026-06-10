@@ -3,6 +3,7 @@
 const DEFAULT_PRODUCTS = [];
 
 const DB_KEY = 'mage_optique_services_products';
+let _productsCache = null;
 const APPT_DB_KEY = 'mage_optique_appointments';
 const ORDER_DB_KEY = 'mage_optique_orders';
 const DEVIS_DB_KEY = 'mage_optique_devis';
@@ -50,7 +51,21 @@ async function syncDatabaseFromSupabase() {
                 image: p.image,
                 homepage_placement: p.homepage_placement
             }));
-            localStorage.setItem(DB_KEY, JSON.stringify(mapped));
+            
+            // Cache full products in memory
+            _productsCache = mapped;
+            
+            try {
+                localStorage.setItem(DB_KEY, JSON.stringify(mapped));
+            } catch (e) {
+                console.warn("Local storage quota exceeded for products with images. Storing stripped products as fallback.");
+                const stripped = mapped.map(p => ({ ...p, image: '' }));
+                try {
+                    localStorage.setItem(DB_KEY, JSON.stringify(stripped));
+                } catch (err) {
+                    console.error("Failed to store stripped products in localStorage:", err);
+                }
+            }
         }
 
         // 2. Sync Appointments (Filter by user if logged in, or fetch all for admin)
@@ -83,7 +98,21 @@ async function syncDatabaseFromSupabase() {
         }
         const { data: dbDevis, error: devisErr } = await devisQuery;
         if (!devisErr && dbDevis) {
-            localStorage.setItem(DEVIS_DB_KEY, JSON.stringify(dbDevis));
+            const mapped = dbDevis.map(d => ({
+                id: d.id,
+                lastname: d.lastname,
+                firstname: d.firstname,
+                email: d.email,
+                lens: d.lens,
+                insurance: d.insurance,
+                fileName: d.file_name || d.fileName,
+                fileData: d.file_data || d.fileData,
+                status: d.status,
+                date: d.date,
+                userId: d.user_id,
+                frameId: d.frame_id || d.frameId || null
+            }));
+            localStorage.setItem(DEVIS_DB_KEY, JSON.stringify(mapped));
         }
 
         // Dispatch sync event
@@ -135,19 +164,35 @@ getSupabase().then(() => {
 /* --- Products CRUD Controller --- */
 
 function getProducts() {
+    if (_productsCache && _productsCache.length > 0) {
+        return _productsCache;
+    }
     const data = localStorage.getItem(DB_KEY);
     if (!data) {
         localStorage.setItem(DB_KEY, JSON.stringify(DEFAULT_PRODUCTS));
         return DEFAULT_PRODUCTS;
     }
-    return JSON.parse(data);
+    try {
+        _productsCache = JSON.parse(data);
+        return _productsCache;
+    } catch (e) {
+        console.error("Error parsing products from localStorage:", e);
+        return DEFAULT_PRODUCTS;
+    }
 }
 
 function saveProducts(products) {
+    _productsCache = products;
     try {
         localStorage.setItem(DB_KEY, JSON.stringify(products));
     } catch (e) {
-        console.error("Local storage quota exceeded for products:", e);
+        console.warn("Local storage quota exceeded in saveProducts. Storing stripped products as fallback.");
+        const stripped = products.map(p => ({ ...p, image: '' }));
+        try {
+            localStorage.setItem(DB_KEY, JSON.stringify(stripped));
+        } catch (err) {
+            console.error("Failed to store stripped products in saveProducts:", err);
+        }
     }
 }
 
@@ -186,7 +231,6 @@ async function addProduct(product) {
         if (error) throw new Error(error.message);
     } catch (e) {
         console.error("Failed to add product to Supabase:", e);
-        alert("Erreur de sauvegarde en base de données : " + e.message);
     }
     return newProduct;
 }
@@ -218,7 +262,6 @@ async function updateProduct(id, updatedFields) {
             if (error) throw new Error(error.message);
         } catch (e) {
             console.error("Failed to update product in Supabase:", e);
-            alert("Erreur de modification en base de données : " + e.message);
         }
         return products[index];
     }
@@ -414,10 +457,18 @@ async function deleteOrder(id) {
 /* --- Devis Controller --- */
 
 function getMockPrescriptionSVG(lastname, firstname, lensType) {
-    const lensLabel = lensType === 'progressifs' ? 'Verres Progressifs' : (lensType === 'fatigue' ? 'Verres Anti-fatigue' : 'Verres Unifocaux');
-    const sphereD = lensType === 'progressifs' ? '-2.75' : '-1.50';
-    const sphereG = lensType === 'progressifs' ? '-2.50' : '-1.25';
-    const add = lensType === 'progressifs' ? ' | Addition: +1.75' : '';
+    let lensLabel = 'Verres Unifocaux';
+    if (lensType === 'progressifs') lensLabel = 'Verres Progressifs';
+    if (lensType === 'fatigue') lensLabel = 'Verres Anti-fatigue';
+    if (lensType === 'photogray-gris') lensLabel = 'Verres Photogray Gris';
+    if (lensType === 'photogray-brun') lensLabel = 'Verres Photogray Brun';
+    if (lensType === 'photogray-transition') lensLabel = 'Verres Photogray Transition';
+    if (lensType === 'photogray-xtractive') lensLabel = 'Verres Photogray XTRActive';
+    if (lensType === 'sans-photogray') lensLabel = 'Verres Blancs Standard';
+
+    const sphereD = (lensType === 'progressifs' || lensType === 'photogray-transition') ? '-2.75' : '-1.50';
+    const sphereG = (lensType === 'progressifs' || lensType === 'photogray-transition') ? '-2.50' : '-1.25';
+    const add = (lensType === 'progressifs' || lensType === 'photogray-transition') ? ' | Addition: +1.75' : '';
     
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="100%" height="100%">
     <rect width="100%" height="100%" fill="#faf8f5" rx="16"/>
@@ -487,7 +538,8 @@ async function addDevis(devis) {
         fileName: devis.fileName || 'Ordonnance.pdf',
         fileData: devis.fileData || '',
         status: 'En attente',
-        date: new Date().toISOString().split('T')[0]
+        date: new Date().toISOString().split('T')[0],
+        frameId: devis.frameId || null
     };
     devisList.push(newDevis);
     saveDevis(devisList);
@@ -506,7 +558,8 @@ async function addDevis(devis) {
             file_data: newDevis.fileData,
             status: newDevis.status,
             date: newDevis.date,
-            user_id: userId
+            user_id: userId,
+            frame_id: newDevis.frameId || null
         }]);
     } catch (e) {
         console.error("Failed to insert devis in Supabase:", e);
@@ -544,4 +597,30 @@ async function deleteDevis(id) {
         console.error("Failed to delete devis in Supabase:", e);
     }
     return filtered;
+}
+
+/* --- AI Chat Settings Key Obfuscation Helpers --- */
+function obfuscateKey(key) {
+    if (!key) return '';
+    const mask = 'MAGE_OPTIQUE_SAFETY_MASK_2026';
+    let result = '';
+    for (let i = 0; i < key.length; i++) {
+        result += String.fromCharCode(key.charCodeAt(i) ^ mask.charCodeAt(i % mask.length));
+    }
+    return btoa(unescape(encodeURIComponent(result)));
+}
+
+function deobfuscateKey(obfuscated) {
+    if (!obfuscated) return '';
+    try {
+        const decoded = decodeURIComponent(escape(atob(obfuscated)));
+        const mask = 'MAGE_OPTIQUE_SAFETY_MASK_2026';
+        let result = '';
+        for (let i = 0; i < decoded.length; i++) {
+            result += String.fromCharCode(decoded.charCodeAt(i) ^ mask.charCodeAt(i % mask.length));
+        }
+        return result;
+    } catch(e) {
+        return obfuscated;
+    }
 }

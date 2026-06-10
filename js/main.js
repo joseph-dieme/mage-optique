@@ -698,19 +698,35 @@ function findProductById(id) {
 
 // Read / Write Cart
 function getCart() {
-    const data = localStorage.getItem(CART_KEY);
-    return data ? JSON.parse(data) : [];
+    try {
+        const data = localStorage.getItem(CART_KEY);
+        const parsed = data ? JSON.parse(data) : [];
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+        console.error("Error reading cart from localStorage:", e);
+        return [];
+    }
 }
 function saveCart(cart) {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    try {
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    } catch (e) {
+        console.error("Error saving cart to localStorage:", e);
+    }
     updateHeaderBadges();
     renderCart();
 }
 
 // Read / Write Favorites
 function getFavorites() {
-    const data = localStorage.getItem(FAVS_KEY);
-    return data ? JSON.parse(data) : [];
+    try {
+        const data = localStorage.getItem(FAVS_KEY);
+        const parsed = data ? JSON.parse(data) : [];
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+        console.error("Error reading favorites from localStorage:", e);
+        return [];
+    }
 }
 function saveFavorites(favs) {
     localStorage.setItem(FAVS_KEY, JSON.stringify(favs));
@@ -768,7 +784,7 @@ function toggleFavorite(productId, element) {
 }
 
 // Add Item to Cart
-function addToCart(productId) {
+async function addToCart(productId, fallbackData) {
     // Check if client is logged in
     const isLogged = localStorage.getItem('mage_optique_client_logged') === 'true';
     if (!isLogged) {
@@ -777,8 +793,50 @@ function addToCart(productId) {
         return false;
     }
     
-    const product = findProductById(productId);
-    if (!product) return false;
+    // Try to find product in local database first
+    let product = findProductById(productId);
+    
+    // If not found in localStorage (e.g. Supabase UUID not yet synced),
+    // use fallback data passed directly from the card template
+    if (!product && fallbackData) {
+        product = {
+            id: productId,
+            title: fallbackData.title || 'Produit',
+            price: parseFloat(fallbackData.price) || 0,
+            image: fallbackData.image || ''
+        };
+        // Also save it in localStorage for future lookups
+        try {
+            const products = JSON.parse(localStorage.getItem('mage_optique_services_products') || '[]');
+            if (!products.find(p => p.id === productId)) {
+                products.push({ ...product, category: 'vue', gender: 'homme', tag: '', desc: '', specs: '' });
+                localStorage.setItem('mage_optique_services_products', JSON.stringify(products));
+            }
+        } catch(e) { /* silent */ }
+    }
+    
+    // Async fallback: try to fetch directly from Supabase!
+    if (!product) {
+        try {
+            const client = await getSupabase();
+            const { data, error } = await client.from('products').select('*').eq('id', productId).single();
+            if (!error && data) {
+                product = {
+                    id: data.id,
+                    title: data.title,
+                    price: parseFloat(data.price) || 0,
+                    image: data.image
+                };
+            }
+        } catch (e) {
+            console.error("Failed to fetch product from Supabase directly in addToCart:", e);
+        }
+    }
+    
+    if (!product) {
+        console.warn('addToCart: product not found for id', productId);
+        return false;
+    }
     
     let cart = getCart();
     const existing = cart.find(item => item.id === productId);
@@ -790,7 +848,7 @@ function addToCart(productId) {
             id: product.id,
             title: product.title,
             price: product.price,
-            image: product.image,
+            image: "", // Strip heavy image data to avoid LocalStorage quota limit errors
             quantity: 1
         });
     }
@@ -802,8 +860,30 @@ function addToCart(productId) {
 }
 
 // Add Item to Cart without redirection (silent addition)
-function addToCartSilently(productId) {
-    const product = findProductById(productId);
+async function addToCartSilently(productId, fallbackData) {
+    let product = findProductById(productId);
+    if (!product && fallbackData) {
+        product = { id: productId, title: fallbackData.title || 'Produit', price: parseFloat(fallbackData.price) || 0, image: fallbackData.image || '' };
+    }
+    
+    // Async fallback: try to fetch directly from Supabase!
+    if (!product) {
+        try {
+            const client = await getSupabase();
+            const { data, error } = await client.from('products').select('*').eq('id', productId).single();
+            if (!error && data) {
+                product = {
+                    id: data.id,
+                    title: data.title,
+                    price: parseFloat(data.price) || 0,
+                    image: data.image
+                };
+            }
+        } catch (e) {
+            console.error("Failed to fetch product from Supabase directly in addToCartSilently:", e);
+        }
+    }
+    
     if (!product) return false;
     
     let cart = getCart();
@@ -816,7 +896,7 @@ function addToCartSilently(productId) {
             id: product.id,
             title: product.title,
             price: product.price,
-            image: product.image,
+            image: "", // Strip heavy image data to avoid LocalStorage quota limit errors
             quantity: 1
         });
     }
@@ -824,6 +904,114 @@ function addToCartSilently(productId) {
     return true;
 }
 window.addToCartSilently = addToCartSilently;
+
+// ─── Premium Toast Notification ──────────────────────────────────────────────
+function showToast(message, type = 'success') {
+    let toast = document.getElementById('mage-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'mage-toast';
+        toast.style.cssText = [
+            'position:fixed', 'bottom:90px', 'left:50%',
+            'transform:translateX(-50%) translateY(20px)',
+            'background:#121212', 'color:#C5A059',
+            'padding:14px 24px', 'border-radius:4px',
+            'border:1px solid rgba(197,160,89,0.3)',
+            "font-family:'Hanken Grotesk',sans-serif",
+            'font-size:0.875rem', 'font-weight:600',
+            'box-shadow:0 10px 30px rgba(0,0,0,0.4)',
+            'z-index:999999', 'opacity:0',
+            'transition:opacity 0.35s cubic-bezier(0.16,1,0.3,1),transform 0.35s cubic-bezier(0.16,1,0.3,1)',
+            'display:flex', 'align-items:center', 'gap:10px',
+            'white-space:nowrap', 'pointer-events:none',
+            'max-width:90vw', 'overflow:hidden'
+        ].join(';');
+        document.body.appendChild(toast);
+    }
+    const iconMap = { success: 'check_circle', error: 'error', info: 'info' };
+    const colorMap = { success: '#C5A059', error: '#e74c3c', info: '#74b9ff' };
+    const icon = iconMap[type] || 'check_circle';
+    const iconColor = colorMap[type] || '#C5A059';
+    toast.innerHTML = `<span class="material-symbols-outlined" style="font-size:20px;color:${iconColor};flex-shrink:0">${icon}</span>${message}`;
+    // Animate in
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(20px)';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(-50%) translateY(0)';
+    }));
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(20px)';
+    }, 3500);
+}
+window.showToast = showToast;
+
+// ─── addToCartDirect — uses _productRegistry as primary source ────────────────
+// Called from card buttons. Uses the product object stored in window._productRegistry
+// at render time, bypassing all localStorage lookup timing issues entirely.
+async function addToCartDirect(productId) {
+    if (!productId) return;
+
+    // Check login first
+    const isLogged = localStorage.getItem('mage_optique_client_logged') === 'true';
+    if (!isLogged) {
+        localStorage.setItem('mage_optique_pending_cart_item', productId);
+        window.location.href = 'connexion.html';
+        return;
+    }
+
+    // Try registry first (most reliable — set at render time)
+    let product = window._productRegistry && window._productRegistry[productId];
+
+    // Fallback: try getProducts() / localStorage
+    if (!product) {
+        product = findProductById(productId);
+    }
+    
+    // Async fallback: try to fetch directly from Supabase!
+    if (!product) {
+        try {
+            const client = await getSupabase();
+            const { data, error } = await client.from('products').select('*').eq('id', productId).single();
+            if (!error && data) {
+                product = {
+                    id: data.id,
+                    title: data.title,
+                    price: parseFloat(data.price) || 0,
+                    image: data.image
+                };
+            }
+        } catch (e) {
+            console.error("Failed to fetch product from Supabase directly in addToCartDirect:", e);
+        }
+    }
+
+    if (!product) {
+        showToast('Produit introuvable. Rechargez la page.', 'error');
+        console.warn('addToCartDirect: product not found for id', productId);
+        return;
+    }
+
+    let cart = getCart();
+    const existing = cart.find(item => item.id === productId);
+    if (existing) {
+        existing.quantity += 1;
+    } else {
+        cart.push({
+            id: product.id,
+            title: product.title,
+            price: product.price,
+            image: "", // Strip heavy image data to avoid LocalStorage quota limit errors
+            quantity: 1
+        });
+    }
+    saveCart(cart);
+    window.location.href = 'panier.html';
+}
+window.addToCartDirect = addToCartDirect;
+
 
 // Remove Item from Cart
 function removeFromCart(productId) {
@@ -849,12 +1037,14 @@ function updateCartQuantity(productId, delta) {
 function toggleDrawer(type, forceOpen = false) {
     const cartDrawer = document.getElementById('cart-drawer');
     const favDrawer = document.getElementById('favorites-drawer');
+    const chatDrawer = document.getElementById('chat-drawer');
     const backdrop = document.getElementById('drawer-backdrop');
     
     if (!cartDrawer || !favDrawer || !backdrop) return;
     
     if (type === 'cart') {
-        favDrawer.classList.remove('open');
+        if (favDrawer) favDrawer.classList.remove('open');
+        if (chatDrawer) chatDrawer.classList.remove('open');
         if (forceOpen || !cartDrawer.classList.contains('open')) {
             cartDrawer.classList.add('open');
             backdrop.classList.add('show');
@@ -863,7 +1053,8 @@ function toggleDrawer(type, forceOpen = false) {
             backdrop.classList.remove('show');
         }
     } else if (type === 'fav') {
-        cartDrawer.classList.remove('open');
+        if (cartDrawer) cartDrawer.classList.remove('open');
+        if (chatDrawer) chatDrawer.classList.remove('open');
         if (forceOpen || !favDrawer.classList.contains('open')) {
             favDrawer.classList.add('open');
             backdrop.classList.add('show');
@@ -871,9 +1062,24 @@ function toggleDrawer(type, forceOpen = false) {
             favDrawer.classList.remove('open');
             backdrop.classList.remove('show');
         }
+    } else if (type === 'chat') {
+        if (cartDrawer) cartDrawer.classList.remove('open');
+        if (favDrawer) favDrawer.classList.remove('open');
+        if (forceOpen || (chatDrawer && !chatDrawer.classList.contains('open'))) {
+            if (chatDrawer) chatDrawer.classList.add('open');
+            backdrop.classList.add('show');
+            const messagesContainer = document.getElementById('chat-drawer-messages');
+            if (messagesContainer) {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        } else {
+            if (chatDrawer) chatDrawer.classList.remove('open');
+            backdrop.classList.remove('show');
+        }
     } else {
-        cartDrawer.classList.remove('open');
-        favDrawer.classList.remove('open');
+        if (cartDrawer) cartDrawer.classList.remove('open');
+        if (favDrawer) favDrawer.classList.remove('open');
+        if (chatDrawer) chatDrawer.classList.remove('open');
         backdrop.classList.remove('show');
     }
 }
@@ -921,11 +1127,13 @@ function renderCart() {
     
     cart.forEach(item => {
         subtotal += item.price * item.quantity;
+        const dbProduct = findProductById(item.id);
+        const itemImage = (dbProduct && dbProduct.image) ? dbProduct.image : item.image || '';
         const row = document.createElement('div');
         row.className = 'drawer-item';
         row.innerHTML = `
             <div class="drawer-item-img-wrapper">
-                <img src="${item.image}" alt="${item.title}" class="drawer-item-img">
+                <img src="${itemImage}" alt="${item.title}" class="drawer-item-img">
             </div>
             <div class="drawer-item-details">
                 <div class="drawer-item-title">${item.title}</div>
@@ -1042,12 +1250,15 @@ function runOverlaySearch() {
             card.style.padding = '16px';
             
             card.innerHTML = `
-                <div class="product-img-wrapper" style="height: 140px; margin-bottom: 12px;" onclick="location.href='details.html?id=${p.id}'; toggleSearchOverlay(false);">
-                    <img src="${p.image}" alt="${p.title}" class="product-img">
+                <div class="product-img-wrapper" style="margin-bottom: 12px;" onclick="location.href='details.html?id=${p.id}'; toggleSearchOverlay(false);">
+                    <img src="${p.image}" alt="${p.title}" class="product-img" loading="lazy">
                 </div>
-                <h4 style="font-family: var(--font-serif); font-size: 1rem; margin-bottom: 4px;">${p.title}</h4>
+                <h4 style="font-family: var(--font-serif); font-size: 0.95rem; margin-bottom: 4px; line-height: 1.3;">${p.title}</h4>
                 <div style="color: var(--color-muted-gold); font-weight: 700; font-size: 0.85rem; margin-bottom: 12px;">${new Intl.NumberFormat('fr-FR').format(p.price)} FCFA</div>
-                <button class="btn btn-gold" style="width: 100%; padding: 8px 0; font-size: 0.75rem;" onclick="addToCart('${p.id}'); toggleSearchOverlay(false);">Ajouter</button>
+                <button class="btn btn-gold" style="width: 100%; padding: 8px 0; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 6px;" onclick="addToCart('${p.id}'); toggleSearchOverlay(false);">
+                    <span class="material-symbols-outlined" style="font-size: 16px;">add_shopping_cart</span>
+                    Ajouter
+                </button>
             `;
             resultsGrid.appendChild(card);
         }
@@ -1199,6 +1410,119 @@ function injectLuxuryInteractions() {
             color: var(--color-muted-gold);
             font-weight: 700;
         }
+        
+        /* Chat Drawer Specific Styles */
+        .chat-bubble {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: var(--border-radius-lg);
+            font-family: var(--font-sans);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+            margin-bottom: 2px;
+        }
+        .chat-bubble.user {
+            align-self: flex-end;
+            background-color: var(--color-deep-charcoal);
+            color: var(--color-paper-white);
+            border-bottom-right-radius: 2px;
+        }
+        .chat-bubble.assistant {
+            align-self: flex-start;
+            background-color: rgba(18, 18, 18, 0.05);
+            color: var(--color-deep-charcoal);
+            border-bottom-left-radius: 2px;
+            border-left: 2px solid var(--color-muted-gold);
+        }
+        .chat-bubble.error-bubble {
+            align-self: center;
+            background-color: #fdf2f2;
+            color: #ec4899;
+            border: 1px dashed #fbcfe8;
+            font-size: 0.8rem;
+            text-align: center;
+            width: 90%;
+        }
+        .chat-input-container {
+            padding: 16px;
+            border-top: 1px solid var(--color-border-subtle);
+            background-color: var(--color-surface-container-lowest);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .chat-input {
+            flex-grow: 1;
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--border-radius-full);
+            padding: 10px 16px;
+            outline: none;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            color: var(--color-deep-charcoal);
+            background: var(--color-paper-white);
+            transition: border-color var(--transition-fast);
+        }
+        .chat-input:focus {
+            border-color: var(--color-muted-gold);
+        }
+        .chat-send-btn {
+            background-color: var(--color-deep-charcoal);
+            color: var(--color-paper-white);
+            border: none;
+            border-radius: var(--border-radius-full);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .chat-send-btn:hover {
+            background-color: var(--color-muted-gold);
+        }
+        .chat-settings-panel {
+            background: rgba(18, 18, 18, 0.03);
+            border-bottom: 1px solid var(--color-border-subtle);
+            padding: 16px;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .chat-settings-panel.show {
+            display: flex;
+        }
+        .typing-indicator {
+            display: none;
+            gap: 4px;
+            align-items: center;
+            padding: 12px 16px;
+            background-color: rgba(18, 18, 18, 0.05);
+            border-radius: var(--border-radius-lg);
+            width: fit-content;
+            border-bottom-left-radius: 2px;
+            align-self: flex-start;
+            margin-left: 20px;
+            margin-bottom: 8px;
+        }
+        .typing-indicator.show {
+            display: flex;
+        }
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--color-muted-gold);
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite ease-in-out both;
+        }
+        @keyframes typingBounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
     `;
     document.head.appendChild(style);
     
@@ -1234,6 +1558,81 @@ function injectLuxuryInteractions() {
         <div class="drawer-content" id="fav-drawer-items"></div>
     `;
     document.body.appendChild(favDrawer);
+    
+    // 4. Create Chat Drawer
+    const chatDrawer = document.createElement('div');
+    chatDrawer.className = 'side-drawer';
+    chatDrawer.id = 'chat-drawer';
+    chatDrawer.style.cssText = 'width: 400px; display: flex; flex-direction: column;';
+    chatDrawer.innerHTML = `
+        <div class="drawer-header" style="padding: 24px 20px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="material-symbols-outlined" style="color: var(--color-muted-gold); font-size: 28px;">chat</span>
+                <div>
+                    <span class="font-serif" style="font-size: 1.25rem; font-weight: 500; display: block; line-height: 1.2;">Mage Concierge</span>
+                    <span style="font-size: 0.7rem; color: var(--color-soft-slate); display: block; text-transform: uppercase; letter-spacing: 0.05em;" id="chat-status-label">Conseiller Visagiste IA</span>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span class="material-symbols-outlined" id="chat-clear-btn" style="cursor: pointer; font-size: 20px; color: var(--color-soft-slate);" title="Effacer l'historique">delete</span>
+                <span class="material-symbols-outlined" id="chat-settings-toggle-btn" style="cursor: pointer; font-size: 20px; color: var(--color-soft-slate);" title="Paramètres de l'IA">settings</span>
+                <span class="material-symbols-outlined close-drawer" id="close-chat-btn" style="font-size: 20px;">close</span>
+            </div>
+        </div>
+        
+        <!-- API Settings Panel (Collapsible) -->
+        <div id="chat-settings-panel" class="chat-settings-panel">
+            <div>
+                <label class="form-label" style="font-size: 0.7rem; margin-bottom: 4px;">Clé API OpenRouter</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="password" id="chat-api-key-input" class="form-input" style="padding: 6px 0; font-size: 0.85rem; flex-grow: 1; border: none; border-bottom: 1px solid var(--color-outline); background-color: transparent;" placeholder="Saisir votre clé sk-or-...">
+                    <button class="qty-btn" id="chat-toggle-key-visibility" style="width: 28px; height: 28px; border: 1px solid var(--color-border-subtle); display: flex; align-items: center; justify-content: center; background: transparent; cursor: pointer; border-radius: var(--border-radius-sm);"><span class="material-symbols-outlined" style="font-size: 16px;">visibility</span></button>
+                </div>
+            </div>
+            
+            <div>
+                <label class="form-label" style="font-size: 0.7rem; margin-bottom: 4px;">Modèle IA</label>
+                <select id="chat-model-select" class="form-input" style="padding: 6px 0; font-size: 0.85rem; border: none; border-bottom: 1px solid var(--color-outline); background-color: transparent; width: 100%;">
+                    <option value="google/gemma-4-31b-it:free">Gemma 4 31B IT (Gratuit - Recommandé)</option>
+                    <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B (Gratuit)</option>
+                    <option value="meta-llama/llama-3.2-3b-instruct:free">Llama 3.2 3B (Gratuit - Rapide)</option>
+                    <option value="openrouter/free">Auto-sélection gratuit (Très résilient)</option>
+                </select>
+            </div>
+
+            <button class="btn btn-gold" id="chat-save-settings-btn" style="padding: 8px 16px; font-size: 0.75rem; border-radius: var(--border-radius-sm); border: none; margin-top: 4px; width: 100%;">Sauvegarder les paramètres</button>
+        </div>
+
+        <!-- Messages Container -->
+        <div class="drawer-content" id="chat-drawer-messages" style="flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; background-color: #fbfbfb;">
+            <!-- Initial assistant greeting -->
+            <div class="chat-bubble assistant">
+                <p style="margin-bottom: 0; line-height: 1.5;">Bonjour ! Je suis <strong>Antoine</strong>, votre conseiller visagiste et concierge d'exception pour <strong>Mage Optique & Services</strong>.<br><br>Comment puis-je magnifier votre regard aujourd'hui ? Décrivez-moi votre visage ou posez-moi vos questions.</p>
+            </div>
+        </div>
+        
+        <!-- Typing indicator -->
+        <div id="chat-typing-indicator" class="typing-indicator">
+            <div class="typing-dot" style="animation-delay: -0.32s"></div>
+            <div class="typing-dot" style="animation-delay: -0.16s"></div>
+            <div class="typing-dot"></div>
+        </div>
+
+        <!-- API Warning banner if key is missing -->
+        <div id="chat-api-warning" style="background-color: var(--color-gold-tint); border-top: 1px solid var(--color-border-subtle); padding: 12px 20px; font-size: 0.75rem; text-align: center; color: var(--color-deep-charcoal); display: none;">
+            <span class="material-symbols-outlined" style="font-size: 14px; vertical-align: middle; color: var(--color-muted-gold); margin-right: 4px;">warning</span>
+            Clé API non configurée. <a href="javascript:void(0)" id="chat-open-settings-link" style="color: var(--color-muted-gold); font-weight: 700; text-decoration: underline;">Cliquez ici pour la configurer</a>.
+        </div>
+
+        <!-- Saisie message -->
+        <div class="chat-input-container">
+            <input type="text" id="chat-user-input" class="chat-input" placeholder="Posez votre question...">
+            <button class="chat-send-btn" id="chat-send-btn">
+                <span class="material-symbols-outlined" style="font-size: 20px; margin-left: 2px;">send</span>
+            </button>
+        </div>
+    `;
+    document.body.appendChild(chatDrawer);
     
     // 5. Intercept Header Icons & Inject Badges
     const favNavBtn = document.getElementById('fav-nav-btn');
@@ -1482,6 +1881,9 @@ function injectLuxuryInteractions() {
     // 6. Hook close event listeners
     document.getElementById('close-cart-btn').addEventListener('click', () => toggleDrawer('cart'));
     document.getElementById('close-fav-btn').addEventListener('click', () => toggleDrawer('fav'));
+    if (document.getElementById('close-chat-btn')) {
+        document.getElementById('close-chat-btn').addEventListener('click', () => toggleDrawer('chat'));
+    }
     backdrop.addEventListener('click', () => toggleDrawer('all'));
     
     // Initial Render
@@ -1495,6 +1897,56 @@ function injectLuxuryInteractions() {
         setTimeout(() => {
             toggleDrawer('cart', true);
         }, 300);
+    }
+
+    // 7. Bind or Inject Floating Chat Button
+    const bindFloatingBtn = () => {
+        const floatingBtn = document.getElementById('concierge-floating-btn');
+        if (floatingBtn) {
+            floatingBtn.removeAttribute('onclick');
+            floatingBtn.removeAttribute('onmouseover');
+            floatingBtn.removeAttribute('onmouseout');
+            
+            floatingBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleDrawer('chat');
+            });
+            
+            const hoverMsg = document.getElementById('concierge-message');
+            if (hoverMsg) {
+                floatingBtn.addEventListener('mouseenter', () => {
+                    const drawer = document.getElementById('chat-drawer');
+                    if (drawer && !drawer.classList.contains('open')) {
+                        hoverMsg.style.display = 'block';
+                    }
+                });
+                floatingBtn.addEventListener('mouseleave', () => {
+                    hoverMsg.style.display = 'none';
+                });
+            }
+        }
+    };
+
+    let floatingBtn = document.getElementById('concierge-floating-btn');
+    if (!floatingBtn) {
+        const chatBtnContainer = document.createElement('div');
+        chatBtnContainer.style.cssText = "position: fixed; bottom: 32px; right: 32px; z-index: 400; display: flex; flex-direction: column; align-items: flex-end; gap: 16px;";
+        chatBtnContainer.innerHTML = `
+            <div id="concierge-message" class="glass-effect" style="display: none; padding: 12px 20px; border-radius: var(--border-radius-lg); font-size: 0.875rem; font-weight: 500; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-color: var(--color-muted-gold); animation: fadeIn 0.3s ease-out; max-width: 240px; color: var(--color-deep-charcoal);">
+                Besoin d'un conseil ? Chattez avec l'un de nos visagistes en direct.
+            </div>
+            <button class="flex-center" style="width: 56px; height: 56px; border-radius: var(--border-radius-full); background-color: var(--color-deep-charcoal); color: var(--color-paper-white); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; transition: var(--transition-fast); border: none;" id="concierge-floating-btn">
+                <span class="material-symbols-outlined" style="font-size: 28px;">chat</span>
+            </button>
+        `;
+        document.body.appendChild(chatBtnContainer);
+    }
+    bindFloatingBtn();
+
+    // 8. Initialize Chat Drawer Functionality
+    if (chatDrawer) {
+        initChatDrawer(chatDrawer);
     }
 }
 
@@ -1558,6 +2010,10 @@ function openQuickView(productId) {
         });
     }
     
+    // Register product in global registry for reliable cart lookup
+    if (!window._productRegistry) window._productRegistry = {};
+    window._productRegistry[product.id] = product;
+
     const isFav = getFavorites().includes(product.id);
     const favStyle = isFav ? 'style="color: red;"' : '';
     const favClass = isFav ? 'material-symbols-outlined active-favorite' : 'material-symbols-outlined';
@@ -1577,7 +2033,7 @@ function openQuickView(productId) {
                     <div class="text-caption" style="font-size: 0.75rem; margin-bottom: 24px;"><strong>Spécifications :</strong> ${product.specs}</div>
                     
                     <div style="display: flex; gap: 12px; align-items: center;">
-                        <button class="btn btn-primary" style="flex-grow: 1; padding: 14px 0;" onclick="addToCartMockup('${product.id}'); closeQuickView();">Ajouter au Panier</button>
+                        <button class="btn btn-primary" style="flex-grow: 1; padding: 14px 0;" onclick="addToCartFromQuickView(); closeQuickView();">Ajouter au Panier</button>
                         <button class="btn btn-secondary" data-product-id="${product.id}" style="width: 48px; height: 48px; padding: 0; display: flex; align-items: center; justify-content: center;" onclick="toggleFavoriteMockup(this, '${product.id}');">
                             <span class="${favClass}" ${favStyle} style="font-size: 20px;">favorite</span>
                         </button>
@@ -1595,7 +2051,15 @@ function closeQuickView() {
     if (modal) {
         modal.classList.remove('show');
     }
+    window._quickViewProduct = null;
 }
+
+// Cart from QuickView modal — uses stored product object directly
+function addToCartFromQuickView() {
+    const p = window._quickViewProduct;
+    if (p) addToCartDirect(p.id);
+}
+window.addToCartFromQuickView = addToCartFromQuickView;
 
 // Bind to window to ensure HTML inline onclick hooks function flawlessly
 window.openQuickView = openQuickView;
@@ -1626,9 +2090,22 @@ if (document.readyState === 'loading') {
 }
 
 // Retrocompatible Mock overrides
-function addToCartMockup(productId) {
+function addToCartMockup(productId, event) {
     if (productId) {
-        addToCart(productId);
+        // Try to get fallback data from the clicked element's closest product card
+        let fallbackData = null;
+        try {
+            const btn = event && event.target ? event.target : document.querySelector(`[onclick*="${productId}"]`);
+            const card = btn ? btn.closest('[data-product-id]') || btn.closest('.product-card') : null;
+            if (card) {
+                fallbackData = {
+                    title: card.getAttribute('data-product-title'),
+                    price: card.getAttribute('data-product-price'),
+                    image: card.getAttribute('data-product-image')
+                };
+            }
+        } catch(e) { /* silent */ }
+        addToCart(productId, fallbackData);
     } else {
         alert("Produit ajouté à votre panier d'excellence.");
     }
@@ -1751,3 +2228,326 @@ function closeEmptyCartModal() {
 
 window.closeEmptyCartModal = closeEmptyCartModal;
 window.showEmptyCartModal = showEmptyCartModal;
+
+/* --- AI Concierge Chat Drawer Helper Functions --- */
+
+// Markdown to Safe HTML parser for AI chat bubbles
+function parseMarkdown(text) {
+    // Basic HTML escaping
+    let html = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    // Replace bold text **bold**
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Replace italic text *italic*
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    html = html.replace(/_(.*?)_/g, '<em>$1</em>');
+
+    // Replace code blocks `code`
+    html = html.replace(/`(.*?)`/g, '<code>$1</code>');
+
+    // Split into paragraphs and lists
+    const lines = html.split('\n');
+    let insideList = false;
+    let result = '';
+
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+        if (!line) {
+            if (insideList) {
+                result += '</ul>';
+                insideList = false;
+            }
+            continue;
+        }
+
+        if (line.startsWith('- ') || line.startsWith('* ')) {
+            if (!insideList) {
+                result += '<ul style="margin: 8px 0; padding-left: 20px; list-style-type: disc;">';
+                insideList = true;
+            }
+            result += `<li style="margin-bottom: 4px;">${line.substring(2)}</li>`;
+        } else {
+            if (insideList) {
+                result += '</ul>';
+                insideList = false;
+            }
+            result += `<p style="margin-bottom: 8px; line-height: 1.5;">${line}</p>`;
+        }
+    }
+
+    if (insideList) {
+        result += '</ul>';
+    }
+
+    return result;
+}
+
+// Generate the customized system prompt containing live catalog data
+function getChatSystemPrompt() {
+    let productsListText = "";
+    try {
+        const products = typeof getProducts === 'function' ? getProducts() : [];
+        if (products && products.length > 0) {
+            productsListText = products.map(p => {
+                return `- [ID: ${p.id}] ${p.title} (${p.category || 'Optique'}, pour ${p.gender || 'Mixte'}). Prix: ${new Intl.NumberFormat('fr-FR').format(p.price)} FCFA. Description: ${p.desc || ''}. Spécifications: ${p.specs || ''}. Tag: ${p.tag || ''}.`;
+            }).join('\n');
+        }
+    } catch (e) {
+        console.warn("Could not load products for chat system prompt:", e);
+    }
+
+    return `Tu es Antoine, un conseiller visagiste et concierge d'élite pour le salon d'optique de prestige "Mage Optique & Services", situé à Dakar, Ouest Foire (Sénégal).
+Ton ton est extrêmement professionnel, poli, courtois, intellectuel et chaleureux, digne d'un service de conciergerie de luxe.
+
+Règles de comportement :
+1. Réponds toujours en français, avec élégance et distinction.
+2. Tu dois guider les clients sur le choix de leurs montures en fonction de leur visage (forme, teint), leurs besoins (verres correcteurs, solaires) ou leurs goûts.
+3. Renseigne-les sur les services du salon :
+   - Examen de vue professionnel en salon (prix : 25 000 FCFA, mais OFFERT si l'examen est suivi d'un achat).
+   - Service d'essai de montures à domicile (prix : 7 500 FCFA sur rendez-vous).
+   - Service de visagisme personnalisé.
+   - Demande de devis en ligne et analyse d'ordonnance avec notre formulaire professionnel sur la page 'services.html#devisOnlineForm'.
+   - Prise de rendez-vous en ligne sur la page 'contact.html' avec génération de billets de consultation artistiques.
+4. Encourage poliment l'utilisation des fonctionnalités du site :
+   - L'essai virtuel 3D (Virtual Try-On) disponible directement sur la fiche produit de chaque modèle (page 'details.html'), qui permet d'ajuster les lunettes en direct avec la webcam ou d'importer une photo.
+   - La page de contact ('contact.html') pour réserver un créneau.
+   - La page de devis ('services.html#devisOnlineForm') pour soumettre une ordonnance.
+   - La boutique ('boutique.html') pour filtrer les montures (Optique, Solaire, Éditions Limitées) pour Hommes, Femmes, Enfants.
+5. Sois concis dans tes réponses pour que le chat reste fluide, mais reste toujours extrêmement poli et serviable.
+6. Voici les produits actuellement disponibles en stock dans notre catalogue (réfère-toi à eux avec précision, sans inventer d'autres produits) :
+${productsListText || "Aucun produit en stock actuellement."}
+
+Rappelle-toi d'être à l'écoute et de guider l'utilisateur comme s'il était un client VIP dans notre salon de prestige de Dakar.`;
+}
+
+// Main initializer for the chat drawer components and OpenRouter API
+function initChatDrawer(drawer) {
+    const messagesContainer = document.getElementById('chat-drawer-messages');
+    const userInput = document.getElementById('chat-user-input');
+    const sendBtn = document.getElementById('chat-send-btn');
+    const clearBtn = document.getElementById('chat-clear-btn');
+    const settingsToggleBtn = document.getElementById('chat-settings-toggle-btn');
+    const settingsPanel = document.getElementById('chat-settings-panel');
+    const apiKeyInput = document.getElementById('chat-api-key-input');
+    const toggleKeyVisibilityBtn = document.getElementById('chat-toggle-key-visibility');
+    const modelSelect = document.getElementById('chat-model-select');
+    const saveSettingsBtn = document.getElementById('chat-save-settings-btn');
+    const apiWarning = document.getElementById('chat-api-warning');
+    const openSettingsLink = document.getElementById('chat-open-settings-link');
+    const typingIndicator = document.getElementById('chat-typing-indicator');
+
+    let chatHistory = [];
+    const defaultGreeting = `Bonjour ! Je suis <strong>Antoine</strong>, votre conseiller visagiste et concierge d'exception pour <strong>Mage Optique & Services</strong>.<br><br>Comment puis-je magnifier votre regard aujourd'hui ? Décrivez-moi votre visage ou posez-moi vos questions.`;
+
+    function checkApiKeyStatus() {
+        const rawKey = localStorage.getItem('mage_optique_openrouter_key') || '';
+        const key = typeof deobfuscateKey === 'function' ? deobfuscateKey(rawKey) : rawKey;
+        if (!key) {
+            apiWarning.style.display = 'block';
+            userInput.disabled = true;
+            userInput.placeholder = "Configurez la clé API pour chater...";
+            sendBtn.disabled = true;
+            sendBtn.style.opacity = '0.5';
+        } else {
+            apiWarning.style.display = 'none';
+            userInput.disabled = false;
+            userInput.placeholder = "Posez votre question...";
+            sendBtn.disabled = false;
+            sendBtn.style.opacity = '1';
+        }
+    }
+
+    // 2. Helper: Render a single message bubble
+    function renderMessage(role, content, isHtml = false) {
+        const bubble = document.createElement('div');
+        bubble.className = `chat-bubble ${role}`;
+        
+        if (isHtml) {
+            bubble.innerHTML = content;
+        } else {
+            bubble.innerHTML = parseMarkdown(content);
+        }
+        
+        messagesContainer.appendChild(bubble);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // 3. Helper: Load conversation history
+    function loadChatHistory() {
+        // Clear all except initial greeting
+        messagesContainer.innerHTML = '';
+        
+        const storedHistory = sessionStorage.getItem('mage_optique_chat_history');
+        if (storedHistory) {
+            try {
+                chatHistory = JSON.parse(storedHistory);
+                if (chatHistory.length > 0) {
+                    chatHistory.forEach(msg => {
+                        renderMessage(msg.role, msg.content);
+                    });
+                    return;
+                }
+            } catch (e) {
+                console.error("Error parsing chat history:", e);
+            }
+        }
+        
+        // Default history (empty)
+        chatHistory = [];
+        // Show default greeting
+        renderMessage('assistant', defaultGreeting, true);
+    }
+
+    // 4. Save history to sessionStorage
+    function saveHistory() {
+        sessionStorage.setItem('mage_optique_chat_history', JSON.stringify(chatHistory));
+    }
+
+    // 5. Settings Events
+    settingsToggleBtn.addEventListener('click', () => {
+        settingsPanel.classList.toggle('show');
+    });
+
+    if (openSettingsLink) {
+        openSettingsLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            settingsPanel.classList.add('show');
+        });
+    }
+
+    toggleKeyVisibilityBtn.addEventListener('click', () => {
+        const iconSpan = toggleKeyVisibilityBtn.querySelector('.material-symbols-outlined');
+        if (apiKeyInput.type === 'password') {
+            apiKeyInput.type = 'text';
+            iconSpan.textContent = 'visibility_off';
+        } else {
+            apiKeyInput.type = 'password';
+            iconSpan.textContent = 'visibility';
+        }
+    });
+
+    // Load saved settings on init
+    const rawKeyOnInit = localStorage.getItem('mage_optique_openrouter_key') || '';
+    apiKeyInput.value = typeof deobfuscateKey === 'function' ? deobfuscateKey(rawKeyOnInit) : rawKeyOnInit;
+    let savedModel = localStorage.getItem('mage_optique_openrouter_model') || 'google/gemma-4-31b-it:free';
+    if (savedModel === 'google/gemma-2-9b-it:free' || savedModel === 'meta-llama/llama-3-8b-instruct:free' || savedModel === 'mistralai/mistral-7b-instruct:free' || savedModel === 'meta-llama/llama-3.3-70b-instruct:free' || savedModel === 'openrouter/free') {
+        savedModel = 'google/gemma-4-31b-it:free';
+        localStorage.setItem('mage_optique_openrouter_model', savedModel);
+    }
+    modelSelect.value = savedModel;
+
+    saveSettingsBtn.addEventListener('click', () => {
+        const key = apiKeyInput.value.trim();
+        const model = modelSelect.value;
+        
+        const storedKey = typeof obfuscateKey === 'function' ? obfuscateKey(key) : key;
+        localStorage.setItem('mage_optique_openrouter_key', storedKey);
+        localStorage.setItem('mage_optique_openrouter_model', model);
+        
+        settingsPanel.classList.remove('show');
+        checkApiKeyStatus();
+        
+        if (typeof showToast === 'function') {
+            showToast('Paramètres de l\'IA mis à jour avec succès.', 'success');
+        } else {
+            alert('Paramètres sauvegardés.');
+        }
+    });
+
+    // 6. Clear chat
+    clearBtn.addEventListener('click', () => {
+        if (confirm("Voulez-vous réinitialiser la conversation ?")) {
+            sessionStorage.removeItem('mage_optique_chat_history');
+            loadChatHistory();
+        }
+    });
+
+    // 7. Send message logic
+    async function handleSendMessage() {
+        const text = userInput.value.trim();
+        const rawKey = localStorage.getItem('mage_optique_openrouter_key') || '';
+        const key = typeof deobfuscateKey === 'function' ? deobfuscateKey(rawKey) : rawKey;
+        const model = localStorage.getItem('mage_optique_openrouter_model') || 'google/gemma-4-31b-it:free';
+
+        if (!text || !key) return;
+
+        // Render user message
+        renderMessage('user', text);
+        userInput.value = '';
+
+        // Add to history
+        chatHistory.push({ role: 'user', content: text });
+        saveHistory();
+
+        // Show typing indicator
+        typingIndicator.classList.add('show');
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        try {
+            // Build system prompt with live product database
+            const systemPrompt = getChatSystemPrompt();
+            
+            // Build messages array for API (including system prompt)
+            const messagesForAPI = [
+                { role: 'system', content: systemPrompt },
+                ...chatHistory
+            ];
+
+            const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${key}`,
+                    'HTTP-Referer': window.location.origin,
+                    'X-Title': 'Mage Optique & Services'
+                },
+                body: JSON.stringify({
+                    model: model,
+                    messages: messagesForAPI
+                })
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.error?.message || `Status code: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const reply = data.choices?.[0]?.message?.content || "Désolé, je n'ai pas pu générer de réponse.";
+
+            // Hide typing
+            typingIndicator.classList.remove('show');
+
+            // Render assistant reply
+            renderMessage('assistant', reply);
+
+            // Add to history
+            chatHistory.push({ role: 'assistant', content: reply });
+            saveHistory();
+
+        } catch (error) {
+            console.error("OpenRouter API Error:", error);
+            typingIndicator.classList.remove('show');
+            renderMessage('error-bubble', `Erreur API : ${error.message || 'Impossible de contacter le serveur OpenRouter.'}. Veuillez vérifier vos paramètres.`);
+        }
+    }
+
+    sendBtn.addEventListener('click', handleSendMessage);
+    userInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSendMessage();
+        }
+    });
+
+    // Init state
+    checkApiKeyStatus();
+    loadChatHistory();
+}
+

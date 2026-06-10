@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <style>
+    <style id="admin-body-guard">
         body { display: none !important; }
     </style>
     <script>
-        if (sessionStorage.getItem('mage_optique_admin_logged') === 'true') {
-            document.write('<style>body { display: block !important; }</style>');
+        // Check both sessionStorage (tab-level) and localStorage (persistent cross-tab)
+        const _adminSession = sessionStorage.getItem('mage_optique_admin_logged') === 'true';
+        const _adminLocal = localStorage.getItem('mage_optique_client_role') === 'admin' && localStorage.getItem('mage_optique_client_logged') === 'true';
+        if (_adminSession || _adminLocal) {
+            // If authenticated via localStorage only, refresh sessionStorage token
+            if (_adminLocal && !_adminSession) {
+                sessionStorage.setItem('mage_optique_admin_logged', 'true');
+            }
+            // Unlock the body — override the guard style
+            document.getElementById('admin-body-guard').textContent = 'body { display: block !important; }';
         } else {
-            location.href = 'admin/index.html';
+            location.replace('admin/index.html');
         }
     </script>
     <meta charset="UTF-8">
@@ -348,6 +356,10 @@
                 <span class="material-symbols-outlined">description</span>
                 Devis en Ligne
             </div>
+            <div class="side-nav-item" id="tab-btn-concierge">
+                <span class="material-symbols-outlined">chat</span>
+                Conciergerie IA
+            </div>
             <a href="boutique.html" class="side-nav-item">
                 <span class="material-symbols-outlined">storefront</span>
                 Voir la Boutique
@@ -544,7 +556,8 @@
                             <th>Réf Devis</th>
                             <th>Nom complet</th>
                             <th>Email de contact</th>
-                            <th>Type de Verres</th>
+                            <th>Type de Photogray</th>
+                            <th>Monture</th>
                             <th>Assurance / Mutuelle</th>
                             <th>Ordonnance / Fichier</th>
                             <th>Statut</th>
@@ -555,6 +568,56 @@
                         <!-- Dynamic rendering via JS -->
                     </tbody>
                 </table>
+            </section>
+        </div>
+
+        <!-- Concierge IA Tab Content -->
+        <div id="tab-content-concierge" class="tab-content" style="display: none;">
+            <!-- Header -->
+            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px;">
+                <div>
+                    <h1 class="text-headline-lg font-serif" style="color: #fff; margin: 0;">Mage Optique &amp; Services</h1>
+                    <p class="text-caption">Gérer et configurer les paramètres de sécurité et d'intelligence de la Conciergerie IA.</p>
+                </div>
+            </header>
+
+            <!-- Settings Panel -->
+            <section class="admin-table-card" style="max-width: 800px; margin-bottom: 40px; text-align: left;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 16px;">
+                    <span class="material-symbols-outlined" style="font-size: 32px; color: var(--color-muted-gold);">chat</span>
+                    <h2 class="text-headline-md" style="color: #fff; margin: 0;">Configuration de l'Assistant Antoine</h2>
+                </div>
+
+                <form id="concierge-settings-form" onsubmit="event.preventDefault(); saveConciergeSettings();">
+                    <!-- API Key (obfuscated display) -->
+                    <div style="margin-bottom: 24px;">
+                        <label class="form-label" style="color: #fff; font-weight: 600; margin-bottom: 8px;">Clé API OpenRouter (Sécurisée & Chiffrée)</label>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <input type="password" id="admin-chat-api-key" class="form-input" style="color: #fff; border-bottom-color: rgba(255,255,255,0.15); flex-grow: 1;" placeholder="Saisir votre clé sk-or-...">
+                            <button type="button" class="btn btn-secondary" id="admin-chat-toggle-key" style="padding: 10px 16px; border-color: rgba(255,255,255,0.15); color: var(--color-soft-slate); display: flex; align-items: center; gap: 4px; background: transparent; cursor: pointer; border-radius: var(--border-radius-sm);">
+                                <span class="material-symbols-outlined" style="font-size: 20px;">visibility</span>
+                                <span id="admin-chat-toggle-key-text">Afficher</span>
+                            </button>
+                        </div>
+                        <p class="text-caption" style="margin-top: 8px; font-size: 0.75rem; color: var(--color-soft-slate);">La clé est chiffrée avec un masque XOR de sécurité local avant d'être enregistrée dans le navigateur, la rendant illisible par d'éventuels logiciels malveillants ou scripts de scraping.</p>
+                    </div>
+
+                    <!-- Model Selection -->
+                    <div style="margin-bottom: 24px;">
+                        <label class="form-label" style="color: #fff; font-weight: 600; margin-bottom: 8px;">Modèle d'Intelligence IA</label>
+                        <select id="admin-chat-model" class="form-input" style="color: #fff; border-bottom-color: rgba(255,255,255,0.15); background-color: #121212; width: 100%;">
+                            <option value="google/gemma-4-31b-it:free">Gemma 4 31B IT (Gratuit - Recommandé)</option>
+                            <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B (Gratuit)</option>
+                            <option value="meta-llama/llama-3.2-3b-instruct:free">Llama 3.2 3B (Gratuit - Rapide)</option>
+                            <option value="openrouter/free">Auto-sélection gratuit (Très résilient)</option>
+                        </select>
+                    </div>
+
+                    <!-- Actions -->
+                    <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 32px;">
+                        <button type="submit" class="btn btn-gold" style="padding: 14px 32px; border: none; border-radius: var(--border-radius-md); font-weight: 700;">Sauvegarder les Paramètres</button>
+                    </div>
+                </form>
             </section>
         </div>
 
@@ -776,6 +839,44 @@
     <!-- DB controller link and page actions -->
     <script src="js/db.js?v=3"></script>
     <script>
+        // ─── Premium Toast Notification (admin) ───────────────────────────────
+        function showToast(message, type = 'success') {
+            let toast = document.getElementById('mage-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'mage-toast';
+                toast.style.cssText = [
+                    'position:fixed','bottom:32px','left:50%',
+                    'transform:translateX(-50%) translateY(20px)',
+                    'background:#1a1a1a','color:#C5A059',
+                    'padding:14px 24px','border-radius:4px',
+                    'border:1px solid rgba(197,160,89,0.3)',
+                    "font-family:'Hanken Grotesk',sans-serif",
+                    'font-size:0.875rem','font-weight:600',
+                    'box-shadow:0 10px 30px rgba(0,0,0,0.5)',
+                    'z-index:999999','opacity:0',
+                    'transition:opacity 0.35s ease,transform 0.35s ease',
+                    'display:flex','align-items:center','gap:10px',
+                    'white-space:nowrap','pointer-events:none'
+                ].join(';');
+                document.body.appendChild(toast);
+            }
+            const icons = { success:'check_circle', error:'error', info:'info' };
+            const colors = { success:'#C5A059', error:'#e74c3c', info:'#74b9ff' };
+            toast.innerHTML = `<span class="material-symbols-outlined" style="font-size:20px;color:${colors[type]||'#C5A059'};flex-shrink:0">${icons[type]||'check_circle'}</span>${message}`;
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(20px)';
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateX(-50%) translateY(0)';
+            }));
+            clearTimeout(toast._t);
+            toast._t = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(-50%) translateY(20px)';
+            }, 3500);
+        }
+
         let activeOrdonnanceData = '';
         let activeOrdonnanceFilename = '';
         let activeOrderDetailId = '';
@@ -1077,7 +1178,7 @@
                             img.src = rawData;
                         };
                         reader.onerror = function() {
-                            alert("Une erreur s'est produite lors de la lecture du fichier.");
+                            showToast("Erreur lors de la lecture du fichier image.", 'error');
                         };
                         reader.readAsDataURL(file);
                     }
@@ -1108,7 +1209,8 @@
                 { btn: 'tab-btn-photos', content: 'tab-content-photos' },
                 { btn: 'tab-btn-reservations', content: 'tab-content-reservations' },
                 { btn: 'tab-btn-orders', content: 'tab-content-orders' },
-                { btn: 'tab-btn-devis', content: 'tab-content-devis' }
+                { btn: 'tab-btn-devis', content: 'tab-content-devis' },
+                { btn: 'tab-btn-concierge', content: 'tab-content-concierge' }
             ];
 
             tabs.forEach(tab => {
@@ -1140,6 +1242,8 @@
                             renderOrdersTable();
                         } else if (tab.btn === 'tab-btn-devis') {
                             renderDevisTable();
+                        } else if (tab.btn === 'tab-btn-concierge') {
+                            renderConciergeSettings();
                         }
                     });
                 }
@@ -1236,7 +1340,7 @@
                         <span style="color: var(--color-muted-gold); font-weight: 600;">Lié activement</span>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('${p.image}'); alert('L\\'URL de l\\'image a été copiée !');" style="flex: 1; padding: 10px 8px; font-size: 0.725rem; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); color: #fff;">
+                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('${p.image}').then(() => showToast('URL de l\'image copiée !'));" style="flex: 1; padding: 10px 8px; font-size: 0.725rem; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); color: #fff;">
                             <span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span>
                             Copier
                         </button>
@@ -1471,11 +1575,14 @@
                 
                 // Format articles details with a beautiful visual itemized layout
                 let itemsList = '';
+                const products = getProducts();
                 o.items.forEach(item => {
+                    const dbProduct = products.find(p => p.id === item.id);
+                    const itemImage = dbProduct ? dbProduct.image : item.image || '';
                     itemsList += `
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
                             <div style="width: 24px; height: 24px; border-radius: 4px; background-color: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;">
-                                <img src="${item.image}" style="max-height: 80%; max-width: 80%; object-fit: contain;">
+                                <img src="${itemImage}" style="max-height: 80%; max-width: 80%; object-fit: contain;">
                             </div>
                             <div style="font-size: 0.85rem; line-height: 1.2;">
                                 <span style="font-weight: 600; color: #fff;">${item.title}</span>
@@ -1559,7 +1666,10 @@
                 const container = document.getElementById('order-detail-items-container');
                 container.innerHTML = '';
                 
+                const products = getProducts();
                 o.items.forEach(item => {
+                    const dbProduct = products.find(p => p.id === item.id);
+                    const itemImage = dbProduct ? dbProduct.image : item.image || '';
                     const row = document.createElement('div');
                     row.style.display = 'flex';
                     row.style.alignItems = 'center';
@@ -1570,7 +1680,7 @@
                     row.innerHTML = `
                         <div style="display: flex; align-items: center; gap: 12px;">
                             <div style="width: 36px; height: 36px; border-radius: 4px; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;">
-                                <img src="${item.image}" style="max-height: 85%; max-width: 85%; object-fit: contain;">
+                                <img src="${itemImage}" style="max-height: 85%; max-width: 85%; object-fit: contain;">
                             </div>
                             <div>
                                 <div style="font-weight: 600; color: #fff; font-size: 0.825rem;">${item.title}</div>
@@ -1702,7 +1812,7 @@
             if (devisList.length === 0) {
                 devisBody.innerHTML = `
                     <tr>
-                        <td colspan="8" style="text-align: center; color: var(--color-soft-slate); padding: 40px;">
+                        <td colspan="9" style="text-align: center; color: var(--color-soft-slate); padding: 40px;">
                             Aucune demande de devis enregistrée pour le moment.
                         </td>
                     </tr>
@@ -1718,10 +1828,41 @@
                 if (d.status === 'Annulé') statusClass = 'cat-annule';
                 
                 // Format lens labels beautifully
-                let lensLabel = 'Unifocaux';
+                let lensLabel = 'Photogray Gris';
+                if (d.lens === 'photogray-gris') lensLabel = 'Photogray Gris';
+                if (d.lens === 'photogray-brun') lensLabel = 'Photogray Brun';
+                if (d.lens === 'photogray-transition') lensLabel = 'Photogray Transition';
+                if (d.lens === 'photogray-xtractive') lensLabel = 'Photogray XTRActive';
+                if (d.lens === 'sans-photogray') lensLabel = 'Sans Photogray';
+                
+                // Fallbacks for older data
+                if (d.lens === 'unifocaux') lensLabel = 'Unifocaux';
                 if (d.lens === 'progressifs') lensLabel = 'Progressifs';
                 if (d.lens === 'fatigue') lensLabel = 'Anti-fatigue';
                 if (d.lens === 'sans-verres') lensLabel = 'Sans correction';
+                
+                // Get frame details
+                const frameId = d.frameId || d.frame_id;
+                let frameCell = '<em style="opacity: 0.4; font-size: 0.8rem; color: var(--color-soft-slate);">Sans monture</em>';
+                if (frameId) {
+                    const products = getProducts();
+                    const product = products.find(p => p.id === frameId);
+                    if (product) {
+                        frameCell = `
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="width: 32px; height: 32px; border-radius: 4px; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;">
+                                    <img src="${product.image}" style="max-height: 90%; max-width: 90%; object-fit: contain;">
+                                </div>
+                                <div style="font-size: 0.8rem; line-height: 1.2;">
+                                    <span style="font-weight: 600; color: #fff;">${product.title}</span>
+                                    <div style="font-size: 0.7rem; color: var(--color-muted-gold);">${new Intl.NumberFormat('fr-FR').format(product.price)} FCFA</div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        frameCell = `<span style="font-size: 0.8rem; color: var(--color-soft-slate);">${frameId}</span>`;
+                    }
+                }
                 
                 tr.innerHTML = `
                     <td>
@@ -1735,6 +1876,9 @@
                     </td>
                     <td>
                         <span class="badge-cat cat-premium" style="text-transform: none; font-size: 0.75rem;">${lensLabel}</span>
+                    </td>
+                    <td>
+                        ${frameCell}
                     </td>
                     <td style="font-size: 0.85rem; color: #fff;">
                         ${d.insurance || '<em style="opacity: 0.4;">Non renseignée</em>'}
@@ -1821,6 +1965,72 @@
             });
         }
 
+        // Concierge Settings Tab rendering
+        function renderConciergeSettings() {
+            const apiKeyInput = document.getElementById('admin-chat-api-key');
+            const modelSelect = document.getElementById('admin-chat-model');
+            const toggleKeyBtn = document.getElementById('admin-chat-toggle-key');
+            const toggleKeyText = document.getElementById('admin-chat-toggle-key-text');
+
+            if (!apiKeyInput || !modelSelect) return;
+
+            // Load settings from localStorage
+            const rawKey = localStorage.getItem('mage_optique_openrouter_key') || '';
+            const deobfuscated = typeof deobfuscateKey === 'function' ? deobfuscateKey(rawKey) : rawKey;
+            apiKeyInput.value = deobfuscated;
+
+            const savedModel = localStorage.getItem('mage_optique_openrouter_model') || 'google/gemma-4-31b-it:free';
+            modelSelect.value = savedModel;
+
+            // Reset password field to password type
+            apiKeyInput.type = 'password';
+            if (toggleKeyBtn) {
+                const iconSpan = toggleKeyBtn.querySelector('.material-symbols-outlined');
+                if (iconSpan) iconSpan.textContent = 'visibility';
+                if (toggleKeyText) toggleKeyText.textContent = 'Afficher';
+            }
+        }
+
+        // Save Concierge settings
+        function saveConciergeSettings() {
+            const apiKeyInput = document.getElementById('admin-chat-api-key');
+            const modelSelect = document.getElementById('admin-chat-model');
+
+            if (!apiKeyInput || !modelSelect) return;
+
+            const key = apiKeyInput.value.trim();
+            const model = modelSelect.value;
+
+            // Obfuscate the key
+            const obfuscated = typeof obfuscateKey === 'function' ? obfuscateKey(key) : key;
+            localStorage.setItem('mage_optique_openrouter_key', obfuscated);
+            localStorage.setItem('mage_optique_openrouter_model', model);
+
+            showToast("Paramètres de la Conciergerie IA sauvegardés et sécurisés.", 'success');
+        }
+
+        // Toggle Key Visibility inside Admin Dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleKeyBtn = document.getElementById('admin-chat-toggle-key');
+            const apiKeyInput = document.getElementById('admin-chat-api-key');
+            const toggleKeyText = document.getElementById('admin-chat-toggle-key-text');
+
+            if (toggleKeyBtn && apiKeyInput) {
+                toggleKeyBtn.addEventListener('click', () => {
+                    const iconSpan = toggleKeyBtn.querySelector('.material-symbols-outlined');
+                    if (apiKeyInput.type === 'password') {
+                        apiKeyInput.type = 'text';
+                        if (iconSpan) iconSpan.textContent = 'visibility_off';
+                        if (toggleKeyText) toggleKeyText.textContent = 'Masquer';
+                    } else {
+                        apiKeyInput.type = 'password';
+                        if (iconSpan) iconSpan.textContent = 'visibility';
+                        if (toggleKeyText) toggleKeyText.textContent = 'Afficher';
+                    }
+                });
+            }
+        });
+
         // Global context binding to guarantee complete robustness of inline HTML click callbacks
         window.viewOrdonnance = viewOrdonnance;
         window.closeOrdonnanceModal = closeOrdonnanceModal;
@@ -1841,6 +2051,8 @@
         window.closeOrderModal = closeOrderModal;
         window.confirmOrderFromDetail = confirmOrderFromDetail;
         window.markOrderShippedFromDetail = markOrderShippedFromDetail;
+        window.renderConciergeSettings = renderConciergeSettings;
+        window.saveConciergeSettings = saveConciergeSettings;
     </script>
 </body>
 </html>

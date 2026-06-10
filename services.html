@@ -14,13 +14,21 @@
     <link rel="stylesheet" href="css/style.css?v=3">
     
     <style>
-        /* Success Modal Styles */
-        #success-modal.show {
+        /* =============================================
+           MODALS : Succès Devis & Succès Booking
+        ============================================= */
+        #success-modal.show,
+        #booking-success-modal.show {
             opacity: 1 !important;
         }
-        #success-modal.show > div {
+        #success-modal.show > div,
+        #booking-success-modal.show > div {
             transform: scale(1) !important;
         }
+
+        /* =============================================
+           GRILLE DEVIS
+        ============================================= */
         .services-devis-grid {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
@@ -32,6 +40,278 @@
                 grid-template-columns: 1fr;
                 gap: 24px !important;
             }
+        }
+
+        /* =============================================
+           DROPDOWN MONTURES
+        ============================================= */
+        .frame-select-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .frame-select-item:hover {
+            background-color: var(--color-surface-container);
+        }
+        .frame-select-item img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            background: #fff;
+            border-radius: 4px;
+            border: 1px solid var(--color-border-subtle);
+            padding: 2px;
+            flex-shrink: 0;
+        }
+        .frame-select-item-title {
+            font-weight: 600;
+            color: var(--color-deep-charcoal);
+            font-size: 0.9rem;
+        }
+        .frame-select-item-price {
+            color: var(--color-muted-gold);
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        /* =============================================
+           ÉTAPES : INDICATEUR DE PROGRESSION
+        ============================================= */
+        .step-indicator {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        /* Ligne de connexion entre les nœuds */
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 17px;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: rgba(255,255,255,0.08);
+            z-index: 1;
+        }
+        .step-node-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            text-align: center;
+        }
+        /* Nœud de l'étape */
+        .step-node {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.07);
+            border: 2px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem;
+            font-weight: 700;
+            font-family: var(--font-sans);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            z-index: 2;
+        }
+        .step-node.active {
+            background: var(--color-muted-gold);
+            border-color: var(--color-muted-gold);
+            color: var(--color-deep-charcoal);
+            transform: scale(1.15);
+            box-shadow: 0 0 0 4px rgba(197,160,89,0.2), 0 4px 12px rgba(197,160,89,0.35);
+        }
+        .step-node.completed {
+            background: var(--color-muted-gold) !important;
+            border-color: var(--color-muted-gold) !important;
+            color: var(--color-deep-charcoal) !important;
+        }
+        .step-label {
+            font-size: 0.62rem;
+            font-family: var(--font-sans);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-top: 8px;
+            color: rgba(255,255,255,0.3);
+            white-space: normal;
+            max-width: 72px;
+            line-height: 1.2;
+            text-align: center;
+            transition: color 0.3s ease;
+        }
+        .step-node-container.active .step-label {
+            color: var(--color-muted-gold);
+        }
+        .step-node-container.completed-container .step-label {
+            color: rgba(197,160,89,0.6);
+        }
+
+        /* =============================================
+           CARTES DE SÉLECTION DE PRESTATION
+        ============================================= */
+        .service-card-select {
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--border-radius-md);
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .service-card-select::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--color-muted-gold);
+            transform: scaleY(0);
+            transition: transform 0.25s ease;
+            border-radius: 0 2px 2px 0;
+        }
+        .service-card-select:hover {
+            background: rgba(255,255,255,0.06) !important;
+            border-color: rgba(197,160,89,0.3) !important;
+            transform: translateX(4px);
+        }
+        .service-card-select.selected {
+            background: rgba(197,160,89,0.1) !important;
+            border-color: var(--color-muted-gold) !important;
+            transform: translateX(6px);
+        }
+        .service-card-select.selected::before {
+            transform: scaleY(1);
+        }
+        .service-card-select.selected h5 {
+            color: var(--color-muted-gold) !important;
+        }
+
+        /* =============================================
+           CRÉNEAUX HORAIRES
+        ============================================= */
+        .time-slot {
+            padding: 10px 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--border-radius-sm);
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: var(--font-sans);
+            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: rgba(255,255,255,0.03);
+            color: #fff;
+            user-select: none;
+        }
+        .time-slot:hover {
+            background: rgba(197,160,89,0.12);
+            border-color: rgba(197,160,89,0.4);
+            color: var(--color-muted-gold);
+            transform: translateY(-2px);
+        }
+        .time-slot.selected {
+            background: var(--color-muted-gold) !important;
+            border-color: var(--color-muted-gold) !important;
+            color: var(--color-deep-charcoal) !important;
+            font-weight: 700;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(197,160,89,0.35);
+        }
+
+        /* =============================================
+           ANIMATION DES ÉTAPES DU FORMULAIRE
+        ============================================= */
+        @keyframes stepSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes stepSlideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .booking-step {
+            animation: none;
+        }
+        .booking-step.animating-in {
+            animation: stepSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .booking-step.animating-in-left {
+            animation: stepSlideInLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* =============================================
+           BOUTONS DISABLED
+        ============================================= */
+        .btn[disabled], button[disabled] {
+            opacity: 0.4 !important;
+            cursor: not-allowed !important;
+            transform: none !important;
+            pointer-events: none;
+        }
+        /* Bouton "Continuer" actif = animation légère au survol */
+        .btn-next:not([disabled]) {
+            animation: none;
+        }
+        .btn-next:not([disabled]):hover {
+            transform: translateY(-2px);
+        }
+
+        /* =============================================
+           INPUTS DU FORMULAIRE SUR FOND SOMBRE
+        ============================================= */
+        #step-3 .form-input {
+            background: rgba(255,255,255,0.04);
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            border-radius: 0;
+            color: #fff;
+            padding: 12px 0;
+            transition: border-color 0.2s ease;
+            width: 100%;
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+        }
+        #step-3 .form-input:focus {
+            border-bottom-color: var(--color-muted-gold);
+            outline: none;
+            box-shadow: none;
+        }
+        #step-3 .form-input::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+
+        /* =============================================
+           TICKET STEP 4
+        ============================================= */
+        #step-4 .ticket {
+            animation: stepSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
     </style>
 </head>
@@ -55,8 +335,8 @@
             
             <div class="nav-actions">
                 <a href="boutique.html" class="material-symbols-outlined icon-btn" id="search-nav-btn">search</a>
-                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre liste de favoris est vide.')" id="fav-nav-btn">favorite</span>
-                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre panier Mage Optique &amp; Services est vide.')" id="cart-nav-btn">shopping_bag</span>
+                <span class="material-symbols-outlined icon-btn" id="fav-nav-btn">favorite</span>
+                <span class="material-symbols-outlined icon-btn" id="cart-nav-btn">shopping_bag</span>
                 <a href="connexion.html" class="material-symbols-outlined icon-btn" id="login-nav-btn">person</a>
                 <span class="mobile-nav-toggle material-symbols-outlined" id="menu-toggle-btn">menu</span>
             </div>
@@ -103,7 +383,7 @@
                     <div>
                         <h3 class="text-headline-md" style="font-size: 1.35rem; margin-bottom: 12px;">Examen Clinique de la Réfraction</h3>
                         <p class="text-body-md" style="margin-bottom: 16px;">Nos opticiens examinent précisément votre vision à l'aide de réfractomètres automatiques de haute précision et de tests de sensibilité aux contrastes.</p>
-                        <span class="text-label-md" style="color: var(--color-muted-gold); font-size: 0.8rem; font-weight: 700;">Prix : 25 000 FCFA (Offert pour l'achat d'un équipement)</span>
+                        <span class="text-label-md" style="color: var(--color-muted-gold); font-size: 0.8rem; font-weight: 700;">Prix : 25 000 FCFA (Offert si examen suivi d'un achat)</span>
                     </div>
                 </div>
 
@@ -115,7 +395,7 @@
                     <div>
                         <h3 class="text-headline-md" style="font-size: 1.35rem; margin-bottom: 12px;">Service d'Essai à Domicile</h3>
                         <p class="text-body-md" style="margin-bottom: 16px;">Sélectionnez jusqu'à 5 montures en ligne. Un opticien-visagiste Mage Optique &amp; Services se déplace chez vous ou sur votre lieu de travail pour effectuer l'ajustement et la prise de mesures.</p>
-                        <span class="text-label-md" style="color: var(--color-muted-gold); font-size: 0.8rem; font-weight: 700;">Prix : Service Offert sur rendez-vous</span>
+                        <span class="text-label-md" style="color: var(--color-muted-gold); font-size: 0.8rem; font-weight: 700;">Prix : 7 500 FCFA sur rendez-vous</span>
                     </div>
                 </div>
 
@@ -145,8 +425,157 @@
             </div>
         </section>
 
+        <!-- Interactive Booking Section (Rendez-vous) -->
+        <section style="background-color: var(--color-paper-white); padding: 96px 0; border-top: 1px solid var(--color-border-subtle);">
+            <div class="container">
+                <div class="grid-cols-12" style="gap: 48px; align-items: center;">
+                    <!-- Left side text -->
+                    <div class="col-span-5">
+                        <span class="text-label-md" style="color: var(--color-muted-gold); margin-bottom: 8px; display: block;">Planification Concierge</span>
+                        <h2 class="text-headline-lg font-serif">Prendre Rendez-vous en Salon ou à Domicile</h2>
+                        <p class="text-body-md" style="margin-top: 16px; margin-bottom: 24px;">Planifiez votre visite dans notre salon d'Ouest Foire ou demandez le déplacement d'un opticien-visagiste Mage Optique &amp; Services directement chez vous pour un diagnostic et un essai de montures personnalisé.</p>
+                        
+                        <div style="display: flex; gap: 12px; align-items: center; font-weight: 600; margin-bottom: 12px;" class="text-label-md">
+                            <span class="material-symbols-outlined" style="color: var(--color-muted-gold); font-size: 28px;">schedule</span>
+                            Consultation sur mesure
+                        </div>
+                        <div style="display: flex; gap: 12px; align-items: center; font-weight: 600;" class="text-label-md">
+                            <span class="material-symbols-outlined" style="color: var(--color-muted-gold); font-size: 28px;">check_circle</span>
+                            Génération de billet de consultation
+                        </div>
+                    </div>
+
+                    <!-- Right side Booking Widget -->
+                    <div class="col-span-7">
+                        <div class="booking-widget" id="bookingConciergeForm" style="background-color: var(--color-deep-charcoal); border-radius: var(--border-radius-lg); padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); scroll-margin-top: 100px;">
+                            <div class="booking-header">
+                                <h3 class="font-serif text-headline-md" style="color: var(--color-paper-white); margin-bottom: 8px;">Demande de Consultation</h3>
+                                <p class="text-body-md" style="color: rgba(255,255,255,0.7); font-size: 0.95rem;">Réservez votre séance d'optique en quelques instants.</p>
+                            </div>
+                            
+                            <div class="booking-body" style="background: none; padding: 0; border: none; box-shadow: none;">
+                                <!-- Steps Progress Nodes -->
+                                <div class="step-indicator">
+                                    <div class="step-node-container active" id="step-indicator-0">
+                                        <div class="step-node active">1</div>
+                                        <span class="step-label">Prestation</span>
+                                    </div>
+                                    <div class="step-node-container" id="step-indicator-1">
+                                        <div class="step-node">2</div>
+                                        <span class="step-label">Date &amp; Heure</span>
+                                    </div>
+                                    <div class="step-node-container" id="step-indicator-2">
+                                        <div class="step-node">3</div>
+                                        <span class="step-label">Coordonnées</span>
+                                    </div>
+                                    <div class="step-node-container" id="step-indicator-3">
+                                        <div class="step-node">4</div>
+                                        <span class="step-label">Billet</span>
+                                    </div>
+                                </div>
+
+                                <!-- Step 1: Prestation Selection -->
+                                <div class="booking-step active" id="step-1">
+                                    <h4 class="text-headline-md" style="font-size: 1.15rem; margin-bottom: 20px; color: #fff;">Sélectionnez votre prestation :</h4>
+                                    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+                                        <div class="service-card-select" onclick="selectBookingService(this)" data-service="Examen de vue en salon (25 000 FCFA - Offert si examen suivi d'un achat)" style="background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); color: #fff;">
+                                            <h5 class="text-label-md" style="color: #fff; margin-bottom: 4px;">Examen de Vue en Salon</h5>
+                                            <p class="text-caption" style="color: rgba(255,255,255,0.5);">Contrôle d'acuité clinique par nos experts. (1 heure)</p>
+                                        </div>
+                                        
+                                        <div class="service-card-select" onclick="selectBookingService(this)" data-service="Service d'essai de montures à domicile (7 500 FCFA)" style="background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); color: #fff;">
+                                            <h5 class="text-label-md" style="color: #fff; margin-bottom: 4px;">Ajustement &amp; Essai à Domicile</h5>
+                                            <p class="text-caption" style="color: rgba(255,255,255,0.5);">Déplacement d'un opticien avec 5 montures de créateurs. (1 heure)</p>
+                                        </div>
+
+                                        <div class="service-card-select" onclick="selectBookingService(this)" data-service="Stylisme &amp; Conseils Visagisme (Inclus)" style="background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); color: #fff;">
+                                            <h5 class="text-label-md" style="color: #fff; margin-bottom: 4px;">Visagisme &amp; Conseils</h5>
+                                            <p class="text-caption" style="color: rgba(255,255,255,0.5);">Recherche stylistique personnalisée en salon selon votre visage. (45 min)</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="booking-actions" style="display: flex; justify-content: flex-end;">
+                                        <button class="btn btn-primary btn-next" onclick="goToBookingStep(1)" disabled>Continuer</button>
+                                    </div>
+                                </div>
+
+                                <!-- Step 2: Date & Time selection -->
+                                <div class="booking-step" id="step-2" style="display: none;">
+                                    <h4 class="text-headline-md" style="font-size: 1.15rem; margin-bottom: 20px; color: #fff;">Date et horaire souhaités :</h4>
+                                    
+                                    <div class="form-group" style="margin-bottom: 20px;">
+                                        <label class="form-label" for="booking-date" style="color: rgba(255,255,255,0.7);">Choisir la date :</label>
+                                        <input type="date" id="booking-date" class="form-input" onchange="selectBookingDate(this)" required style="border: 1px solid rgba(255,255,255,0.15); border-radius: var(--border-radius-md); padding: 12px; background-color: rgba(255,255,255,0.05); color: #fff;">
+                                    </div>
+
+                                    <div class="form-group" style="margin-bottom: 24px;">
+                                        <label class="form-label" style="color: rgba(255,255,255,0.7);">Horaires disponibles :</label>
+                                        <div class="time-slot-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                                            <div class="time-slot" onclick="selectBookingTime(this)" style="color: #fff; border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);">09:30</div>
+                                            <div class="time-slot" onclick="selectBookingTime(this)" style="color: #fff; border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);">10:30</div>
+                                            <div class="time-slot" onclick="selectBookingTime(this)" style="color: #fff; border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);">11:30</div>
+                                            <div class="time-slot" onclick="selectBookingTime(this)" style="color: #fff; border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);">14:00</div>
+                                            <div class="time-slot" onclick="selectBookingTime(this)" style="color: #fff; border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);">15:00</div>
+                                            <div class="time-slot" onclick="selectBookingTime(this)" style="color: #fff; border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);">16:30</div>
+                                            <div class="time-slot" onclick="selectBookingTime(this)" style="color: #fff; border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);">17:30</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="booking-actions" style="display: flex; justify-content: space-between;">
+                                        <button class="btn btn-secondary btn-prev" onclick="goToBookingStep(0)" style="color: #fff; border-color: rgba(255,255,255,0.15); background: transparent;">Retour</button>
+                                        <button class="btn btn-primary btn-next" onclick="goToBookingStep(2)" disabled>Continuer</button>
+                                    </div>
+                                </div>
+
+                                <!-- Step 3: Contact info -->
+                                <div class="booking-step" id="step-3" style="display: none;">
+                                    <h4 class="text-headline-md" style="font-size: 1.15rem; margin-bottom: 24px; color: #fff;">Vos Coordonnées :</h4>
+                                    
+                                    <div class="form-group" style="margin-bottom: 16px;">
+                                        <label class="form-label" for="client-name" style="color: rgba(255,255,255,0.7);">Nom complet</label>
+                                        <input type="text" id="client-name" class="form-input" placeholder="ex. Jean Dupont" required style="border-bottom: 1px solid rgba(255,255,255,0.15); color: #fff;">
+                                    </div>
+
+                                    <div class="form-group" style="margin-bottom: 16px;">
+                                        <label class="form-label" for="client-email" style="color: rgba(255,255,255,0.7);">Adresse e-mail</label>
+                                        <input type="email" id="client-email" class="form-input" placeholder="ex. jean.dupont@exemple.com" required style="border-bottom: 1px solid rgba(255,255,255,0.15); color: #fff;">
+                                    </div>
+
+                                    <div class="form-group" style="margin-bottom: 24px;">
+                                        <label class="form-label" for="client-phone" style="color: rgba(255,255,255,0.7);">Numéro de téléphone</label>
+                                        <input type="tel" id="client-phone" class="form-input" placeholder="ex. +221 78 681 15 26" required style="border-bottom: 1px solid rgba(255,255,255,0.15); color: #fff;">
+                                    </div>
+
+                                    <div class="booking-actions" style="display: flex; justify-content: space-between;">
+                                        <button class="btn btn-secondary btn-prev" onclick="goToBookingStep(1)" style="color: #fff; border-color: rgba(255,255,255,0.15); background: transparent;">Retour</button>
+                                        <button class="btn btn-gold btn-next" onclick="confirmAppointment()">Confirmer le Rendez-vous</button>
+                                    </div>
+                                </div>
+
+                                <!-- Step 4: Booking Ticket Success -->
+                                <div class="booking-step" id="step-4" style="display: none;">
+                                    <div class="ticket" style="border: 1px dashed var(--color-muted-gold); padding: 24px; border-radius: var(--border-radius-md); text-align: center; background: rgba(197, 160, 89, 0.03);">
+                                        <span class="material-symbols-outlined" style="font-size: 56px; color: var(--color-muted-gold); margin-bottom: 20px;">check_circle</span>
+                                        <h3 class="font-serif text-headline-lg" style="color: #fff; margin-bottom: 8px;">Rendez-vous Confirmé</h3>
+                                        <p class="text-body-md" style="color: rgba(255,255,255,0.7); font-size: 0.95rem; margin-bottom: 24px;">Votre billet de réservation unique Mage Optique &amp; Services :</p>
+                                        
+                                        <!-- Dynamic ticket content injected here -->
+                                        <div id="ticket-details" style="color: #fff;"></div>
+                                    </div>
+
+                                    <div style="display: flex; justify-content: center; margin-top: 40px;">
+                                        <button class="btn btn-primary" onclick="resetBookingFlow();">Planifier un autre rendez-vous</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Interactive online quotation widget (Devis en ligne) -->
-        <section style="background-color: var(--color-surface-container); padding: 96px 0;">
+        <section id="devisOnlineForm" style="background-color: var(--color-surface-container); padding: 96px 0; scroll-margin-top: 100px;">
             <div class="container">
                 <div class="services-devis-grid">
                     <!-- Intro left -->
@@ -181,14 +610,51 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-label" for="devis-lens">Type de verres souhaité</label>
+                                    <label class="form-label" for="devis-lens">Type de photogray souhaité</label>
                                     <select id="devis-lens" class="form-input" required style="background: none; border-bottom: 1px solid var(--color-outline); padding: 12px 0;">
-                                        <option value="" disabled selected>Sélectionner le type de verres</option>
-                                        <option value="unifocaux">Verres Unifocaux (Vision de loin ou de près)</option>
-                                        <option value="progressifs">Verres Progressifs (Vision multi-distances)</option>
-                                        <option value="fatigue">Verres Anti-fatigue (Travail sur écran)</option>
-                                        <option value="sans-verres">Monture seule (Sans correction)</option>
+                                        <option value="" disabled selected>Sélectionner le type de photogray</option>
+                                        <option value="photogray-gris">Photogray Gris (Teinte grise classique au soleil)</option>
+                                        <option value="photogray-brun">Photogray Brun (Teinte marron chaleureuse au soleil)</option>
+                                        <option value="photogray-transition">Photogray Transition Premium (Adaptation ultra-rapide)</option>
+                                        <option value="photogray-xtractive">Photogray XTRActive (Extra-foncé, actif même en voiture)</option>
+                                        <option value="sans-photogray">Verres Blancs Standard (Sans traitement photogray)</option>
                                     </select>
+                                </div>
+
+                                <div class="form-group" style="position: relative;">
+                                    <label class="form-label" for="devis-frame-select">Monture souhaitée (Optionnel)</label>
+                                    
+                                    <!-- Selected Frame Card (hidden when none selected) -->
+                                    <div id="selected-frame-card" style="display: none; align-items: center; justify-content: space-between; background: var(--color-surface-container); border: 1px solid var(--color-muted-gold); padding: 12px; border-radius: var(--border-radius-md); margin-top: 8px; margin-bottom: 12px;">
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <div style="width: 48px; height: 48px; background: #fff; border-radius: 4px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--color-border-subtle);">
+                                                <img id="selected-frame-img" src="" style="max-height: 90%; max-width: 90%; object-fit: contain;">
+                                            </div>
+                                            <div>
+                                                <div id="selected-frame-title" style="font-weight: 600; font-size: 0.95rem; color: var(--color-deep-charcoal);"></div>
+                                                <div id="selected-frame-price" style="color: var(--color-muted-gold); font-size: 0.85rem; font-weight: 700;"></div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="material-symbols-outlined" onclick="deselectFrame()" style="color: var(--color-soft-slate); background: none; border: none; cursor: pointer; font-size: 20px;">close</button>
+                                    </div>
+
+                                    <!-- Dropdown Toggle Button -->
+                                    <button type="button" id="frame-select-trigger" onclick="toggleFrameDropdown()" style="width: 100%; text-align: left; background: none; border: none; border-bottom: 1px solid var(--color-outline); padding: 12px 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: var(--color-soft-slate); font-size: 0.95rem;">
+                                        <span id="frame-select-placeholder">Choisir une monture dans le catalogue...</span>
+                                        <span class="material-symbols-outlined" style="font-size: 20px;">arrow_drop_down</span>
+                                    </button>
+                                    <input type="hidden" id="devis-frame-id" value="">
+
+                                    <!-- Custom Dropdown Menu -->
+                                    <div id="frame-select-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--color-paper-white); border: 1px solid var(--color-border-subtle); border-radius: var(--border-radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.08); z-index: 100; max-height: 280px; overflow-y: auto;">
+                                        <div style="padding: 8px 12px; border-bottom: 1px solid var(--color-border-subtle); display: flex; align-items: center; gap: 8px; background: var(--color-surface-container);">
+                                            <span class="material-symbols-outlined" style="font-size: 18px; color: var(--color-soft-slate);">search</span>
+                                            <input type="text" id="frame-search-input" oninput="filterFrames(this.value)" placeholder="Rechercher une monture..." style="border: none; background: none; font-size: 0.875rem; width: 100%; color: var(--color-deep-charcoal); outline: none;">
+                                        </div>
+                                        <div id="frame-list-items">
+                                            <!-- Injected dynamically via JS -->
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
@@ -234,7 +700,7 @@
                     <li><a href="boutique.html" class="footer-link">Boutique</a></li>
                     <li><a href="services.html" class="footer-link">Nos Services</a></li>
                     <li><a href="a-propos.html" class="footer-link">À Propos</a></li>
-                    <li><a href="contact.html" class="footer-link">Rendez-vous</a></li>
+                    <li><a href="#bookingConciergeForm" class="footer-link">Rendez-vous</a></li>
                 </ul>
             </div>
 
@@ -259,7 +725,7 @@
             <div>
                 <h5 class="footer-title">Newsletter</h5>
                 <p class="text-body-md" style="margin-bottom: 20px;">Abonnez-vous pour recevoir les dernières collections de créateurs et des conseils de santé visuelle.</p>
-                <form onsubmit="event.preventDefault(); alert('Merci pour votre inscription à la newsletter Mage Optique &amp; Services !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
+                <form onsubmit="event.preventDefault(); showToast('Merci pour votre inscription à notre newsletter !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
                     <input type="email" placeholder="Votre adresse e-mail" style="flex-grow: 1; padding: 4px 0; color: var(--color-deep-charcoal); font-size: 0.95rem;" required id="news-email-input">
                     <button type="submit" class="material-symbols-outlined" style="color: var(--color-muted-gold); cursor: pointer;" id="news-submit-btn">arrow_forward</button>
                 </form>
@@ -281,19 +747,29 @@
         </div>
     </div>
 
+    <!-- Premium Booking Success Modal Popup -->
+    <div id="booking-success-modal" style="display: none; position: fixed; inset: 0; background: rgba(18, 18, 18, 0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 10000; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+        <div class="glass-effect" style="max-width: 420px; width: 90%; text-align: center; border: 1px solid var(--color-muted-gold); border-radius: var(--border-radius-lg); padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); background: var(--color-paper-white);">
+            <span class="material-symbols-outlined" style="font-size: 64px; color: var(--color-muted-gold); margin-bottom: 20px;">check_circle</span>
+            <h3 class="font-serif text-headline-md" style="color: var(--color-deep-charcoal); margin-bottom: 12px; font-size: 1.5rem;">Rendez-vous Envoyé</h3>
+            <p class="text-body-md" style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 28px; color: var(--color-soft-slate);">Votre demande de consultation d'excellence a bien été prise en compte. Notre équipe de Dakar vous contactera très rapidement pour confirmation.</p>
+            <button class="btn btn-gold" onclick="closeBookingSuccessModal()" style="width: 100%; border: none; padding: 14px 0; font-size: 0.85rem; font-weight: 700; border-radius: var(--border-radius-md); cursor: pointer;">OK</button>
+        </div>
+    </div>
+
     <!-- Interactive Sidebar Concierge -->
     <div style="position: fixed; bottom: 32px; right: 32px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 16px;">
         <div id="concierge-message" class="glass-effect" style="display: none; padding: 12px 20px; border-radius: var(--border-radius-lg); font-size: 0.875rem; font-weight: 500; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-color: var(--color-muted-gold); animation: fadeIn 0.3s ease-out; max-width: 240px; color: var(--color-deep-charcoal);">
             Besoin d'un conseil ? Chattez avec l'un de nos visagistes en direct.
         </div>
-        <button onclick="alert('L\'assistant conseil Mage Optique &amp; Services est en cours d\'initialisation...')" onmouseover="document.getElementById('concierge-message').style.display='block'" onmouseout="document.getElementById('concierge-message').style.display='none'" class="flex-center" style="width: 56px; height: 56px; border-radius: var(--border-radius-full); background-color: var(--color-deep-charcoal); color: var(--color-paper-white); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; transition: var(--transition-fast);" id="concierge-floating-btn">
+        <button onclick="showToast('Notre service de conciergerie optique ouvre très prochainement !')" onmouseover="document.getElementById('concierge-message').style.display='block'" onmouseout="document.getElementById('concierge-message').style.display='none'" class="flex-center" style="width: 56px; height: 56px; border-radius: var(--border-radius-full); background-color: var(--color-deep-charcoal); color: var(--color-paper-white); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; transition: var(--transition-fast);" id="concierge-floating-btn">
             <span class="material-symbols-outlined" style="font-size: 28px;">chat</span>
         </button>
     </div>
 
     <!-- Core Scripting -->
     <script src="js/db.js?v=3"></script>
-    <script src="js/main.js?v=7"></script>
+    <script src="js/main.js?v=8"></script>
     <script>
         // Simple prescription upload naming change
         const devisUpload = document.getElementById('devis-upload');
@@ -307,6 +783,119 @@
             });
         }
 
+        let allFrames = [];
+        let selectedFrameId = null;
+
+        // Initialize frame selector dropdown
+        function initFrameSelector() {
+            if (typeof getProducts === 'function') {
+                allFrames = getProducts();
+            } else {
+                const data = localStorage.getItem('mage_optique_services_products');
+                allFrames = data ? JSON.parse(data) : [];
+            }
+
+            renderFrameOptions(allFrames);
+
+            // Read URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const preselectedId = urlParams.get('frame') || urlParams.get('id');
+            if (preselectedId) {
+                selectFrame(preselectedId);
+            }
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                const dropdown = document.getElementById('frame-select-dropdown');
+                const trigger = document.getElementById('frame-select-trigger');
+                if (dropdown && trigger && !dropdown.contains(e.target) && !trigger.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+        }
+
+        function toggleFrameDropdown() {
+            const dropdown = document.getElementById('frame-select-dropdown');
+            if (dropdown) {
+                const isHidden = dropdown.style.display === 'none' || dropdown.style.display === '';
+                dropdown.style.display = isHidden ? 'block' : 'none';
+                if (isHidden) {
+                    const searchInput = document.getElementById('frame-search-input');
+                    if (searchInput) {
+                        searchInput.value = '';
+                        searchInput.focus();
+                        filterFrames('');
+                    }
+                }
+            }
+        }
+
+        function renderFrameOptions(frames) {
+            const container = document.getElementById('frame-list-items');
+            if (!container) return;
+
+            container.innerHTML = '';
+            if (frames.length === 0) {
+                container.innerHTML = `<div style="padding: 16px; text-align: center; color: var(--color-soft-slate); font-size: 0.875rem;">Aucune monture trouvée</div>`;
+                return;
+            }
+
+            frames.forEach(frame => {
+                const item = document.createElement('div');
+                item.className = 'frame-select-item';
+                item.onclick = () => selectFrame(frame.id);
+                item.innerHTML = `
+                    <img src="${frame.image}" alt="${frame.title}">
+                    <div style="flex-grow: 1;">
+                        <div class="frame-select-item-title">${frame.title}</div>
+                        <div class="frame-select-item-price">${new Intl.NumberFormat('fr-FR').format(frame.price)} FCFA</div>
+                    </div>
+                    <span style="font-size: 0.7rem; background: var(--color-gold-tint); color: var(--color-muted-gold); padding: 2px 6px; border-radius: 2px; text-transform: uppercase; font-weight: bold; font-family: 'Hanken Grotesk', sans-serif;">
+                        ${frame.category === 'solaire' ? 'Solaire' : (frame.category === 'premium' ? 'Prestige' : 'Vue')}
+                    </span>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function filterFrames(query) {
+            const filtered = allFrames.filter(frame => 
+                frame.title.toLowerCase().includes(query.toLowerCase()) || 
+                (frame.category && frame.category.toLowerCase().includes(query.toLowerCase())) ||
+                (frame.specs && frame.specs.toLowerCase().includes(query.toLowerCase()))
+            );
+            renderFrameOptions(filtered);
+        }
+
+        function selectFrame(id) {
+            const frame = allFrames.find(f => f.id === id);
+            if (!frame) return;
+
+            selectedFrameId = id;
+            document.getElementById('devis-frame-id').value = id;
+
+            // Update selected card UI
+            document.getElementById('selected-frame-img').src = frame.image;
+            document.getElementById('selected-frame-title').textContent = frame.title;
+            document.getElementById('selected-frame-price').textContent = new Intl.NumberFormat('fr-FR').format(frame.price) + " FCFA";
+
+            document.getElementById('selected-frame-card').style.display = 'flex';
+            document.getElementById('frame-select-trigger').style.display = 'none';
+            document.getElementById('frame-select-dropdown').style.display = 'none';
+        }
+
+        function deselectFrame() {
+            selectedFrameId = null;
+            const hiddenInput = document.getElementById('devis-frame-id');
+            if (hiddenInput) hiddenInput.value = '';
+            
+            const card = document.getElementById('selected-frame-card');
+            if (card) card.style.display = 'none';
+            
+            const trigger = document.getElementById('frame-select-trigger');
+            if (trigger) trigger.style.display = 'flex';
+        }
+
         // Handle devis form submit
         function handleDevisFormSubmit(form) {
             const lastname = document.getElementById('devis-lastname').value.trim();
@@ -315,6 +904,7 @@
             const lens = document.getElementById('devis-lens').value;
             const insurance = document.getElementById('devis-insurance').value.trim();
             const fileInput = document.getElementById('devis-upload');
+            const frameId = document.getElementById('devis-frame-id').value || null;
             
             const file = fileInput && fileInput.files[0] ? fileInput.files[0] : null;
             const fileName = file ? file.name : 'Ordonnance.pdf';
@@ -322,12 +912,13 @@
             const saveAndShow = (fileData = '') => {
                 // Enregistrement dans la base de données locale
                 if (typeof addDevis === 'function') {
-                    addDevis({ lastname, firstname, email, lens, insurance, fileName, fileData });
+                    addDevis({ lastname, firstname, email, lens, insurance, fileName, fileData, frameId });
                 }
                 
                 showSuccessModal();
                 
                 form.reset();
+                deselectFrame();
                 const uploadLabel = devisUpload ? devisUpload.previousElementSibling : null;
                 if (uploadLabel) {
                     uploadLabel.textContent = "Cliquer pour ajouter ou glisser-déposer votre ordonnance";
@@ -369,6 +960,292 @@
                 }, 300);
             }
         }
+
+        // Global variables for booking flow
+        window.currentBookingStep = 0;
+        window.bookingData = {
+            service: '',
+            date: '',
+            time: '',
+            name: '',
+            email: '',
+            phone: ''
+        };
+
+        function initBookingDateRestriction() {
+            // Set standard date restrictions (minimum is tomorrow)
+            const dateInput = document.getElementById('booking-date');
+            if (dateInput) {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const tomorrowStr = tomorrow.toISOString().split('T')[0];
+                dateInput.setAttribute('min', tomorrowStr);
+            }
+        }
+
+        // Step 1: Prestation Selection click handler
+        function selectBookingService(element) {
+            // Remove 'selected' class from all cards
+            const cards = document.querySelectorAll('.service-card-select');
+            cards.forEach(c => c.classList.remove('selected'));
+            
+            // Add 'selected' class to current card
+            element.classList.add('selected');
+            
+            // Save selected service
+            window.bookingData.service = element.getAttribute('data-service');
+            
+            // Enable Next Button for Step 1
+            const nextBtn = document.querySelector('#step-1 .btn-next');
+            if (nextBtn) nextBtn.removeAttribute('disabled');
+            
+            // Auto-advance to Step 2 after a brief delay
+            setTimeout(() => {
+                if (window.currentBookingStep === 0) {
+                    goToBookingStep(1);
+                }
+            }, 350);
+        }
+
+        // Step 2: Date Change handler
+        function selectBookingDate(element) {
+            window.bookingData.date = element.value;
+            checkStep2Validation();
+        }
+
+        // Step 2: Time Selection click handler
+        function selectBookingTime(element) {
+            // Remove 'selected' class from all time slots
+            const slots = document.querySelectorAll('.time-slot');
+            slots.forEach(s => s.classList.remove('selected'));
+            
+            // Add 'selected' class to current slot
+            element.classList.add('selected');
+            
+            // Save selected time
+            window.bookingData.time = element.textContent.trim();
+            
+            checkStep2Validation();
+            
+            // Auto-advance to Step 3 if Date is also selected
+            if (window.bookingData.date) {
+                setTimeout(() => {
+                    if (window.currentBookingStep === 1) {
+                        goToBookingStep(2);
+                    }
+                }, 350);
+            }
+        }
+
+        // Helper: Validate Step 2 inputs
+        function checkStep2Validation() {
+            const nextBtn = document.querySelector('#step-2 .btn-next');
+            if (nextBtn) {
+                if (window.bookingData.date && window.bookingData.time) {
+                    nextBtn.removeAttribute('disabled');
+                } else {
+                    nextBtn.setAttribute('disabled', 'true');
+                }
+            }
+        }
+
+        // Core Step Navigation Transition Engine — avec animation de glissement
+        let _prevBookingStep = 0;
+        function goToBookingStep(stepIdx) {
+            const direction = stepIdx > _prevBookingStep ? 'forward' : 'backward';
+            _prevBookingStep = stepIdx;
+            window.currentBookingStep = stepIdx;
+
+            // Animate steps
+            const steps = document.querySelectorAll('.booking-step');
+            steps.forEach((step, idx) => {
+                step.classList.remove('animating-in', 'animating-in-left');
+                if (idx === stepIdx) {
+                    step.style.display = 'block';
+                    step.classList.add('active');
+                    // Déclenche l'animation en fonction de la direction
+                    requestAnimationFrame(() => {
+                        step.classList.add(direction === 'forward' ? 'animating-in' : 'animating-in-left');
+                    });
+                } else {
+                    step.style.display = 'none';
+                    step.classList.remove('active');
+                }
+            });
+
+            // Update step indicator nodes
+            const containers = document.querySelectorAll('.step-indicator .step-node-container');
+            containers.forEach((container, idx) => {
+                container.classList.remove('active', 'completed-container');
+                const node = container.querySelector('.step-node');
+                if (!node) return;
+
+                node.classList.remove('active', 'completed');
+
+                if (idx === stepIdx) {
+                    container.classList.add('active');
+                    node.classList.add('active');
+                    node.innerHTML = idx + 1;
+                } else if (idx < stepIdx) {
+                    container.classList.add('completed-container');
+                    node.classList.add('completed');
+                    node.innerHTML = '✓';
+                } else {
+                    node.innerHTML = idx + 1;
+                }
+            });
+        }
+
+        // Step 3: Complete Reservation Submission
+        function confirmAppointment() {
+            window.bookingData.name = document.getElementById('client-name').value.trim();
+            window.bookingData.email = document.getElementById('client-email').value.trim();
+            window.bookingData.phone = document.getElementById('client-phone').value.trim();
+
+            if (!window.bookingData.name) {
+                document.getElementById('client-name').style.borderColor = 'var(--color-error)';
+                showToast('Veuillez renseigner votre nom complet.', 'error');
+                document.getElementById('client-name').focus();
+                return;
+            }
+            if (!window.bookingData.email) {
+                document.getElementById('client-email').style.borderColor = 'var(--color-error)';
+                showToast('Veuillez renseigner votre adresse e-mail.', 'error');
+                document.getElementById('client-email').focus();
+                return;
+            }
+            if (!window.bookingData.phone) {
+                document.getElementById('client-phone').style.borderColor = 'var(--color-error)';
+                showToast('Veuillez renseigner votre numéro de téléphone.', 'error');
+                document.getElementById('client-phone').focus();
+                return;
+            }
+            // Reset borders on success
+            ['client-name','client-email','client-phone'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.borderColor = '';
+            });
+
+            // Save dynamically to database for admin access
+            if (typeof addAppointment === 'function') {
+                addAppointment(window.bookingData);
+            } else {
+                const appts = JSON.parse(localStorage.getItem('mage_optique_appointments') || '[]');
+                appts.push({
+                    id: 'appt-' + Date.now(),
+                    ...window.bookingData,
+                    status: 'En attente'
+                });
+                localStorage.setItem('mage_optique_appointments', JSON.stringify(appts));
+            }
+
+            // Generate premium success ticket details
+            generateBookingTicketInline(window.bookingData);
+
+            // Go to step 4
+            goToBookingStep(3);
+
+            // Trigger beautiful custom success modal popup instead of browser alert
+            showBookingSuccessModal();
+        }
+
+        // Helper: Inject Dynamic Ticket markup
+        function generateBookingTicketInline(data) {
+            const ticketDetails = document.getElementById('ticket-details');
+            if (!ticketDetails) return;
+
+            const dateFormatted = new Date(data.date).toLocaleDateString('fr-FR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            ticketDetails.innerHTML = `
+                <div style="font-size: 1.125rem; font-weight: 600; color: #C5A059; margin-bottom: 20px;">
+                    ${data.service}
+                </div>
+                <div style="margin-bottom: 12px; font-family: 'Playfair Display'; font-size: 1.25rem;">
+                    ${dateFormatted}
+                </div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #FFFFFF; margin-bottom: 24px;">
+                    ${data.time}
+                </div>
+                <div class="ticket-divider" style="border-top: 1px dashed rgba(255, 255, 255, 0.2); margin: 16px 0;"></div>
+                <div style="font-size: 0.875rem; text-align: left; opacity: 0.8; line-height: 1.8; margin-bottom: 24px;">
+                    <p><strong>Client :</strong> ${data.name}</p>
+                    <p><strong>Email :</strong> ${data.email}</p>
+                    <p><strong>Tél :</strong> ${data.phone}</p>
+                </div>
+                <div class="ticket-divider" style="border-top: 1px dashed rgba(255, 255, 255, 0.2); margin: 16px 0;"></div>
+                <div style="font-size: 0.85rem; font-style: italic; color: #C5A059; line-height: 1.6; text-align: center; margin-top: 16px;">
+                    Votre rendez-vous a été pris en charge. Mage Optique &amp; Services va vous appeler pour confirmer votre rendez-vous. Merci !
+                </div>
+            `;
+        }
+
+        function resetBookingFlow() {
+            window.bookingData = {
+                service: '',
+                date: '',
+                time: '',
+                name: '',
+                email: '',
+                phone: ''
+            };
+            // Clear selected classes
+            document.querySelectorAll('.service-card-select').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+            
+            // Clear inputs
+            const dateInput = document.getElementById('booking-date');
+            if (dateInput) dateInput.value = '';
+            
+            const nameInput = document.getElementById('client-name');
+            if (nameInput) nameInput.value = '';
+            
+            const emailInput = document.getElementById('client-email');
+            if (emailInput) emailInput.value = '';
+            
+            const phoneInput = document.getElementById('client-phone');
+            if (phoneInput) phoneInput.value = '';
+            
+            // Disable next buttons
+            const s1Next = document.querySelector('#step-1 .btn-next');
+            if (s1Next) s1Next.setAttribute('disabled', 'true');
+            const s2Next = document.querySelector('#step-2 .btn-next');
+            if (s2Next) s2Next.setAttribute('disabled', 'true');
+            
+            goToBookingStep(0);
+        }
+
+        // Custom Success Modal Open/Close triggers
+        function showBookingSuccessModal() {
+            const modal = document.getElementById('booking-success-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                setTimeout(() => {
+                    modal.classList.add('show');
+                }, 10);
+            }
+        }
+
+        function closeBookingSuccessModal() {
+            const modal = document.getElementById('booking-success-modal');
+            if (modal) {
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        // Initialize on DOM load
+        document.addEventListener('DOMContentLoaded', () => {
+            initFrameSelector();
+            initBookingDateRestriction();
+        });
+        window.addEventListener('supabase-synced', initFrameSelector);
     </script>
 </body>
 </html>

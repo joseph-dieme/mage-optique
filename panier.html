@@ -261,8 +261,8 @@
             
             <div class="nav-actions">
                 <a href="boutique.html" class="material-symbols-outlined icon-btn" id="search-nav-btn">search</a>
-                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre liste de favoris est vide.')" id="fav-nav-btn">favorite</span>
-                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre panier Mage Optique &amp; Services est vide.')" id="cart-nav-btn">shopping_bag</span>
+                <span class="material-symbols-outlined icon-btn" id="fav-nav-btn">favorite</span>
+                <span class="material-symbols-outlined icon-btn" id="cart-nav-btn">shopping_bag</span>
                 <a href="connexion.html" class="material-symbols-outlined icon-btn" id="login-nav-btn">person</a>
                 <span class="mobile-nav-toggle material-symbols-outlined" id="menu-toggle-btn">menu</span>
             </div>
@@ -422,7 +422,7 @@
                     <li><a href="boutique.html" class="footer-link">Boutique</a></li>
                     <li><a href="services.html" class="footer-link">Nos Services</a></li>
                     <li><a href="a-propos.html" class="footer-link">À Propos</a></li>
-                    <li><a href="contact.html" class="footer-link">Rendez-vous</a></li>
+                    <li><a href="services.html#bookingConciergeForm" class="footer-link">Rendez-vous</a></li>
                 </ul>
             </div>
 
@@ -447,7 +447,7 @@
             <div>
                 <h5 class="footer-title">Newsletter</h5>
                 <p class="text-body-md" style="margin-bottom: 20px;">Abonnez-vous pour recevoir les dernières collections de créateurs et des conseils de santé visuelle.</p>
-                <form onsubmit="event.preventDefault(); alert('Merci pour votre inscription à la newsletter Mage Optique &amp; Services !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
+                <form onsubmit="event.preventDefault(); showToast('Merci pour votre inscription à notre newsletter !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
                     <input type="email" placeholder="Votre adresse e-mail" style="flex-grow: 1; padding: 4px 0; color: var(--color-deep-charcoal); font-size: 0.95rem;" required id="news-email-input">
                     <button type="submit" class="material-symbols-outlined" style="color: var(--color-muted-gold); cursor: pointer;" id="news-submit-btn">arrow_forward</button>
                 </form>
@@ -461,7 +461,7 @@
 
     <!-- Core Scripting -->
     <script src="js/db.js?v=3"></script>
-    <script src="js/main.js?v=7"></script>
+    <script src="js/main.js?v=8"></script>
     
     <script>
         // Track the current success order object for download
@@ -596,11 +596,13 @@
             if (container) {
                 container.innerHTML = '';
                 cart.forEach(item => {
+                    const dbProduct = typeof findProductById === 'function' ? findProductById(item.id) : null;
+                    const itemImage = (dbProduct && dbProduct.image) ? dbProduct.image : item.image || '';
                     const row = document.createElement('div');
                     row.className = 'cart-item-row';
                     row.innerHTML = `
                         <div class="cart-item-img-container">
-                            <img src="${item.image}" alt="${item.title}" class="cart-item-img">
+                            <img src="${itemImage}" alt="${item.title}" class="cart-item-img">
                         </div>
                         <div class="cart-item-details">
                             <div class="cart-item-title">${item.title}</div>

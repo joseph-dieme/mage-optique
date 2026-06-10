@@ -144,8 +144,8 @@
             
             <div class="nav-actions">
                 <a href="boutique.html" class="material-symbols-outlined icon-btn" id="search-nav-btn">search</a>
-                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre liste de favoris est vide.')" id="fav-nav-btn">favorite</span>
-                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre panier Mage Optique &amp; Services est vide.')" id="cart-nav-btn">shopping_bag</span>
+                <span class="material-symbols-outlined icon-btn" id="fav-nav-btn">favorite</span>
+                <span class="material-symbols-outlined icon-btn" id="cart-nav-btn">shopping_bag</span>
                 <a href="connexion.html" class="material-symbols-outlined icon-btn active-icon" id="login-nav-btn" style="color: var(--color-muted-gold);">person</a>
                 <span class="mobile-nav-toggle material-symbols-outlined" id="menu-toggle-btn">menu</span>
             </div>
@@ -254,7 +254,7 @@
                     <li><a href="boutique.html" class="footer-link">Boutique</a></li>
                     <li><a href="services.html" class="footer-link">Nos Services</a></li>
                     <li><a href="a-propos.html" class="footer-link">À Propos</a></li>
-                    <li><a href="contact.html" class="footer-link">Rendez-vous</a></li>
+                    <li><a href="services.html#bookingConciergeForm" class="footer-link">Rendez-vous</a></li>
                 </ul>
             </div>
 
@@ -279,7 +279,7 @@
             <div>
                 <h5 class="footer-title">Newsletter</h5>
                 <p class="text-body-md" style="margin-bottom: 20px;">Abonnez-vous pour recevoir les dernières collections de créateurs et des conseils de santé visuelle.</p>
-                <form onsubmit="event.preventDefault(); alert('Merci pour votre inscription à la newsletter Mage Optique &amp; Services !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
+                <form onsubmit="event.preventDefault(); showToast('Merci pour votre inscription à notre newsletter !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
                     <input type="email" placeholder="Votre adresse e-mail" style="flex-grow: 1; padding: 4px 0; color: var(--color-deep-charcoal); font-size: 0.95rem;" required id="news-email-input">
                     <button type="submit" class="material-symbols-outlined" style="color: var(--color-muted-gold); cursor: pointer;" id="news-submit-btn">arrow_forward</button>
                 </form>
@@ -293,7 +293,7 @@
 
     <!-- Core Scripting -->
     <script src="js/db.js?v=3"></script>
-    <script src="js/main.js?v=7"></script>
+    <script src="js/main.js?v=8"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -421,6 +421,7 @@
             setTimeout(() => {
                 const pendingProductId = localStorage.getItem('mage_optique_pending_cart_item');
                 if (pendingProductId) {
+                    localStorage.removeItem('mage_optique_pending_cart_item');
                     window.location.href = 'panier.html';
                 } else {
                     const modal = document.getElementById('login-success-modal');
@@ -465,24 +466,24 @@
                         });
                         
                         if (signUpError) {
-                            alert("Erreur de connexion / inscription : " + signUpError.message);
+                            showToast('Erreur : ' + signUpError.message, 'error');
                             return;
                         }
                         
                         // Check if email confirmation is required (session will be null)
                         if (!signUpData.session) {
-                            alert("Compte créé avec succès ! Un e-mail de confirmation a été envoyé à " + email + ". Veuillez vérifier votre boîte de réception et cliquer sur le lien d'activation avant de vous connecter.");
+                            showToast('Compte créé ! Vérifiez votre boîte e-mail pour activer votre compte.', 'info');
                             return;
                         }
                         
-                        alert("Compte créé avec succès ! Vous êtes maintenant connecté.");
+                        showToast('Compte créé avec succès ! Bienvenue sur Mage Optique.', 'success');
                         localStorage.setItem('mage_optique_client_logged', 'true');
                         localStorage.setItem('mage_optique_client_email', email);
                         localStorage.setItem('mage_optique_user_id', signUpData.user.id);
                         localStorage.setItem('mage_optique_client_role', is_admin_email ? 'admin' : 'client');
                         
-                        // Sync database in background
-                        syncDatabaseFromSupabase();
+                        // Sync database and wait for it to complete
+                        await syncDatabaseFromSupabase();
                         
                         // Check if there is a pending cart item
                         const pendingProductId = localStorage.getItem('mage_optique_pending_cart_item');
@@ -490,16 +491,15 @@
                             if (typeof addToCartSilently === 'function') {
                                 addToCartSilently(pendingProductId);
                             }
-                            localStorage.removeItem('mage_optique_pending_cart_item');
                         }
                         
                         showLoginSuccessModalAndRedirect();
                         return;
                     } else if (error.message.toLowerCase().includes('email not confirmed') || error.message.toLowerCase().includes('confirmed') || error.message.toLowerCase().includes('confirm')) {
-                        alert("Votre adresse e-mail n'a pas encore été confirmée. Veuillez vérifier votre boîte de réception et cliquer sur le lien d'activation envoyé par Supabase pour valider votre compte.");
+                        showToast("Votre e-mail n'est pas encore confirmé. Vérifiez votre boîte de réception.", 'error');
                         return;
                     } else {
-                        alert("Erreur de connexion : " + error.message);
+                        showToast('Erreur de connexion : ' + error.message, 'error');
                         return;
                     }
                 }
@@ -508,7 +508,7 @@
                 const isConfirmed = data.user.email_confirmed_at || data.user.confirmed_at;
                 if (!isConfirmed) {
                     await client.auth.signOut();
-                    alert("Votre adresse e-mail n'a pas encore été confirmée. Veuillez vérifier votre boîte de réception et cliquer sur le lien d'activation envoyé par Supabase pour valider votre compte.");
+                    showToast("Votre e-mail n'est pas encore confirmé. Vérifiez votre boîte de réception.", 'error');
                     return;
                 }
 
@@ -521,8 +521,8 @@
                 const role = (!profileErr && profile) ? profile.role : 'client';
                 localStorage.setItem('mage_optique_client_role', role);
                 
-                // Sync database in background
-                syncDatabaseFromSupabase();
+                // Sync database and wait for it to complete
+                await syncDatabaseFromSupabase();
                 
                 // Check if there is a pending cart item
                 const pendingProductId = localStorage.getItem('mage_optique_pending_cart_item');
@@ -530,13 +530,12 @@
                     if (typeof addToCartSilently === 'function') {
                         addToCartSilently(pendingProductId);
                     }
-                    localStorage.removeItem('mage_optique_pending_cart_item');
                 }
                 
                 showLoginSuccessModalAndRedirect();
             } catch (err) {
                 console.error("Authentication error:", err);
-                alert("Une erreur s'est produite lors de l'authentification.");
+                showToast("Une erreur s'est produite. Veuillez réessayer.", 'error');
             }
         }
 

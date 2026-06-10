@@ -75,8 +75,8 @@
             
             <div class="nav-actions">
                 <a href="boutique.html" class="material-symbols-outlined icon-btn" id="search-nav-btn">search</a>
-                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre liste de favoris est vide.')" id="fav-nav-btn">favorite</span>
-                <span class="material-symbols-outlined icon-btn" onclick="alert('Votre panier Mage Optique &amp; Services est vide.')" id="cart-nav-btn">shopping_bag</span>
+                <span class="material-symbols-outlined icon-btn" id="fav-nav-btn">favorite</span>
+                <span class="material-symbols-outlined icon-btn" id="cart-nav-btn">shopping_bag</span>
                 <a href="connexion.html" class="material-symbols-outlined icon-btn" id="login-nav-btn">person</a>
                 <span class="mobile-nav-toggle material-symbols-outlined" id="menu-toggle-btn">menu</span>
             </div>
@@ -217,7 +217,7 @@
                     <li><a href="boutique.html" class="footer-link">Boutique</a></li>
                     <li><a href="services.html" class="footer-link">Nos Services</a></li>
                     <li><a href="a-propos.html" class="footer-link">À Propos</a></li>
-                    <li><a href="contact.html" class="footer-link">Rendez-vous</a></li>
+                    <li><a href="services.html#bookingConciergeForm" class="footer-link">Rendez-vous</a></li>
                 </ul>
             </div>
 
@@ -242,7 +242,7 @@
             <div>
                 <h5 class="footer-title">Newsletter</h5>
                 <p class="text-body-md" style="margin-bottom: 20px;">Abonnez-vous pour recevoir les dernières collections de créateurs et des conseils de santé visuelle.</p>
-                <form onsubmit="event.preventDefault(); alert('Merci pour votre inscription à la newsletter Mage Optique &amp; Services !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
+                <form onsubmit="event.preventDefault(); showToast('Merci pour votre inscription à notre newsletter !'); this.reset();" style="display: flex; border-bottom: 1px solid var(--color-soft-slate); padding-bottom: 8px;" id="newsletter-form">
                     <input type="email" placeholder="Votre adresse e-mail" style="flex-grow: 1; padding: 4px 0; color: var(--color-deep-charcoal); font-size: 0.95rem;" required id="news-email-input">
                     <button type="submit" class="material-symbols-outlined" style="color: var(--color-muted-gold); cursor: pointer;" id="news-submit-btn">arrow_forward</button>
                 </form>
@@ -259,14 +259,14 @@
         <div id="concierge-message" class="glass-effect" style="display: none; padding: 12px 20px; border-radius: var(--border-radius-lg); font-size: 0.875rem; font-weight: 500; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-color: var(--color-muted-gold); animation: fadeIn 0.3s ease-out; max-width: 240px; color: var(--color-deep-charcoal);">
             Besoin d'un conseil ? Chattez avec l'un de nos visagistes en direct.
         </div>
-        <button onclick="alert('L\'assistant conseil Mage Optique &amp; Services est en cours d\'initialisation...')" onmouseover="document.getElementById('concierge-message').style.display='block'" onmouseout="document.getElementById('concierge-message').style.display='none'" class="flex-center" style="width: 56px; height: 56px; border-radius: var(--border-radius-full); background-color: var(--color-deep-charcoal); color: var(--color-paper-white); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; transition: var(--transition-fast);" id="concierge-floating-btn">
+        <button onclick="showToast('Notre service de conciergerie optique ouvre très prochainement !')" onmouseover="document.getElementById('concierge-message').style.display='block'" onmouseout="document.getElementById('concierge-message').style.display='none'" class="flex-center" style="width: 56px; height: 56px; border-radius: var(--border-radius-full); background-color: var(--color-deep-charcoal); color: var(--color-paper-white); box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; transition: var(--transition-fast);" id="concierge-floating-btn">
             <span class="material-symbols-outlined" style="font-size: 28px;">chat</span>
         </button>
     </div>
 
     <!-- Core Scripting & Testimonials slider scripting -->
     <script src="js/db.js?v=3"></script>
-    <script src="js/main.js?v=7"></script>
+    <script src="js/main.js?v=8"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const slides = document.querySelectorAll('.testimonial-slide');
