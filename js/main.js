@@ -1422,6 +1422,15 @@ function injectLuxuryInteractions() {
             word-wrap: break-word;
             margin-bottom: 2px;
         }
+        .chat-bubble a {
+            color: var(--color-muted-gold);
+            text-decoration: underline;
+            font-weight: 600;
+            transition: color var(--transition-fast);
+        }
+        .chat-bubble a:hover {
+            color: var(--color-deep-charcoal);
+        }
         .chat-bubble.user {
             align-self: flex-end;
             background-color: var(--color-deep-charcoal);
@@ -2233,8 +2242,13 @@ window.showEmptyCartModal = showEmptyCartModal;
 
 // Markdown to Safe HTML parser for AI chat bubbles
 function parseMarkdown(text) {
+    if (!text) return "";
+    
+    // Clean up any raw HTML break tags first by converting them to newlines
+    let cleanedText = text.replace(/<br\s*\/?>/gi, '\n');
+
     // Basic HTML escaping
-    let html = text
+    let html = cleanedText
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
@@ -2250,6 +2264,9 @@ function parseMarkdown(text) {
 
     // Replace code blocks `code`
     html = html.replace(/`(.*?)`/g, '<code>$1</code>');
+
+    // Replace markdown links [text](url)
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
 
     // Split into paragraphs and lists
     const lines = html.split('\n');
@@ -2312,15 +2329,18 @@ Règles de comportement :
    - Examen de vue professionnel en salon (prix : 25 000 FCFA, mais OFFERT si l'examen est suivi d'un achat).
    - Service d'essai de montures à domicile (prix : 7 500 FCFA sur rendez-vous).
    - Service de visagisme personnalisé.
-   - Demande de devis en ligne et analyse d'ordonnance avec notre formulaire professionnel sur la page 'services.html#devisOnlineForm'.
-   - Prise de rendez-vous en ligne sur la page 'contact.html' avec génération de billets de consultation artistiques.
+   - Demande de devis en ligne et analyse d'ordonnance avec notre formulaire professionnel. Redirige-les vers la [page des services](services.html#devisOnlineForm) en utilisant exactement ce format markdown pour le lien.
+   - Prise de rendez-vous en ligne avec génération de billets de consultation artistiques. Redirige-les vers la [page de contact](contact.html) en utilisant exactement ce format markdown pour le lien.
 4. Encourage poliment l'utilisation des fonctionnalités du site :
-   - L'essai virtuel 3D (Virtual Try-On) disponible directement sur la fiche produit de chaque modèle (page 'details.html'), qui permet d'ajuster les lunettes en direct avec la webcam ou d'importer une photo.
-   - La page de contact ('contact.html') pour réserver un créneau.
-   - La page de devis ('services.html#devisOnlineForm') pour soumettre une ordonnance.
-   - La boutique ('boutique.html') pour filtrer les montures (Optique, Solaire, Éditions Limitées) pour Hommes, Femmes, Enfants.
+   - L'essai virtuel 3D (Virtual Try-On) disponible directement sur la fiche produit de chaque modèle (page [détails](details.html)), qui permet d'ajuster les lunettes en direct avec la webcam ou d'importer une photo.
+   - La [page de contact](contact.html) pour réserver un créneau.
+   - La [page des services](services.html#devisOnlineForm) pour soumettre une ordonnance.
+   - La [boutique](boutique.html) pour filtrer les montures (Optique, Solaire, Éditions Limitées) pour Hommes, Femmes, Enfants.
 5. Sois concis dans tes réponses pour que le chat reste fluide, mais reste toujours extrêmement poli et serviable.
-6. Voici les produits actuellement disponibles en stock dans notre catalogue (réfère-toi à eux avec précision, sans inventer d'autres produits) :
+6. Règles de formatage strictes :
+   - N'utilise JAMAIS de balises HTML brutes (ex: pas de <br>, pas de <a>, pas de <strong>). Utilise uniquement du markdown standard (par exemple: **texte** pour le gras, des sauts de ligne ordinaires pour espacer).
+   - Ne mentionne jamais de noms de fichiers bruts comme 'contact.html' ou 'boutique.html' directement dans ton texte. Remplace-les systématiquement par des phrases naturelles contenant des liens markdown, par exemple : [la page de contact](contact.html), [la boutique](boutique.html), [la page des services](services.html#devisOnlineForm), ou [la page détails](details.html).
+7. Voici les produits actuellement disponibles en stock dans notre catalogue (réfère-toi à eux avec précision, sans inventer d'autres produits) :
 ${productsListText || "Aucun produit en stock actuellement."}
 
 Rappelle-toi d'être à l'écoute et de guider l'utilisateur comme s'il était un client VIP dans notre salon de prestige de Dakar.`;
@@ -2495,13 +2515,13 @@ function initChatDrawer(drawer) {
         
         // 1. Greetings
         if (text.includes("bonjour") || text.includes("salut") || text.includes("hello") || text.includes("bonsoir") || text.includes("hey") || text.includes("antoine")) {
-            return "Bonjour ! C'est un réel plaisir de vous accueillir chez **Mage Optique & Services**.<br><br>Je suis **Antoine**, votre conseiller visagiste et concierge d'exception. Comment puis-je vous accompagner ou magnifier votre regard aujourd'hui ?";
+            return "Bonjour ! C'est un réel plaisir de vous accueillir chez **Mage Optique & Services**.\n\nJe suis **Antoine**, votre conseiller visagiste et concierge d'exception. Comment puis-je vous accompagner ou magnifier votre regard aujourd'hui ?";
         }
         
         // 2. Visage / Face shape / Visagisme
         if (text.includes("visage") || text.includes("rond") || text.includes("carre") || text.includes("carré") || text.includes("ovale") || text.includes("morpho") || text.includes("visagisme") || text.includes("forme")) {
             if (text.includes("rond")) {
-                return "Pour un **visage rond**, je vous conseille vivement des montures rectangulaires, anguleuses ou géométriques (comme nos créations Carrera ou Tom Ford). Elles permettront de structurer, d'affiner et d'apporter du caractère à vos traits.<br><br>Évitez les formes trop circulaires qui accentuent la rondeur.";
+                return "Pour un **visage rond**, je vous conseille vivement des montures rectangulaires, anguleuses ou géométriques (comme nos créations Carrera ou Tom Ford). Elles permettront de structurer, d'affiner et d'apporter du caractère à vos traits.\n\nÉvitez les formes trop circulaires qui accentuent la rondeur.";
             }
             if (text.includes("carre") || text.includes("carré")) {
                 return "Pour un **visage carré** aux lignes fortes et affirmées, je vous conseille des formes douces : rondes, ovales ou de type aviateur (tels que nos modèles Ray-Ban ou Oliver Peoples). Cela permettra d'adoucir les angles de votre mâchoire avec élégance.";
@@ -2509,32 +2529,32 @@ function initChatDrawer(drawer) {
             if (text.includes("ovale")) {
                 return "Quelle chance ! Un **visage ovale** possède des proportions idéales. Vous pouvez quasiment tout porter. Pour un style distingué, je vous suggère des montures papillon (cat-eye) pour les dames, ou des modèles rectangulaires ou pantos pour les messieurs.";
             }
-            return "Chaque visage est unique et mérite une attention particulière. Nous proposons justement un service de **visagisme personnalisé** dans notre salon.<br><br>Pourriez-vous me préciser si la forme de votre visage tend plutôt vers le **rond**, le **carré** ou l'**ovale** ? Je pourrai ainsi vous proposer les collections adaptées.";
+            return "Chaque visage est unique et mérite une attention particulière. Nous proposons justement un service de **visagisme personnalisé** dans notre salon.\n\nPourriez-vous me préciser si la forme de votre visage tend plutôt vers le **rond**, le **carré** ou l'**ovale** ? Je pourrai ainsi vous proposer les collections adaptées.";
         }
         
         // 3. Virtual Try-On / Trial
         if (text.includes("essai") || text.includes("essayer") || text.includes("virtuel") || text.includes("try") || text.includes("cam") || text.includes("webcam") || text.includes("camera") || text.includes("caméra") || text.includes("photo")) {
-            return "Absolument ! Notre salon virtuel intègre un module d'**Essai Virtuel 3D** innovant et interactif.<br><br>Pour l'essayer, c'est très simple :<br>1. Rendez-vous dans notre [Boutique](boutique.html).<br>2. Sélectionnez la monture de votre choix pour ouvrir sa fiche produit.<br>3. Cliquez sur **'Essai Virtuel 3D'**.<br><br>Vous pourrez alors activer votre webcam ou importer une photo de vous, puis faire glisser, zoomer ou pivoter les lunettes pour un ajustement parfait.";
+            return "Absolument ! Notre salon virtuel intègre un module d'**Essai Virtuel 3D** innovant et interactif.\n\nPour l'essayer, c'est très simple :\n1. Rendez-vous dans la [boutique](boutique.html).\n2. Sélectionnez la monture de votre choix pour ouvrir sa fiche produit.\n3. Cliquez sur **'Essai Virtuel 3D'**.\n\nVous pourrez alors activer votre webcam ou importer une photo de vous, puis faire glisser, zoomer ou pivoter les lunettes pour un ajustement parfait.";
         }
         
         // 4. Appointments / Bookings
         if (text.includes("rendez") || text.includes("rdv") || text.includes("reserver") || text.includes("réservation") || text.includes("réserver") || text.includes("booking") || text.includes("consultation")) {
-            return "Nous serions honorés de vous recevoir en salon. Vous pouvez réserver un examen de vue ou une séance de visagisme privée directement via notre page de [Prise de Rendez-vous](contact.html).<br><br>De plus, un magnifique **billet de consultation personnalisé en haute fidélité** sera dessiné en temps réel sur un canvas pour que vous puissiez le télécharger.";
+            return "Nous serions honorés de vous recevoir en salon. Vous pouvez réserver un examen de vue ou une séance de visagisme privée directement via la [page de contact](contact.html).\n\nDe plus, un magnifique **billet de consultation personnalisé en haute fidélité** sera dessiné en temps réel sur un canvas pour que vous puissiez le télécharger.";
         }
         
         // 5. Prices / Rates
         if (text.includes("prix") || text.includes("tarif") || text.includes("coute") || text.includes("coûte") || text.includes("combien") || text.includes("fcfa") || text.includes("valeur")) {
-            return "Au salon **Mage Optique & Services**, nos montures de prestige débutent à partir de **45 000 FCFA**.<br><br>Sachez également que notre **examen de vue professionnel** complet (habituellement facturé 25 000 FCFA) est **entièrement offert** pour tout achat de monture de notre collection.";
+            return "Au salon **Mage Optique & Services**, nos montures de prestige débutent à partir de **45 000 FCFA**.\n\nSachez également que notre **examen de vue professionnel** complet (habituellement facturé 25 000 FCFA) est **entièrement offert** pour tout achat de monture de notre collection.";
         }
         
         // 6. Devis / Quote / Prescription
         if (text.includes("devis") || text.includes("ordonnance") || text.includes("assurance") || text.includes("mutuelle") || text.includes("rembourse") || text.includes("verre")) {
-            return "Pour obtenir un devis personnalisé ou faire analyser votre ordonnance par nos spécialistes, nous vous invitons à soumettre notre formulaire dédié sur la page [Services & Devis](services.html#devisOnlineForm). Vous recevrez rapidement une proposition sur-mesure.";
+            return "Pour obtenir un devis personnalisé ou faire analyser votre ordonnance par nos spécialistes, nous vous invitons à soumettre notre formulaire dédié sur la [page des services](services.html#devisOnlineForm). Vous recevrez rapidement une proposition sur-mesure.";
         }
         
         // 7. Location / Hours / Contact
         if (text.includes("adresse") || text.includes("situé") || text.includes("situe") || text.includes("ou") || text.includes("où") || text.includes("dakar") || text.includes("foire") || text.includes("horaire") || text.includes("ouvert") || text.includes("ferme") || text.includes("telephone") || text.includes("téléphone") || text.includes("contact")) {
-            return "Notre salon d'optique est situé à **Dakar, Ouest Foire** (Sénégal).<br><br>Nous vous accueillons du **lundi au samedi, de 9h00 à 20h00** sans interruption.<br><br>Toutes nos coordonnées téléphoniques et notre formulaire de contact direct se trouvent sur la page [Contact & Accès](contact.html).";
+            return "Notre salon d'optique est situé à **Dakar, Ouest Foire** (Sénégal).\n\nNous vous accueillons du **lundi au samedi, de 9h00 à 20h00** sans interruption.\n\nToutes nos coordonnées téléphoniques et notre formulaire de contact direct se trouvent sur la [page de contact](contact.html).";
         }
         
         // 8. Thank you
@@ -2543,7 +2563,7 @@ function initChatDrawer(drawer) {
         }
         
         // 9. Default Fallback
-        return "Je comprends tout à fait. En tant que concierge et conseiller pour **Mage Optique & Services**, je reste à votre entière disposition.<br><br>Pourriez-vous me préciser si votre demande concerne nos collections de lunettes, une analyse de devis/ordonnance, ou une prise de rendez-vous dans notre salon de Dakar ?";
+        return "Je comprends tout à fait. En tant que concierge et conseiller pour **Mage Optique & Services**, je reste à votre entière disposition.\n\nPourriez-vous me préciser si votre demande concerne nos collections de lunettes, une analyse de devis/ordonnance, ou une prise de rendez-vous dans notre salon de Dakar ?";
     }
 
     // 7. Send message logic
