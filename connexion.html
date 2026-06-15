@@ -205,9 +205,13 @@
                 <div class="login-card-mini">
                     <span class="material-symbols-outlined" style="font-size: 56px; color: var(--color-muted-gold); margin-bottom: 20px;">account_circle</span>
                     
-                    <h2 class="font-serif text-headline-lg" style="margin-bottom: 8px;">Votre Espace Client</h2>
-                    <p class="text-body-md" style="color: var(--color-soft-slate); font-size: 0.95rem; margin-bottom: 32px;">Connectez-vous pour consulter l'historique et l'état de livraison de vos commandes.</p>
+                    <!-- Premium Tabs -->
+                    <div class="auth-tabs" style="display: flex; border-bottom: 1px solid var(--color-border-subtle); margin-bottom: 32px; justify-content: center; gap: 24px;">
+                        <button id="tab-login" class="auth-tab-btn active" onclick="switchAuthTab('login')" style="background: none; border: none; padding: 12px 16px; font-family: var(--font-serif); font-size: 1.1rem; cursor: pointer; color: var(--color-deep-charcoal); border-bottom: 2px solid var(--color-muted-gold); font-weight: 600; transition: var(--transition-fast);">Se connecter</button>
+                        <button id="tab-signup" class="auth-tab-btn" onclick="switchAuthTab('signup')" style="background: none; border: none; padding: 12px 16px; font-family: var(--font-serif); font-size: 1.1rem; cursor: pointer; color: var(--color-soft-slate); border-bottom: 2px solid transparent; transition: var(--transition-fast);">Créer un compte</button>
+                    </div>
                     
+                    <!-- LOGIN FORM -->
                     <form id="client-login-form" onsubmit="event.preventDefault(); handleClientLoginSubmit();">
                         <div class="form-group" style="text-align: left;">
                             <label class="form-label" for="client-email">Votre adresse e-mail</label>
@@ -224,10 +228,43 @@
                             Accéder à mon Espace
                         </button>
                     </form>
-                    
-                    <p class="text-caption" style="margin-top: 24px; font-size: 0.8rem; color: var(--color-soft-slate);">
-                        💡 <strong>Note :</strong> S'il s'agit de votre première visite, entrez simplement votre adresse e-mail et le mot de passe de votre choix pour créer instantanément votre compte.
-                    </p>
+
+                    <!-- SIGNUP FORM (hidden by default) -->
+                    <form id="client-signup-form" onsubmit="event.preventDefault(); handleClientSignupSubmit();" style="display: none;">
+                        <div class="form-group" style="text-align: left;">
+                            <label class="form-label" for="signup-name">Votre nom complet</label>
+                            <input type="text" id="signup-name" class="form-input" placeholder="ex. Joseph Diémé" required style="border-radius: var(--border-radius-md); border: 1px solid var(--color-border-subtle); padding: 12px;">
+                        </div>
+
+                        <div class="form-group" style="text-align: left;">
+                            <label class="form-label" for="signup-email">Votre adresse e-mail</label>
+                            <input type="email" id="signup-email" class="form-input" placeholder="ex. client@exemple.com" required style="border-radius: var(--border-radius-md); border: 1px solid var(--color-border-subtle); padding: 12px;">
+                        </div>
+                        
+                        <div class="form-group" style="text-align: left; margin-bottom: 28px;">
+                            <label class="form-label" for="signup-password">Définir un mot de passe</label>
+                            <input type="password" id="signup-password" class="form-input" placeholder="•••••••• (6 caractères min)" required minlength="6" style="border-radius: var(--border-radius-md); border: 1px solid var(--color-border-subtle); padding: 12px;">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-gold" style="width: 100%; border: none; padding: 16px 0; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <span class="material-symbols-outlined" style="font-size: 20px;">person_add</span>
+                            Créer mon compte d'Excellence
+                        </button>
+                    </form>
+
+                    <!-- Resend activation helper -->
+                    <div id="resend-container" style="display: none; margin-top: 24px; padding: 20px; background-color: rgba(197, 160, 89, 0.05); border: 1px solid rgba(197, 160, 89, 0.2); border-radius: var(--border-radius-md); text-align: left; animation: fadeIn 0.3s ease-out;">
+                        <div style="display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px;">
+                            <span class="material-symbols-outlined" style="color: var(--color-muted-gold); font-size: 22px;">mail_lock</span>
+                            <span style="font-size: 0.85rem; line-height: 1.4; color: var(--color-deep-charcoal);">
+                                Votre compte existe déjà mais votre e-mail n'a pas encore été validé. Cliquez ci-dessous pour renvoyer le lien.
+                            </span>
+                        </div>
+                        <button onclick="handleResendConfirmation()" id="resend-btn" class="btn btn-secondary" style="width: 100%; padding: 12px 0; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">forward_to_inbox</span>
+                            Renvoyer l'e-mail d'activation
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -433,6 +470,82 @@
             }, 1800);
         }
 
+        let activeAuthTab = 'login';
+        function switchAuthTab(tab) {
+            activeAuthTab = tab;
+            const loginForm = document.getElementById('client-login-form');
+            const signupForm = document.getElementById('client-signup-form');
+            const tabLoginBtn = document.getElementById('tab-login');
+            const tabSignupBtn = document.getElementById('tab-signup');
+            const resendContainer = document.getElementById('resend-container');
+            
+            // Reset resend container when switching tabs
+            resendContainer.style.display = 'none';
+
+            if (tab === 'login') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+                tabLoginBtn.classList.add('active');
+                tabLoginBtn.style.color = 'var(--color-deep-charcoal)';
+                tabLoginBtn.style.borderBottomColor = 'var(--color-muted-gold)';
+                tabSignupBtn.classList.remove('active');
+                tabSignupBtn.style.color = 'var(--color-soft-slate)';
+                tabSignupBtn.style.borderBottomColor = 'transparent';
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+                tabLoginBtn.classList.remove('active');
+                tabLoginBtn.style.color = 'var(--color-soft-slate)';
+                tabLoginBtn.style.borderBottomColor = 'transparent';
+                tabSignupBtn.classList.add('active');
+                tabSignupBtn.style.color = 'var(--color-deep-charcoal)';
+                tabSignupBtn.style.borderBottomColor = 'var(--color-muted-gold)';
+            }
+        }
+
+        async function handleResendConfirmation() {
+            let email = '';
+            if (activeAuthTab === 'login') {
+                email = document.getElementById('client-email').value.trim().toLowerCase();
+            } else {
+                email = document.getElementById('signup-email').value.trim().toLowerCase();
+            }
+            
+            if (!email) {
+                showToast("Veuillez saisir votre adresse e-mail d'abord.", 'error');
+                return;
+            }
+            
+            const resendBtn = document.getElementById('resend-btn');
+            resendBtn.disabled = true;
+            resendBtn.textContent = 'Envoi en cours...';
+            
+            try {
+                const client = await getSupabase();
+                const { error } = await client.auth.resend({
+                    type: 'signup',
+                    email: email,
+                    options: {
+                        emailRedirectTo: 'https://www.mageoptique.com/connexion.html'
+                    }
+                });
+                
+                if (error) {
+                    showToast('Erreur : ' + error.message, 'error');
+                    return;
+                }
+                
+                showToast('E-mail de confirmation renvoyé ! Veuillez vérifier votre boîte.', 'success');
+                document.getElementById('resend-container').style.display = 'none';
+            } catch (err) {
+                console.error("Resend error:", err);
+                showToast("Une erreur est survenue lors de l'envoi.", 'error');
+            } finally {
+                resendBtn.disabled = false;
+                resendBtn.innerHTML = `<span class="material-symbols-outlined" style="font-size: 18px;">forward_to_inbox</span> Renvoyer l'e-mail d'activation`;
+            }
+        }
+
         async function handleClientLoginSubmit() {
             const emailInput = document.getElementById('client-email');
             const passwordInput = document.getElementById('client-password');
@@ -440,6 +553,9 @@
             const password = passwordInput.value;
             
             if (!email || !password) return;
+            
+            // Hide helper initially
+            document.getElementById('resend-container').style.display = 'none';
             
             try {
                 const client = await getSupabase();
@@ -451,57 +567,21 @@
                 });
                 
                 if (error) {
-                    // If user does not exist, attempt to sign up (implicit signup as per original mockup logic)
-                    if (error.message.includes('Invalid login credentials')) {
-                        const is_admin_email = email.includes('admin') || email === 'magelopticien@gmail.com';
-                        const { data: signUpData, error: signUpError } = await client.auth.signUp({
-                            email: email,
-                            password: password,
-                            options: {
-                                data: {
-                                    name: email.split('@')[0],
-                                    role: is_admin_email ? 'admin' : 'client'
-                                }
-                            }
-                        });
-                        
-                        if (signUpError) {
-                            showToast('Erreur : ' + signUpError.message, 'error');
-                            return;
-                        }
-                        
-                        // Check if email confirmation is required (session will be null)
-                        if (!signUpData.session) {
-                            showToast('Compte créé ! Vérifiez votre boîte e-mail pour activer votre compte.', 'info');
-                            return;
-                        }
-                        
-                        showToast('Compte créé avec succès ! Bienvenue sur Mage Optique.', 'success');
-                        localStorage.setItem('mage_optique_client_logged', 'true');
-                        localStorage.setItem('mage_optique_client_email', email);
-                        localStorage.setItem('mage_optique_user_id', signUpData.user.id);
-                        localStorage.setItem('mage_optique_client_role', is_admin_email ? 'admin' : 'client');
-                        
-                        // Sync database and wait for it to complete
-                        await syncDatabaseFromSupabase();
-                        
-                        // Check if there is a pending cart item
-                        const pendingProductId = localStorage.getItem('mage_optique_pending_cart_item');
-                        if (pendingProductId) {
-                            if (typeof addToCartSilently === 'function') {
-                                addToCartSilently(pendingProductId);
-                            }
-                        }
-                        
-                        showLoginSuccessModalAndRedirect();
-                        return;
-                    } else if (error.message.toLowerCase().includes('email not confirmed') || error.message.toLowerCase().includes('confirmed') || error.message.toLowerCase().includes('confirm')) {
+                    const msg = error.message.toLowerCase();
+                    // Handle unconfirmed email specifically
+                    if (msg.includes('confirm') || msg.includes('email_not_confirmed')) {
                         showToast("Votre e-mail n'est pas encore confirmé. Vérifiez votre boîte de réception.", 'error');
-                        return;
-                    } else {
-                        showToast('Erreur de connexion : ' + error.message, 'error');
+                        document.getElementById('resend-container').style.display = 'block';
                         return;
                     }
+                    
+                    showToast('Erreur de connexion : ' + error.message, 'error');
+                    // In some newer versions of GoTrue, unconfirmed emails return "Invalid login credentials"
+                    // If credentials are invalid, we show the resend option just in case the account is unconfirmed
+                    if (msg.includes('invalid login credentials')) {
+                        document.getElementById('resend-container').style.display = 'block';
+                    }
+                    return;
                 }
                 
                 // Sign in successful
@@ -509,6 +589,7 @@
                 if (!isConfirmed) {
                     await client.auth.signOut();
                     showToast("Votre e-mail n'est pas encore confirmé. Vérifiez votre boîte de réception.", 'error');
+                    document.getElementById('resend-container').style.display = 'block';
                     return;
                 }
 
@@ -536,6 +617,74 @@
             } catch (err) {
                 console.error("Authentication error:", err);
                 showToast("Une erreur s'est produite. Veuillez réessayer.", 'error');
+            }
+        }
+
+        async function handleClientSignupSubmit() {
+            const nameInput = document.getElementById('signup-name');
+            const emailInput = document.getElementById('signup-email');
+            const passwordInput = document.getElementById('signup-password');
+            
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim().toLowerCase();
+            const password = passwordInput.value;
+            
+            if (!name || !email || !password) return;
+            
+            document.getElementById('resend-container').style.display = 'none';
+
+            try {
+                const client = await getSupabase();
+                
+                const is_admin_email = email.includes('admin') || email === 'magelopticien@gmail.com';
+                const { data, error } = await client.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            name: name,
+                            role: is_admin_email ? 'admin' : 'client'
+                        },
+                        emailRedirectTo: 'https://www.mageoptique.com/connexion.html'
+                    }
+                });
+                
+                if (error) {
+                    showToast("Erreur d'inscription : " + error.message, 'error');
+                    if (error.message.includes('unique constraint') || error.message.toLowerCase().includes('already exists') || error.message.toLowerCase().includes('duplicate')) {
+                        document.getElementById('resend-container').style.display = 'block';
+                    }
+                    return;
+                }
+                
+                // Check if email confirmation is required (session will be null)
+                if (!data.session) {
+                    showToast('Compte créé ! Vérifiez votre boîte e-mail pour activer votre compte.', 'info');
+                    document.getElementById('resend-container').style.display = 'block';
+                    return;
+                }
+                
+                showToast('Compte créé avec succès ! Bienvenue sur Mage Optique.', 'success');
+                localStorage.setItem('mage_optique_client_logged', 'true');
+                localStorage.setItem('mage_optique_client_email', email);
+                localStorage.setItem('mage_optique_user_id', data.user.id);
+                localStorage.setItem('mage_optique_client_role', is_admin_email ? 'admin' : 'client');
+                
+                // Sync database and wait for it to complete
+                await syncDatabaseFromSupabase();
+                
+                // Check if there is a pending cart item
+                const pendingProductId = localStorage.getItem('mage_optique_pending_cart_item');
+                if (pendingProductId) {
+                    if (typeof addToCartSilently === 'function') {
+                        addToCartSilently(pendingProductId);
+                    }
+                }
+                
+                showLoginSuccessModalAndRedirect();
+            } catch (err) {
+                console.error("Signup error:", err);
+                showToast("Une erreur s'est produite lors de l'inscription.", 'error');
             }
         }
 
