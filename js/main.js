@@ -47,7 +47,7 @@ function initNavigation() {
         footerDiv.innerHTML = `
             <div style="font-weight: 700; color: #C5A059; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.85rem;">Mage Optique & Services</div>
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;"><span class="material-symbols-outlined" style="font-size: 14px; color: #C5A059;">location_on</span> Dakar, Ouest Foire</div>
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;"><span class="material-symbols-outlined" style="font-size: 14px; color: #C5A059;">call</span> +221 78 681 15 26</div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;"><span class="material-symbols-outlined" style="font-size: 14px; color: #C5A059;">call</span> +221 78 681 15 26 / +221 33 843 15 25</div>
             <div style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined" style="font-size: 14px; color: #C5A059;">mail</span> contact@mageoptique.fr</div>
         `;
         mobileMenu.appendChild(footerDiv);
@@ -147,7 +147,7 @@ function downloadTicketAsText(data) {
 --------------------------------------------------
 📍 ADRESSE DU SALON :
 Ouest Foire, Dakar, Sénégal
-Téléphone : +221 78 681 15 26
+Téléphone : +221 78 681 15 26 / +221 33 843 15 25
 E-mail : contact@mageoptique.fr
 
 * Présentez ce billet à votre arrivée au salon.
@@ -243,7 +243,7 @@ function downloadTicketImage(data) {
     
     tempCtx.fillStyle = '#C5A059';
     tempCtx.font = 'italic 12px serif';
-    tempCtx.fillText('Ouest Foire, Dakar, Sénégal — +221 78 681 15 26', tempCanvas.width / 2, 570);
+    tempCtx.fillText('Ouest Foire, Dakar, Sénégal — +221 78 681 15 26 / +221 33 843 15 25', tempCanvas.width / 2, 570);
 
     // 9. Generate download trigger
     try {
