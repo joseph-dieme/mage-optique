@@ -231,18 +231,28 @@ main {
     align-items: center;
     gap: 14px;
     flex-shrink: 0;
+    height: 100%;
+    width: 180px;
+    overflow: hidden;
+    justify-content: center;
+    transition: var(--transition-smooth);
+}
+
+.top-header.scrolled .nav-logo {
+    width: 130px;
 }
 
 .logo-img {
-    height: 90px;
-    width: auto;
+    height: 220px;
+    width: 220px;
     object-fit: contain;
     mix-blend-mode: multiply;
     transition: var(--transition-smooth);
 }
 
 .top-header.scrolled .logo-img {
-    height: 66px;
+    height: 160px;
+    width: 160px;
 }
 
 .logo-text {
@@ -1245,8 +1255,22 @@ main {
 
 /* --- Responsive Logo & Navigation --- */
 @media (max-width: 768px) {
+    .top-header .nav-logo {
+        width: 100px;
+    }
+    
+    .top-header.scrolled .nav-logo {
+        width: 85px;
+    }
+    
     .logo-img {
-        height: 74px;
+        height: 120px;
+        width: 120px;
+    }
+    
+    .top-header.scrolled .logo-img {
+        height: 100px;
+        width: 100px;
     }
     
     .nav-actions {
