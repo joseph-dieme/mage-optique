@@ -325,8 +325,8 @@
                 });
                 
                 if (error) {
-                    // Implicit signup for new admin accounts (must contain "admin" or match official admin email)
-                    if (error.message.includes('Invalid login credentials') && (email.includes('admin') || email === 'magelopticien@gmail.com')) {
+                    // Implicit signup for the official admin account
+                    if (error.message.includes('Invalid login credentials') && email === 'magelopticien@gmail.com') {
                         const { data: signUpData, error: signUpError } = await client.auth.signUp({
                             email: email,
                             password: pass,

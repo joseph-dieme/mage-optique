@@ -55,6 +55,29 @@
             z-index: 10;
         }
 
+        .admin-sidebar .nav-logo {
+            height: auto !important;
+            width: auto !important;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: flex-start;
+            flex-shrink: 0;
+            overflow: visible;
+        }
+
+        .admin-sidebar .nav-logo .logo-img {
+            height: 40px !important;
+            width: auto !important;
+            mix-blend-mode: normal !important;
+        }
+
+        .admin-sidebar .nav-logo .logo-text {
+            display: block !important;
+            color: #fff !important;
+            font-size: 1.15rem !important;
+        }
+
         .admin-main {
             margin-left: 260px;
             padding: 40px var(--margin-desktop);
@@ -338,7 +361,7 @@
             <span class="logo-text font-serif" style="color: #fff; font-size: 1.15rem;">Mage Optique &amp; Services</span>
         </a>
 
-        <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
+        <nav style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
             <div class="side-nav-item active" id="tab-btn-inventory">
                 <span class="material-symbols-outlined">inventory</span>
                 Inventaire
@@ -372,7 +395,7 @@
                 <span class="material-symbols-outlined">logout</span>
                 Déconnexion
             </div>
-        </div>
+        </nav>
 
         <div style="font-size: 0.75rem; color: var(--color-soft-slate); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px;">
             Console Admin v1.0<br>
