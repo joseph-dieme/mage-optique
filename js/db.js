@@ -154,8 +154,9 @@ async function initRealtimeSubscriptions() {
                 }
                 syncDatabaseFromSupabase();
             })
-            .subscribe((status) => {
-                console.log("Supabase realtime channel subscription status:", status);
+            .subscribe((status, err) => {
+                console.log("Supabase realtime channel subscription status:", status, err);
+                window.dispatchEvent(new CustomEvent('supabase-status-change', { detail: { status: status, error: err } }));
             });
     } catch (e) {
         console.error("Failed to initialize realtime subscriptions:", e);
@@ -163,7 +164,37 @@ async function initRealtimeSubscriptions() {
 }
 
 // Start database sync and realtime subscriptions on initialization
-getSupabase().then(() => {
+getSupabase().then(async (client) => {
+    const isAdminPage = window.location.pathname.endsWith('admin.html');
+    
+    if (isAdminPage) {
+        const { data: { session } } = await client.auth.getSession();
+        if (!session) {
+            console.warn("Session Supabase expirée ou invalide. Redirection vers la page de connexion.");
+            sessionStorage.removeItem('mage_optique_admin_logged');
+            localStorage.removeItem('mage_optique_client_logged');
+            localStorage.removeItem('mage_optique_client_email');
+            localStorage.removeItem('mage_optique_user_id');
+            localStorage.removeItem('mage_optique_client_role');
+            window.location.replace('admin/index.html');
+            return;
+        }
+        
+        // Double check admin role in profiles
+        const { data: profile, error: profErr } = await client.from('profiles').select('role').eq('id', session.user.id).single();
+        if (profErr || !profile || profile.role !== 'admin') {
+            console.warn("Rôle administrateur non validé ou inexistant.");
+            await client.auth.signOut();
+            sessionStorage.removeItem('mage_optique_admin_logged');
+            localStorage.removeItem('mage_optique_client_logged');
+            localStorage.removeItem('mage_optique_client_email');
+            localStorage.removeItem('mage_optique_user_id');
+            localStorage.removeItem('mage_optique_client_role');
+            window.location.replace('admin/index.html');
+            return;
+        }
+    }
+    
     syncDatabaseFromSupabase();
     initRealtimeSubscriptions();
 }).catch(err => {
