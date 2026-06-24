@@ -135,14 +135,23 @@ async function initRealtimeSubscriptions() {
             })
             .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, (payload) => {
                 console.log("Realtime: appointments changed", payload);
+                if (payload.eventType === 'INSERT') {
+                    window.dispatchEvent(new CustomEvent('supabase-insert', { detail: { table: 'appointments', record: payload.new } }));
+                }
                 syncDatabaseFromSupabase();
             })
             .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
                 console.log("Realtime: orders changed", payload);
+                if (payload.eventType === 'INSERT') {
+                    window.dispatchEvent(new CustomEvent('supabase-insert', { detail: { table: 'orders', record: payload.new } }));
+                }
                 syncDatabaseFromSupabase();
             })
             .on('postgres_changes', { event: '*', schema: 'public', table: 'devis' }, (payload) => {
                 console.log("Realtime: devis changed", payload);
+                if (payload.eventType === 'INSERT') {
+                    window.dispatchEvent(new CustomEvent('supabase-insert', { detail: { table: 'devis', record: payload.new } }));
+                }
                 syncDatabaseFromSupabase();
             })
             .subscribe((status) => {

@@ -580,12 +580,8 @@
                     <thead>
                         <tr>
                             <th>Réf Devis</th>
-                            <th>Nom complet</th>
-                            <th>Email de contact</th>
-                            <th>Type de Photogray</th>
-                            <th>Monture</th>
-                            <th>Assurance / Mutuelle</th>
-                            <th>Ordonnance / Fichier</th>
+                            <th>Date</th>
+                            <th>Client / Patient</th>
                             <th>Statut</th>
                             <th style="width: 140px; text-align: right;">Actions</th>
                         </tr>
@@ -773,34 +769,7 @@
         </div>
     </div>
 
-    <!-- Prescription Lightbox Modal -->
-    <div class="ordonnance-modal-overlay" id="ordonnance-modal" onclick="closeOrdonnanceModal(event)">
-        <div class="ordonnance-modal-card" onclick="event.stopPropagation()">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px; margin-bottom: 8px;">
-                <h3 class="font-serif text-headline-md" style="color: #fff; margin: 0;" id="ordonnance-client-title">Ordonnance Médicale</h3>
-                <span class="material-symbols-outlined btn-action" onclick="closeOrdonnanceModal()" style="cursor: pointer;">close</span>
-            </div>
-            
-            <div id="ordonnance-image-container" style="width: 100%; height: 420px; background-color: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
-                <img id="ordonnance-modal-img" src="" alt="Ordonnance du Client" style="max-height: 100%; max-width: 100%; object-fit: contain;">
-                <div id="ordonnance-modal-placeholder" style="display: none; text-align: center; color: var(--color-soft-slate);">
-                    <span class="material-symbols-outlined" style="font-size: 56px; color: var(--color-muted-gold); margin-bottom: 12px;">receipt_long</span>
-                    <p style="margin: 0; font-size: 0.9rem;">Aucun document disponible</p>
-                </div>
-            </div>
-            
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--color-soft-slate); background-color: rgba(255,255,255,0.02); padding: 12px 16px; border-radius: var(--border-radius-sm); border: 1px solid rgba(255,255,255,0.03);">
-                <div>
-                    <span style="color: var(--color-muted-gold); font-weight: 600;">Nom du fichier : </span>
-                    <span id="ordonnance-modal-filename" style="font-family: monospace;">ordonnance.pdf</span>
-                </div>
-                <button class="btn btn-secondary" onclick="downloadOrdonnanceFile()" style="padding: 6px 12px; font-size: 0.75rem; display: flex; align-items: center; gap: 6px; cursor: pointer; border: none; background: rgba(255,255,255,0.05); color: #fff;">
-                    <span class="material-symbols-outlined" style="font-size: 14px;">download</span>
-                    Télécharger
-                </button>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Order Details Inspection Modal -->
     <div class="ordonnance-modal-overlay" id="order-modal" onclick="closeOrderModal(event)">
@@ -862,6 +831,66 @@
         </div>
     </div>
 
+    <!-- Devis Details Inspection Modal -->
+    <div class="ordonnance-modal-overlay" id="devis-modal" onclick="closeDevisModal(event)">
+        <div class="ordonnance-modal-card" style="max-width: 820px;" onclick="event.stopPropagation()">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px; margin-bottom: 8px;">
+                <h3 class="font-serif text-headline-md" style="color: #fff; margin: 0;" id="devis-detail-title">Détails de la Demande de Devis</h3>
+                <span class="material-symbols-outlined btn-action" onclick="closeDevisModal()" style="cursor: pointer;">close</span>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; font-size: 0.9rem;">
+                <!-- Left Column: Patient details & selected frame -->
+                <div style="background-color: rgba(255,255,255,0.02); padding: 20px; border-radius: var(--border-radius-md); border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; gap: 16px;">
+                    <div>
+                        <h4 style="color: var(--color-muted-gold); margin-top: 0; margin-bottom: 12px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Client &amp; Assurances</h4>
+                        <p style="margin: 6px 0; font-size: 0.85rem;"><strong style="color: #fff;">Nom Complet :</strong> <span id="devis-detail-name">...</span></p>
+                        <p style="margin: 6px 0; font-size: 0.85rem;"><strong style="color: #fff;">Email :</strong> <span id="devis-detail-email">...</span></p>
+                        <p style="margin: 6px 0; font-size: 0.85rem;"><strong style="color: #fff;">Mutuelle / Assurance :</strong> <span id="devis-detail-insurance">...</span></p>
+                        <p style="margin: 6px 0; font-size: 0.85rem;"><strong style="color: #fff;">Verres (Photogray) :</strong> <span id="devis-detail-lens">...</span></p>
+                        <p style="margin: 6px 0; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+                            <strong style="color: #fff;">Statut :</strong> <span id="devis-detail-status-badge" class="badge-cat">...</span>
+                        </p>
+                    </div>
+                    
+                    <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px;">
+                        <h4 style="color: var(--color-muted-gold); margin-top: 0; margin-bottom: 12px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Monture Demandée</h4>
+                        <div id="devis-detail-frame-container">
+                            <!-- Frame details injected via JS -->
+                        </div>
+                    </div>
+                    
+                    <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px; margin-top: auto;">
+                        <h4 style="color: var(--color-muted-gold); margin-top: 0; margin-bottom: 12px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Actions sur le devis</h4>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-gold" id="devis-detail-btn-confirm" onclick="confirmDevisFromDetail()" style="padding: 10px 0; font-size: 0.75rem; border: none; font-weight: 700; flex: 1;">Valider le Devis</button>
+                            <button class="btn btn-secondary" id="devis-detail-btn-cancel" onclick="cancelDevisFromDetail()" style="padding: 10px 0; font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.1); color: #fff; background: rgba(255,255,255,0.03); font-weight: 700; flex: 1;">Annuler le Devis</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column: integrated prescription viewer -->
+                <div style="background-color: rgba(255,255,255,0.02); padding: 20px; border-radius: var(--border-radius-md); border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; gap: 12px; min-height: 380px;">
+                    <h4 style="color: var(--color-muted-gold); margin-top: 0; margin-bottom: 4px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Ordonnance Médicale</h4>
+                    <div id="devis-detail-ordonnance-container" style="width: 100%; height: 300px; background-color: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
+                        <img id="devis-detail-ordonnance-img" src="" alt="Ordonnance" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                        <span id="devis-detail-filename" style="font-family: monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 150px;">ordonnance.pdf</span>
+                        <button class="btn btn-secondary" onclick="downloadDevisOrdonnanceFromDetail()" style="padding: 6px 12px; font-size: 0.725rem; display: flex; align-items: center; gap: 4px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); color: #fff; cursor: pointer;">
+                            <span class="material-symbols-outlined" style="font-size: 14px;">download</span>Télécharger
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; margin-top: 16px;">
+                <button class="btn btn-secondary btn-delete" onclick="deleteDevisFromDetail()" style="padding: 10px 20px; font-size: 0.75rem; background-color: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: #ef4444; cursor: pointer;">Supprimer</button>
+                <button class="btn btn-secondary" onclick="closeDevisModal()" style="padding: 10px 24px; font-size: 0.75rem; border: none; background: rgba(255,255,255,0.05); color: #fff; cursor: pointer;">Fermer</button>
+            </div>
+        </div>
+    </div>
+
     <!-- DB controller link and page actions -->
     <script src="js/db.js?v=3"></script>
     <script>
@@ -906,6 +935,10 @@
         let activeOrdonnanceData = '';
         let activeOrdonnanceFilename = '';
         let activeOrderDetailId = '';
+
+        let activeDevisId = '';
+        let activeDevisOrdonnanceData = '';
+        let activeDevisOrdonnanceFilename = '';
 
         function handleAdminLogout() {
             if (document.getElementById('logout-confirm-modal')) return;
@@ -1102,6 +1135,18 @@
         }
 
         window.addEventListener('supabase-synced', refreshAdminDashboard);
+
+        // Real-time insert notifications listener
+        window.addEventListener('supabase-insert', (e) => {
+            const { table, record } = e.detail;
+            if (table === 'appointments') {
+                showToast(`Nouveau Rendez-vous : ${record.name} (${record.service.split('(')[0].trim()})`, 'info');
+            } else if (table === 'orders') {
+                showToast(`Nouvelle Commande reçue : ${record.name} (Total: ${formatFCFA(record.total)})`, 'success');
+            } else if (table === 'devis') {
+                showToast(`Nouvelle Demande de Devis : ${record.firstname} ${record.lastname}`, 'info');
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             renderInventoryTable();
@@ -1839,7 +1884,7 @@
             if (devisList.length === 0) {
                 devisBody.innerHTML = `
                     <tr>
-                        <td colspan="9" style="text-align: center; color: var(--color-soft-slate); padding: 40px;">
+                        <td colspan="5" style="text-align: center; color: var(--color-soft-slate); padding: 40px;">
                             Aucune demande de devis enregistrée pour le moment.
                         </td>
                     </tr>
@@ -1854,71 +1899,21 @@
                 if (d.status === 'Confirmé') statusClass = 'cat-confirme';
                 if (d.status === 'Annulé') statusClass = 'cat-annule';
                 
-                // Format lens labels beautifully
-                let lensLabel = 'Photogray Gris';
-                if (d.lens === 'photogray-gris') lensLabel = 'Photogray Gris';
-                if (d.lens === 'photogray-brun') lensLabel = 'Photogray Brun';
-                if (d.lens === 'photogray-transition') lensLabel = 'Photogray Transition';
-                if (d.lens === 'photogray-xtractive') lensLabel = 'Photogray XTRActive';
-                if (d.lens === 'sans-photogray') lensLabel = 'Sans Photogray';
-                
-                // Fallbacks for older data
-                if (d.lens === 'unifocaux') lensLabel = 'Unifocaux';
-                if (d.lens === 'progressifs') lensLabel = 'Progressifs';
-                if (d.lens === 'fatigue') lensLabel = 'Anti-fatigue';
-                if (d.lens === 'sans-verres') lensLabel = 'Sans correction';
-                
-                // Get frame details
-                const frameId = d.frameId || d.frame_id;
-                let frameCell = '<em style="opacity: 0.4; font-size: 0.8rem; color: var(--color-soft-slate);">Sans monture</em>';
-                if (frameId) {
-                    const products = getProducts();
-                    const product = products.find(p => p.id === frameId);
-                    if (product) {
-                        frameCell = `
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <div style="width: 32px; height: 32px; border-radius: 4px; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;">
-                                    <img src="${product.image}" style="max-height: 90%; max-width: 90%; object-fit: contain;">
-                                </div>
-                                <div style="font-size: 0.8rem; line-height: 1.2;">
-                                    <span style="font-weight: 600; color: #fff;">${product.title}</span>
-                                    <div style="font-size: 0.7rem; color: var(--color-muted-gold);">${new Intl.NumberFormat('fr-FR').format(product.price)} FCFA</div>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        frameCell = `<span style="font-size: 0.8rem; color: var(--color-soft-slate);">${frameId}</span>`;
-                    }
-                }
-                
                 tr.innerHTML = `
                     <td>
                         <span style="font-family: monospace; font-size: 0.85rem; color: var(--color-muted-gold); font-weight: bold;">${d.id.replace('devis-', '#')}</span>
                     </td>
+                    <td style="font-size: 0.85rem; color: #fff;">
+                        ${d.date || ''}
+                    </td>
                     <td>
                         <strong style="color: #fff;">${d.firstname} ${d.lastname}</strong>
-                    </td>
-                    <td style="font-size: 0.85rem;">
-                        ${d.email}
-                    </td>
-                    <td>
-                        <span class="badge-cat cat-premium" style="text-transform: none; font-size: 0.75rem;">${lensLabel}</span>
-                    </td>
-                    <td>
-                        ${frameCell}
-                    </td>
-                    <td style="font-size: 0.85rem; color: #fff;">
-                        ${d.insurance || '<em style="opacity: 0.4;">Non renseignée</em>'}
-                    </td>
-                    <td style="font-size: 0.85rem; color: var(--color-muted-gold); font-weight: 500;">
-                        <span class="material-symbols-outlined" style="font-size: 16px; vertical-align: middle; margin-right: 4px;">description</span>
-                        ${d.fileName || 'Ordonnance.pdf'}
                     </td>
                     <td>
                         <span class="badge-cat ${statusClass}">${d.status}</span>
                     </td>
                     <td style="text-align: right; white-space: nowrap;">
-                        <span class="material-symbols-outlined btn-action" onclick="viewOrdonnance('${d.id}')" title="Voir l'ordonnance" style="color: var(--color-muted-gold); background-color: rgba(197, 160, 89, 0.08); margin-right: 8px; vertical-align: middle;">visibility</span>
+                        <span class="material-symbols-outlined btn-action" onclick="openDevisDetailsModal('${d.id}')" title="Voir le devis" style="color: var(--color-muted-gold); background-color: rgba(197, 160, 89, 0.08); margin-right: 8px; vertical-align: middle;">visibility</span>
                         ${d.status === 'En attente' ? `
                             <span class="material-symbols-outlined btn-action" onclick="handleConfirmDevis('${d.id}')" title="Valider le devis" style="color: #22c55e; background-color: rgba(34,197,94,0.08); margin-right: 8px; vertical-align: middle;">check</span>
                         ` : ''}
@@ -1929,52 +1924,136 @@
             });
         }
 
-        // View Prescription (Ordonnance) Lightbox Modal Trigger
-        function viewOrdonnance(id) {
+        // Open Devis Detail Modal with side-by-side details and prescription visualizer
+        function openDevisDetailsModal(id) {
             const devisList = getDevis();
             const devis = devisList.find(d => d.id === id);
             if (devis) {
-                document.getElementById('ordonnance-client-title').textContent = `Ordonnance de ${devis.firstname} ${devis.lastname}`;
-                document.getElementById('ordonnance-modal-filename').textContent = devis.fileName || 'Ordonnance.pdf';
+                activeDevisId = devis.id;
                 
-                const imgEl = document.getElementById('ordonnance-modal-img');
-                const placeholderEl = document.getElementById('ordonnance-modal-placeholder');
+                document.getElementById('devis-detail-title').textContent = `Détails du Devis ${devis.id.replace('devis-', '#')}`;
+                document.getElementById('devis-detail-name').textContent = `${devis.firstname} ${devis.lastname}`;
+                document.getElementById('devis-detail-email').textContent = devis.email;
+                document.getElementById('devis-detail-insurance').innerHTML = devis.insurance || '<em style="opacity: 0.4;">Non renseignée</em>';
                 
-                // If the quote has prescription fileData (Base64 string), display it.
-                // Otherwise, call our dynamic high-fidelity SVG generator based on patient profile!
+                // Format lens labels beautifully
+                let lensLabel = 'Photogray Gris';
+                if (devis.lens === 'photogray-gris') lensLabel = 'Photogray Gris';
+                else if (devis.lens === 'photogray-brun') lensLabel = 'Photogray Brun';
+                else if (devis.lens === 'photogray-transition') lensLabel = 'Photogray Transition';
+                else if (devis.lens === 'photogray-xtractive') lensLabel = 'Photogray XTRActive';
+                else if (devis.lens === 'sans-photogray') lensLabel = 'Sans Photogray';
+                else if (devis.lens === 'unifocaux') lensLabel = 'Unifocaux';
+                else if (devis.lens === 'progressifs') lensLabel = 'Progressifs';
+                else if (devis.lens === 'fatigue') lensLabel = 'Anti-fatigue';
+                else if (devis.lens === 'sans-verres') lensLabel = 'Sans correction';
+                else lensLabel = devis.lens;
+                
+                document.getElementById('devis-detail-lens').textContent = lensLabel;
+                
+                const badgeEl = document.getElementById('devis-detail-status-badge');
+                badgeEl.textContent = devis.status;
+                badgeEl.className = 'badge-cat';
+                if (devis.status === 'Confirmé') badgeEl.classList.add('cat-confirme');
+                else if (devis.status === 'Annulé') badgeEl.classList.add('cat-annule');
+                else badgeEl.classList.add('cat-attente');
+                
+                // Get frame details
+                const frameId = devis.frameId || devis.frame_id;
+                let frameHtml = '<em style="opacity: 0.4; font-size: 0.8rem; color: var(--color-soft-slate);">Sans monture</em>';
+                if (frameId) {
+                    const products = getProducts();
+                    const product = products.find(p => p.id === frameId);
+                    if (product) {
+                        frameHtml = `
+                            <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255,255,255,0.02); border-radius: var(--border-radius-md); border: 1px solid rgba(255,255,255,0.05);">
+                                <div style="width: 48px; height: 48px; border-radius: 4px; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;">
+                                    <img src="${product.image}" style="max-height: 90%; max-width: 90%; object-fit: contain;">
+                                </div>
+                                <div style="font-size: 0.85rem; line-height: 1.4;">
+                                    <span style="font-weight: 600; color: #fff;">${product.title}</span>
+                                    <div style="font-size: 0.75rem; color: var(--color-muted-gold); font-weight: 600;">${new Intl.NumberFormat('fr-FR').format(product.price)} FCFA</div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        frameHtml = `<span style="font-size: 0.85rem; color: var(--color-soft-slate);">${frameId}</span>`;
+                    }
+                }
+                document.getElementById('devis-detail-frame-container').innerHTML = frameHtml;
+                
+                // Ordonnance Image/SVG
+                const imgEl = document.getElementById('devis-detail-ordonnance-img');
                 const fileData = devis.fileData || (typeof getMockPrescriptionSVG === 'function' ? getMockPrescriptionSVG(devis.lastname, devis.firstname, devis.lens) : '');
                 
-                activeOrdonnanceData = fileData;
-                activeOrdonnanceFilename = devis.fileName || 'Ordonnance.png';
+                activeDevisOrdonnanceData = fileData;
+                activeDevisOrdonnanceFilename = devis.fileName || 'Ordonnance.png';
                 
                 if (fileData) {
                     imgEl.src = fileData;
                     imgEl.style.display = 'block';
-                    placeholderEl.style.display = 'none';
                 } else {
                     imgEl.style.display = 'none';
-                    placeholderEl.style.display = 'block';
                 }
                 
-                const modal = document.getElementById('ordonnance-modal');
+                document.getElementById('devis-detail-filename').textContent = devis.fileName || 'Ordonnance.png';
+                
+                // Buttons management
+                const confirmBtn = document.getElementById('devis-detail-btn-confirm');
+                const cancelBtn = document.getElementById('devis-detail-btn-cancel');
+                if (devis.status === 'En attente') {
+                    confirmBtn.style.display = 'block';
+                    cancelBtn.style.display = 'block';
+                } else {
+                    confirmBtn.style.display = 'none';
+                    cancelBtn.style.display = 'none';
+                }
+                
+                const modal = document.getElementById('devis-modal');
                 modal.style.display = 'flex';
                 setTimeout(() => modal.classList.add('show'), 10);
             }
         }
 
-        function closeOrdonnanceModal(e) {
-            const modal = document.getElementById('ordonnance-modal');
+        function closeDevisModal(e) {
+            const modal = document.getElementById('devis-modal');
             if (e ? e.target === modal : true) {
                 modal.classList.remove('show');
                 setTimeout(() => modal.style.display = 'none', 300);
             }
         }
 
-        function downloadOrdonnanceFile() {
-            if (!activeOrdonnanceData) return;
+        function confirmDevisFromDetail() {
+            if (activeDevisId) {
+                updateDevisStatus(activeDevisId, 'Confirmé');
+                renderDevisTable();
+                openDevisDetailsModal(activeDevisId); // Refresh details modal view
+            }
+        }
+
+        function cancelDevisFromDetail() {
+            if (activeDevisId) {
+                updateDevisStatus(activeDevisId, 'Annulé');
+                renderDevisTable();
+                openDevisDetailsModal(activeDevisId); // Refresh details modal view
+            }
+        }
+
+        function deleteDevisFromDetail() {
+            if (activeDevisId) {
+                showDeleteConfirmModal("Êtes-vous sûr de vouloir supprimer cette demande de devis ?", function() {
+                    deleteDevis(activeDevisId);
+                    renderDevisTable();
+                    closeDevisModal();
+                });
+            }
+        }
+
+        function downloadDevisOrdonnanceFromDetail() {
+            if (!activeDevisOrdonnanceData) return;
             const a = document.createElement('a');
-            a.href = activeOrdonnanceData;
-            a.download = activeOrdonnanceFilename;
+            a.href = activeDevisOrdonnanceData;
+            a.download = activeDevisOrdonnanceFilename;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -2094,10 +2173,7 @@
         });
 
         // Global context binding to guarantee complete robustness of inline HTML click callbacks
-        window.viewOrdonnance = viewOrdonnance;
-        window.closeOrdonnanceModal = closeOrdonnanceModal;
         window.closeDeleteConfirmModal = closeDeleteConfirmModal;
-        window.downloadOrdonnanceFile = downloadOrdonnanceFile;
         window.downloadAdminOrderReceipt = downloadAdminOrderReceipt;
         window.openEditModal = openEditModal;
         window.handleDelete = handleDelete;
@@ -2115,6 +2191,13 @@
         window.markOrderShippedFromDetail = markOrderShippedFromDetail;
         window.renderConciergeSettings = renderConciergeSettings;
         window.saveConciergeSettings = saveConciergeSettings;
+
+        window.openDevisDetailsModal = openDevisDetailsModal;
+        window.closeDevisModal = closeDevisModal;
+        window.confirmDevisFromDetail = confirmDevisFromDetail;
+        window.cancelDevisFromDetail = cancelDevisFromDetail;
+        window.deleteDevisFromDetail = deleteDevisFromDetail;
+        window.downloadDevisOrdonnanceFromDetail = downloadDevisOrdonnanceFromDetail;
     </script>
 </body>
 </html>
