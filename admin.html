@@ -104,6 +104,20 @@
             color: var(--color-muted-gold);
         }
 
+        .nav-badge {
+            margin-left: auto;
+            background-color: var(--color-muted-gold);
+            color: #121212;
+            font-size: 0.725rem;
+            font-weight: 700;
+            padding: 3px 7px;
+            border-radius: var(--border-radius-full);
+            line-height: 1;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(197, 160, 89, 0.25);
+            display: none;
+        }
+
         .stat-card {
             background-color: #121414;
             border: 1px solid rgba(255,255,255,0.05);
@@ -372,15 +386,18 @@
             </div>
             <div class="side-nav-item" id="tab-btn-reservations">
                 <span class="material-symbols-outlined">calendar_month</span>
-                Réservations
+                <span>Réservations</span>
+                <span id="badge-reservations" class="nav-badge">0</span>
             </div>
             <div class="side-nav-item" id="tab-btn-orders">
                 <span class="material-symbols-outlined">shopping_cart</span>
-                Commandes
+                <span>Commandes</span>
+                <span id="badge-orders" class="nav-badge">0</span>
             </div>
             <div class="side-nav-item" id="tab-btn-devis">
                 <span class="material-symbols-outlined">description</span>
-                Devis en Ligne
+                <span>Devis en Ligne</span>
+                <span id="badge-devis" class="nav-badge">0</span>
             </div>
             <div class="side-nav-item" id="tab-btn-concierge">
                 <span class="material-symbols-outlined">chat</span>
@@ -1127,6 +1144,38 @@
             if (statDevisEl) statDevisEl.textContent = devisList.length;
             const statDevisSubEl = document.getElementById('stat-devis-sub');
             if (statDevisSubEl) statDevisSubEl.textContent = `${pendingDevis} en attente`;
+
+            // 5. Sidebar Navigation Badges
+            const badgeReservations = document.getElementById('badge-reservations');
+            if (badgeReservations) {
+                if (pendingAppts > 0) {
+                    badgeReservations.textContent = pendingAppts;
+                    badgeReservations.style.display = 'inline-block';
+                } else {
+                    badgeReservations.style.display = 'none';
+                }
+            }
+
+            const pendingOrders = orders.filter(o => o.status === 'En attente').length;
+            const badgeOrders = document.getElementById('badge-orders');
+            if (badgeOrders) {
+                if (pendingOrders > 0) {
+                    badgeOrders.textContent = pendingOrders;
+                    badgeOrders.style.display = 'inline-block';
+                } else {
+                    badgeOrders.style.display = 'none';
+                }
+            }
+
+            const badgeDevis = document.getElementById('badge-devis');
+            if (badgeDevis) {
+                if (pendingDevis > 0) {
+                    badgeDevis.textContent = pendingDevis;
+                    badgeDevis.style.display = 'inline-block';
+                } else {
+                    badgeDevis.style.display = 'none';
+                }
+            }
         }
 
         function refreshAdminDashboard() {
