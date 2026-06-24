@@ -746,16 +746,16 @@
 
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label class="form-label" style="color: var(--color-soft-slate); font-size: 0.7rem;">Photo / Visuel de la monture (Téléverser localement ou URL)</label>
-                            <div id="product-upload-zone" style="border: 2px dashed rgba(255,255,255,0.15); padding: 18px; text-align: center; border-radius: var(--border-radius-md); cursor: pointer; transition: var(--transition-fast); background-color: rgba(255,255,255,0.01); margin-top: 8px;" onclick="document.getElementById('form-image-file').click();">
+                            <label for="form-image-file" id="product-upload-zone" style="border: 2px dashed rgba(255,255,255,0.15); padding: 18px; text-align: center; border-radius: var(--border-radius-md); cursor: pointer; transition: var(--transition-fast); background-color: rgba(255,255,255,0.01); margin-top: 8px; display: block;">
                                 <span class="material-symbols-outlined" style="font-size: 28px; color: var(--color-muted-gold); margin-bottom: 4px;">upload_file</span>
-                                <p style="font-size: 0.8rem; margin: 0; color: #e2e2e2;" id="upload-zone-text">Cliquer pour choisir une photo</p>
+                                <p style="font-size: 0.8rem; margin: 0; color: #e2e2e2;" id="upload-zone-text">Cliquer ou glisser-déposer une photo</p>
                                 <span style="font-size: 0.675rem; color: var(--color-soft-slate);">Formats: PNG, JPG, JPEG, GIF</span>
-                            </div>
+                            </label>
                             <input type="file" id="form-image-file" accept="image/*" style="display: none;">
                             
                             <div style="margin-top: 12px; display: flex; align-items: center; gap: 12px;">
                                 <span style="font-size: 0.725rem; color: var(--color-soft-slate); white-space: nowrap;">Ou coller un lien URL :</span>
-                                <input type="url" id="form-image" class="admin-form-input" placeholder="https://exemple.com/image.png" style="margin-top: 0; flex-grow: 1; padding: 8px 12px; font-size: 0.8rem;">
+                                <input type="text" id="form-image" class="admin-form-input" placeholder="https://exemple.com/image.png" style="margin-top: 0; flex-grow: 1; padding: 8px 12px; font-size: 0.8rem;">
                             </div>
                         </div>
 
@@ -1310,59 +1310,143 @@
                 });
             }
 
-            // Local File upload FileReader converter
+            // Helper function to process the selected image file
+            function processImageFile(file) {
+                if (!file) return;
+                
+                // Show loading state
+                if (uploadZoneText) {
+                    uploadZoneText.textContent = "Compression et optimisation en cours...";
+                    uploadZoneText.style.color = "var(--color-soft-slate)";
+                }
+                const saveBtn = document.getElementById('save-product-btn');
+                if (saveBtn) saveBtn.disabled = true;
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const rawData = event.target.result;
+                    
+                    const img = new Image();
+                    img.onload = function() {
+                        try {
+                            const canvas = document.createElement('canvas');
+                            let width = img.width;
+                            let height = img.height;
+                            
+                            // Limit dimensions to 600x600 maximum to balance quality, Try-On accuracy, and file size
+                            const MAX_WIDTH = 600;
+                            const MAX_HEIGHT = 600;
+                            
+                            if (width > height) {
+                                if (width > MAX_WIDTH) {
+                                    height *= MAX_WIDTH / width;
+                                    width = MAX_WIDTH;
+                                }
+                            } else {
+                                if (height > MAX_HEIGHT) {
+                                    width *= MAX_HEIGHT / height;
+                                    height = MAX_HEIGHT;
+                                }
+                            }
+                            
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            // Check if it's PNG to preserve transparency (vital for Virtual Try-On overlays)
+                            const isPng = file.type === 'image/png' || file.name.toLowerCase().endsWith('.png');
+                            const mimeType = isPng ? 'image/png' : 'image/jpeg';
+                            const quality = isPng ? undefined : 0.7;
+                            const base64Data = canvas.toDataURL(mimeType, quality);
+                            
+                            if (formImageInput) formImageInput.value = base64Data;
+                            if (uploadZoneText) {
+                                uploadZoneText.textContent = `Photo optimisée (${isPng ? 'PNG' : 'JPEG'}) : ${file.name}`;
+                                uploadZoneText.style.color = 'var(--color-muted-gold)';
+                            }
+                            updateModalImagePreview(base64Data);
+                        } catch (err) {
+                            console.error(err);
+                            showToast("Erreur lors de la compression de l'image.", 'error');
+                            if (uploadZoneText) {
+                                uploadZoneText.textContent = "Cliquer ou glisser-déposer une photo";
+                                uploadZoneText.style.color = '';
+                            }
+                        } finally {
+                            if (saveBtn) saveBtn.disabled = false;
+                        }
+                    };
+                    img.onerror = function() {
+                        showToast("Erreur de chargement du fichier image.", 'error');
+                        if (uploadZoneText) {
+                            uploadZoneText.textContent = "Cliquer ou glisser-déposer une photo";
+                            uploadZoneText.style.color = '';
+                        }
+                        if (saveBtn) saveBtn.disabled = false;
+                    };
+                    img.src = rawData;
+                };
+                reader.onerror = function() {
+                    showToast("Erreur lors de la lecture du fichier.", 'error');
+                    if (uploadZoneText) {
+                        uploadZoneText.textContent = "Cliquer ou glisser-déposer une photo";
+                        uploadZoneText.style.color = '';
+                    }
+                    if (saveBtn) saveBtn.disabled = false;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // Local File upload event listener
             if (formImageFileInput) {
                 formImageFileInput.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            const rawData = event.target.result;
-                            
-                            // Client-side image compression using a Canvas
-                            const img = new Image();
-                            img.onload = function() {
-                                const canvas = document.createElement('canvas');
-                                let width = img.width;
-                                let height = img.height;
-                                
-                                // Limit dimensions to 800x800 maximum to balance quality and file size
-                                const MAX_WIDTH = 800;
-                                const MAX_HEIGHT = 800;
-                                
-                                if (width > height) {
-                                    if (width > MAX_WIDTH) {
-                                        height *= MAX_WIDTH / width;
-                                        width = MAX_WIDTH;
-                                    }
-                                } else {
-                                    if (height > MAX_HEIGHT) {
-                                        width *= MAX_HEIGHT / height;
-                                        height = MAX_HEIGHT;
-                                    }
-                                }
-                                
-                                canvas.width = width;
-                                canvas.height = height;
-                                const ctx = canvas.getContext('2d');
-                                ctx.drawImage(img, 0, 0, width, height);
-                                
-                                // Convert to JPEG with 0.7 quality to heavily optimize size (under 100KB)
-                                const base64Data = canvas.toDataURL('image/jpeg', 0.7);
-                                
-                                if (formImageInput) formImageInput.value = base64Data;
-                                if (uploadZoneText) {
-                                    uploadZoneText.textContent = `Photo optimisée : ${file.name}`;
-                                    uploadZoneText.style.color = 'var(--color-muted-gold)';
-                                }
-                                updateModalImagePreview(base64Data);
-                            };
-                            img.src = rawData;
-                        };
-                        reader.onerror = function() {
-                            showToast("Erreur lors de la lecture du fichier image.", 'error');
-                        };
-                        reader.readAsDataURL(file);
+                    processImageFile(e.target.files[0]);
+                });
+            }
+
+            // Drag and Drop listeners for premium upload zone feedback
+            const uploadZone = document.getElementById('product-upload-zone');
+            if (uploadZone) {
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    uploadZone.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        uploadZone.style.borderColor = 'var(--color-muted-gold)';
+                        uploadZone.style.backgroundColor = 'rgba(197, 160, 89, 0.05)';
+                    }, false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    uploadZone.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        uploadZone.style.borderColor = 'rgba(255,255,255,0.15)';
+                        uploadZone.style.backgroundColor = 'rgba(255,255,255,0.01)';
+                    }, false);
+                });
+
+                uploadZone.addEventListener('drop', (e) => {
+                    const dt = e.dataTransfer;
+                    const file = dt.files[0];
+                    if (file && file.type.startsWith('image/')) {
+                        processImageFile(file);
+                    } else {
+                        showToast("Veuillez déposer un fichier image valide.", 'error');
+                    }
+                }, false);
+            }
+
+            // Copy-Paste support inside the modal card for maximum flexibility
+            if (modal) {
+                modal.addEventListener('paste', (e) => {
+                    const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+                    for (let i = 0; i < items.length; i++) {
+                        if (items[i].type.indexOf('image') !== -1) {
+                            const file = items[i].getAsFile();
+                            processImageFile(file);
+                            break;
+                        }
                     }
                 });
             }

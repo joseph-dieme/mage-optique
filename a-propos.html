@@ -163,8 +163,7 @@
                 <div class="testimonial-slider" id="testimonial-slider">
                     <!-- Slide 1 -->
                     <div class="testimonial-slide active">
-                        <span class="material-symbols-outlined" style="font-size: 48px; color: var(--color-muted-gold); margin-bottom: 24px;">format_quote</span>
-                        <p class="text-body-lg" style="font-family: var(--font-serif); font-style: italic; color: var(--color-deep-charcoal); line-height: 1.8; max-width: 800px; margin: 0 auto 24px auto;">
+                        <p class="text-body-lg" style="font-family: var(--font-serif); font-style: italic; color: var(--color-deep-charcoal); line-height: 1.8; max-width: 800px; margin: 24px auto 24px auto;">
                             "Une expérience d'achat incomparable. J'ai été bluffée par l'expertise en visagisme de l'équipe Mage Optique &amp; Services. Ils ont immédiatement identifié la forme de monture qui mettait en valeur mon regard, et la qualité des verres progressifs est tout simplement parfaite."
                         </p>
                         <h4 class="text-label-md" style="color: var(--color-muted-gold); font-size: 0.9rem;">Hélène D. - Artiste Peintre</h4>
@@ -172,8 +171,7 @@
 
                     <!-- Slide 2 -->
                     <div class="testimonial-slide">
-                        <span class="material-symbols-outlined" style="font-size: 48px; color: var(--color-muted-gold); margin-bottom: 24px;">format_quote</span>
-                        <p class="text-body-lg" style="font-family: var(--font-serif); font-style: italic; color: var(--color-deep-charcoal); line-height: 1.8; max-width: 800px; margin: 0 auto 24px auto;">
+                        <p class="text-body-lg" style="font-family: var(--font-serif); font-style: italic; color: var(--color-deep-charcoal); line-height: 1.8; max-width: 800px; margin: 24px auto 24px auto;">
                             "J'achète toutes mes lunettes solaires et d'affaires chez Mage Optique &amp; Services depuis 5 ans. Leur service d'entretien et d'ajustement gratuit à vie est exceptionnel. La monture en titane que je porte au quotidien est d'une solidité et d'une légèreté incomparables."
                         </p>
                         <h4 class="text-label-md" style="color: var(--color-muted-gold); font-size: 0.9rem;">Alexandre M. - Cabinet de Conseil</h4>
@@ -181,8 +179,7 @@
 
                     <!-- Slide 3 -->
                     <div class="testimonial-slide">
-                        <span class="material-symbols-outlined" style="font-size: 48px; color: var(--color-muted-gold); margin-bottom: 24px;">format_quote</span>
-                        <p class="text-body-lg" style="font-family: var(--font-serif); font-style: italic; color: var(--color-deep-charcoal); line-height: 1.8; max-width: 800px; margin: 0 auto 24px auto;">
+                        <p class="text-body-lg" style="font-family: var(--font-serif); font-style: italic; color: var(--color-deep-charcoal); line-height: 1.8; max-width: 800px; margin: 24px auto 24px auto;">
                             "Le service d'essai à domicile de Mage Optique &amp; Services a révolutionné ma façon de choisir mes lunettes. L'opticien s'est déplacé directement à mon bureau avec une sélection splendide de montures en acétate. Un service VIP inestimable quand on manque de temps."
                         </p>
                         <h4 class="text-label-md" style="color: var(--color-muted-gold); font-size: 0.9rem;">Sophia K. - Directrice de Galerie d'Art</h4>
@@ -295,20 +292,29 @@
                 slides[currentSlide].classList.add('active');
             }
 
+            // Autoplay with reset on user action
+            let autoPlayInterval = setInterval(() => {
+                showSlide(currentSlide + 1);
+            }, 6000);
+
+            function resetAutoPlay() {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = setInterval(() => {
+                    showSlide(currentSlide + 1);
+                }, 6000);
+            }
+
             if (prevBtn && nextBtn) {
                 prevBtn.addEventListener('click', () => {
                     showSlide(currentSlide - 1);
+                    resetAutoPlay();
                 });
                 
                 nextBtn.addEventListener('click', () => {
                     showSlide(currentSlide + 1);
+                    resetAutoPlay();
                 });
             }
-
-            // Auto rotation every 8 seconds
-            setInterval(() => {
-                showSlide(currentSlide + 1);
-            }, 8000);
         });
     </script>
 </body>
