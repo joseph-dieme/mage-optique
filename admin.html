@@ -1116,6 +1116,11 @@
             const orders = getOrders();
             const devisList = getDevis();
 
+            // Check currently active tab
+            const isReservationsActive = document.getElementById('tab-btn-reservations')?.classList.contains('active');
+            const isOrdersActive = document.getElementById('tab-btn-orders')?.classList.contains('active');
+            const isDevisActive = document.getElementById('tab-btn-devis')?.classList.contains('active');
+
             // 1. Total products
             const statTotalEl = document.getElementById('stat-total');
             if (statTotalEl) statTotalEl.textContent = products.length;
@@ -1145,22 +1150,48 @@
             const statDevisSubEl = document.getElementById('stat-devis-sub');
             if (statDevisSubEl) statDevisSubEl.textContent = `${pendingDevis} en attente`;
 
-            // 5. Sidebar Navigation Badges
+            // 5. Unseen appointments count tracking
+            const seenAppts = JSON.parse(localStorage.getItem('mage_optique_seen_appointments') || '[]');
+            if (isReservationsActive) {
+                const pendingIds = appointments.filter(a => a.status === 'En attente').map(a => a.id);
+                localStorage.setItem('mage_optique_seen_appointments', JSON.stringify(pendingIds));
+            }
+            const updatedSeenAppts = isReservationsActive ? appointments.filter(a => a.status === 'En attente').map(a => a.id) : seenAppts;
+            const unseenApptCount = appointments.filter(a => a.status === 'En attente' && !updatedSeenAppts.includes(a.id)).length;
+
+            // 6. Unseen orders count tracking
+            const seenOrders = JSON.parse(localStorage.getItem('mage_optique_seen_orders') || '[]');
+            if (isOrdersActive) {
+                const pendingIds = orders.filter(o => o.status === 'En attente').map(o => o.id);
+                localStorage.setItem('mage_optique_seen_orders', JSON.stringify(pendingIds));
+            }
+            const updatedSeenOrders = isOrdersActive ? orders.filter(o => o.status === 'En attente').map(o => o.id) : seenOrders;
+            const unseenOrderCount = orders.filter(o => o.status === 'En attente' && !updatedSeenOrders.includes(o.id)).length;
+
+            // 7. Unseen devis count tracking
+            const seenDevis = JSON.parse(localStorage.getItem('mage_optique_seen_devis') || '[]');
+            if (isDevisActive) {
+                const pendingIds = devisList.filter(d => d.status === 'En attente').map(d => d.id);
+                localStorage.setItem('mage_optique_seen_devis', JSON.stringify(pendingIds));
+            }
+            const updatedSeenDevis = isDevisActive ? devisList.filter(d => d.status === 'En attente').map(d => d.id) : seenDevis;
+            const unseenDevisCount = devisList.filter(d => d.status === 'En attente' && !updatedSeenDevis.includes(d.id)).length;
+
+            // 8. Sidebar Navigation Badges
             const badgeReservations = document.getElementById('badge-reservations');
             if (badgeReservations) {
-                if (pendingAppts > 0) {
-                    badgeReservations.textContent = pendingAppts;
+                if (unseenApptCount > 0) {
+                    badgeReservations.textContent = unseenApptCount;
                     badgeReservations.style.display = 'inline-block';
                 } else {
                     badgeReservations.style.display = 'none';
                 }
             }
 
-            const pendingOrders = orders.filter(o => o.status === 'En attente').length;
             const badgeOrders = document.getElementById('badge-orders');
             if (badgeOrders) {
-                if (pendingOrders > 0) {
-                    badgeOrders.textContent = pendingOrders;
+                if (unseenOrderCount > 0) {
+                    badgeOrders.textContent = unseenOrderCount;
                     badgeOrders.style.display = 'inline-block';
                 } else {
                     badgeOrders.style.display = 'none';
@@ -1169,8 +1200,8 @@
 
             const badgeDevis = document.getElementById('badge-devis');
             if (badgeDevis) {
-                if (pendingDevis > 0) {
-                    badgeDevis.textContent = pendingDevis;
+                if (unseenDevisCount > 0) {
+                    badgeDevis.textContent = unseenDevisCount;
                     badgeDevis.style.display = 'inline-block';
                 } else {
                     badgeDevis.style.display = 'none';
@@ -1396,6 +1427,7 @@
                         } else if (tab.btn === 'tab-btn-concierge') {
                             renderConciergeSettings();
                         }
+                        renderDashboardStats();
                     });
                 }
             });
